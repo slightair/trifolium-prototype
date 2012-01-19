@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="js/lib/underscore-min.js"></script>
+    <!-- // <script type="text/javascript" src="js/lib/backbone-min.js"></script> -->
+    <script type="text/javascript" src="js/lib/backbone.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="js/brave.js"></script>
+    <script type="text/javascript" src="js/brave_status_view.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var view = new BraveStatusView({el: $('#braveStatus').get(0)});
+        });
+    </script>
+</head>
+<body>
+    <div id="main">
+        <canvas id="braveStatus" width=640 height=480></canvas>
+    </div>
+</body>
+</html>
