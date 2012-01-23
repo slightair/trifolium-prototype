@@ -19,8 +19,7 @@ initialize = ->
         dungeon2inn
     ]
     
-    names = ['armstrong', 'bob', 'clarisse']
-    @braveList = (new Brave(names[i], spawnSpot) for i in [0...3])
+    @braveList = (new Brave(name, spawnSpot, {speed: Math.floor(Math.random() * 100) + 10}) for name in ['armstrong', 'bob', 'clarisse'])
     for brave in braveList
         do (brave) ->
             action = spawnSpot.randomAction()

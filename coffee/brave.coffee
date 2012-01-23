@@ -1,14 +1,14 @@
 class Brave
-    constructor: (name, spawnSpot) ->
+    constructor: (name, spawnSpot, options = {}) ->
         @name = name
-        @lv    = 1
-        @atk   = 1
-        @matk  = 1
-        @hp    = 10
-        @mp    = 10
-        @brave = 50
-        @faith = 50
-        @speed = 300
+        @lv    = options.lv    ? 1
+        @atk   = options.atk   ? 1
+        @matk  = options.matk  ? 1
+        @hp    = options.hp    ? 10
+        @mp    = options.mp    ? 10
+        @brave = options.brave ? 50
+        @faith = options.faith ? 50
+        @speed = options.speed ? 3
         @action = null
         @actionProcess = 0.0
         @spot = spawnSpot
