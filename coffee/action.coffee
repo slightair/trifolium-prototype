@@ -1,21 +1,20 @@
 class Action
     constructor: ->
         @name = null
-        @process = 0.0
         @isSucceed = false
+        @time = 0
     prepare: (brave) ->
         
-    tick: (brave) ->
-        @process += brave.speed / 100
     do: (brave) ->
         @isSucceed = true
-    after: (brave) ->
         brave.action = null
+        brave.actionProcess = 0.0
 
 class WaitAction extends Action
     constructor: ->
         super
         @name = 'wait'
+        @time = 300
 
 class MoveAction extends Action
     constructor: (from, to) ->
@@ -23,9 +22,15 @@ class MoveAction extends Action
         @name = 'move'
         @from = from
         @to = to
-    after: (brave) ->
+        @time = from.distance(to) * 100
+    do: (brave) ->
         super brave
         console.log "#{brave.name} is arrived at #{@to.name}"
+        
+        nextAction = @to.randomAction()
+        nextAction.prepare(brave)
+        brave.action = nextAction
+        @isSucceed
 
 class SearchAction extends Action
     probabilityMax: 1000
@@ -34,7 +39,9 @@ class SearchAction extends Action
         @name = 'search'
         @treasureDict = treasureDict
         @treasure = null
+        @time = 1000
     do: (brave) ->
+        super brave
         total = 0
         total += probability for treasure, probability of @treasureDict
         return @isSucceed = false if total > @probabilityMax
@@ -47,4 +54,3 @@ class SearchAction extends Action
         @treasure = treasure for treasure, i in treasures when not @treasure? and needle < probabilities[i]
         
         @isSucceed = @treasure?
-

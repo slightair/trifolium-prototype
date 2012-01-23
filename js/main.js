@@ -13,18 +13,17 @@ Brave = (function() {
     this.mp = 10;
     this.brave = 50;
     this.faith = 50;
-    this.speed = 3;
+    this.speed = 300;
     this.action = null;
+    this.actionProcess = 0.0;
     this.spot = spawnSpot;
   }
 
   Brave.prototype.tick = function() {
     var isSucceed;
     if (this.action != null) {
-      if ((this.action.tick(this)) > 1.0) {
-        isSucceed = this.action["do"](this);
-        return this.action.after(this);
-      }
+      this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
+      if (this.actionProcess >= 1.0) return isSucceed = this.action["do"](this);
     }
   };
 
@@ -36,22 +35,16 @@ Action = (function() {
 
   function Action() {
     this.name = null;
-    this.process = 0.0;
     this.isSucceed = false;
+    this.time = 0;
   }
 
   Action.prototype.prepare = function(brave) {};
 
-  Action.prototype.tick = function(brave) {
-    return this.process += brave.speed / 100;
-  };
-
   Action.prototype["do"] = function(brave) {
-    return this.isSucceed = true;
-  };
-
-  Action.prototype.after = function(brave) {
-    return brave.action = null;
+    this.isSucceed = true;
+    brave.action = null;
+    return brave.actionProcess = 0.0;
   };
 
   return Action;
@@ -65,6 +58,7 @@ WaitAction = (function(_super) {
   function WaitAction() {
     WaitAction.__super__.constructor.apply(this, arguments);
     this.name = 'wait';
+    this.time = 300;
   }
 
   return WaitAction;
@@ -80,11 +74,17 @@ MoveAction = (function(_super) {
     this.name = 'move';
     this.from = from;
     this.to = to;
+    this.time = from.distance(to) * 100;
   }
 
-  MoveAction.prototype.after = function(brave) {
-    MoveAction.__super__.after.call(this, brave);
-    return console.log("" + brave.name + " is arrived at " + this.to.name);
+  MoveAction.prototype["do"] = function(brave) {
+    var nextAction;
+    MoveAction.__super__["do"].call(this, brave);
+    console.log("" + brave.name + " is arrived at " + this.to.name);
+    nextAction = this.to.randomAction();
+    nextAction.prepare(brave);
+    brave.action = nextAction;
+    return this.isSucceed;
   };
 
   return MoveAction;
@@ -102,10 +102,12 @@ SearchAction = (function(_super) {
     this.name = 'search';
     this.treasureDict = treasureDict;
     this.treasure = null;
+    this.time = 1000;
   }
 
   SearchAction.prototype["do"] = function(brave) {
     var i, needle, probabilities, probability, total, treasure, treasures, _len, _ref;
+    SearchAction.__super__["do"].call(this, brave);
     total = 0;
     _ref = this.treasureDict;
     for (treasure in _ref) {
@@ -165,7 +167,7 @@ Spot = (function() {
   };
 
   Spot.prototype.distance = function(aSpot) {
-    return Math.sqrt(Math.pow(this.posX - aSpot.posX) + Math.pow(this.posY - aSpot.posY));
+    return Math.sqrt(Math.pow(this.posX - aSpot.posX, 2) + Math.pow(this.posY - aSpot.posY, 2));
   };
 
   return Spot;
@@ -173,15 +175,22 @@ Spot = (function() {
 })();
 
 initialize = function() {
-  var brave, i, inn, spawnSpot, _i, _len, _results;
+  var brave, dungeon, dungeon2inn, i, inn, inn2dungeon, names, spawn2inn, spawnSpot, _i, _len, _results;
   spawnSpot = new Spot("spawn", 0, 0);
   inn = new Spot("inn", 50, 50);
-  spawnSpot.actions = [new MoveAction(spawnSpot, inn)];
+  dungeon = new Spot("dungeon", 100, 50);
+  spawn2inn = new MoveAction(spawnSpot, inn);
+  inn2dungeon = new MoveAction(inn, dungeon);
+  dungeon2inn = new MoveAction(dungeon, inn);
+  spawnSpot.actions = [spawn2inn];
+  inn.actions = [inn2dungeon];
+  dungeon.actions = [dungeon2inn];
+  names = ['armstrong', 'bob', 'clarisse'];
   this.braveList = (function() {
     var _results;
     _results = [];
     for (i = 0; i < 3; i++) {
-      _results.push(new Brave("no." + i, spawnSpot));
+      _results.push(new Brave(names[i], spawnSpot));
     }
     return _results;
   })();
@@ -205,8 +214,8 @@ main = function() {
   return timer = setInterval(function() {
     console.log("" + (count++));
     tick();
-    if (count > 30) return clearInterval(timer);
-  }, 100);
+    if (count > 100) return clearInterval(timer);
+  }, 30);
 };
 
 tick = function() {

@@ -8,12 +8,13 @@ class Brave
         @mp    = 10
         @brave = 50
         @faith = 50
-        @speed = 3
+        @speed = 300
         @action = null
+        @actionProcess = 0.0
         @spot = spawnSpot
     tick: ->
         if @action?
-            if (@action.tick @) > 1.0
+            @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
+            if @actionProcess >= 1.0
                 isSucceed = @action.do(@)
-                @action.after(@)
                 

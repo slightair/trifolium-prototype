@@ -8,5 +8,4 @@ class Spot
         index = Math.floor(Math.random() * @actions.length)
         @actions[index]
     distance: (aSpot) ->
-        Math.sqrt(Math.pow(@posX - aSpot.posX) + Math.pow(@posY - aSpot.posY))
-
+        Math.sqrt(Math.pow(@posX - aSpot.posX, 2) + Math.pow(@posY - aSpot.posY, 2))
