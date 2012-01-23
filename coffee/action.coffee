@@ -28,7 +28,7 @@ class MoveAction extends Action
         console.log "#{brave.name} is arrived at #{@to.name}"
         
         nextAction = @to.randomAction()
-        nextAction.prepare(brave)
+        nextAction.prepare brave
         brave.action = nextAction
         @isSucceed
 

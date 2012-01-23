@@ -16,5 +16,5 @@ class Brave
         if @action?
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
             if @actionProcess >= 1.0
-                isSucceed = @action.do(@)
+                isSucceed = @action.do @
                 

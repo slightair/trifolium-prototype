@@ -19,11 +19,12 @@ initialize = ->
         dungeon2inn
     ]
     
+    @spotList = [spawnSpot, inn, dungeon]
     @braveList = (new Brave(name, spawnSpot, {speed: Math.floor(Math.random() * 100) + 10}) for name in ['armstrong', 'bob', 'clarisse'])
     for brave in braveList
         do (brave) ->
             action = spawnSpot.randomAction()
-            action.prepare(brave)
+            action.prepare brave
             brave.action = action
     
 main = ->
@@ -33,7 +34,7 @@ main = ->
     timer = setInterval( ->
         console.log "#{count++}"
         tick()
-        clearInterval(timer) if count > 100
+        clearInterval timer if count > 100
     , 30)
 
 tick = ->

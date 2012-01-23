@@ -187,6 +187,7 @@ initialize = function() {
   spawnSpot.actions = [spawn2inn];
   inn.actions = [inn2dungeon];
   dungeon.actions = [dungeon2inn];
+  this.spotList = [spawnSpot, inn, dungeon];
   this.braveList = (function() {
     var _i, _len, _ref, _results;
     _ref = ['armstrong', 'bob', 'clarisse'];
