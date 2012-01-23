@@ -1,31 +1,40 @@
 class Action
     constructor: ->
+        @name = null
         @process = 0.0
         @isSucceed = false
-    prepare: ->
+    prepare: (brave) ->
         
-    do: ->
+    tick: (brave) ->
+        @process += brave.speed / 100
+    do: (brave) ->
         @isSucceed = true
-    after: ->
-        
+    after: (brave) ->
+        brave.action = null
 
 class WaitAction extends Action
     constructor: ->
         super
+        @name = 'wait'
 
 class MoveAction extends Action
-    constructor: ->
+    constructor: (from, to) ->
         super
-        @from = null
-        @to = null
+        @name = 'move'
+        @from = from
+        @to = to
+    after: (brave) ->
+        super brave
+        console.log "#{brave.name} is arrived at #{@to.name}"
 
 class SearchAction extends Action
     probabilityMax: 1000
     constructor: (treasureDict) ->
         super
+        @name = 'search'
         @treasureDict = treasureDict
         @treasure = null
-    do: ->
+    do: (brave) ->
         total = 0
         total += probability for treasure, probability of @treasureDict
         return @isSucceed = false if total > @probabilityMax

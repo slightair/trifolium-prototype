@@ -1,5 +1,6 @@
-class Brave extends Backbone.Model
-    constructor: ->
+class Brave
+    constructor: (name, spawnSpot) ->
+        @name = name
         @lv    = 1
         @atk   = 1
         @matk  = 1
@@ -9,3 +10,10 @@ class Brave extends Backbone.Model
         @faith = 50
         @speed = 3
         @action = null
+        @spot = spawnSpot
+    tick: ->
+        if @action?
+            if (@action.tick @) > 1.0
+                isSucceed = @action.do(@)
+                @action.after(@)
+                
