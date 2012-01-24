@@ -12,6 +12,7 @@ class Brave
         @action = null
         @actionProcess = 0.0
         @spot = spawnSpot
+        @destination = null
     tick: ->
         if @action?
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0

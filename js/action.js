@@ -5,17 +5,18 @@ var Action, MoveAction, SearchAction, WaitAction,
 Action = (function() {
 
   function Action() {
-    this.process = 0.0;
+    this.name = null;
     this.isSucceed = false;
+    this.time = 0;
   }
 
-  Action.prototype.prepare = function() {};
+  Action.prototype.prepare = function(brave) {};
 
-  Action.prototype["do"] = function() {
-    return this.isSucceed = true;
+  Action.prototype["do"] = function(brave) {
+    this.isSucceed = true;
+    brave.action = null;
+    return brave.actionProcess = 0.0;
   };
-
-  Action.prototype.after = function() {};
 
   return Action;
 
@@ -27,6 +28,8 @@ WaitAction = (function(_super) {
 
   function WaitAction() {
     WaitAction.__super__.constructor.apply(this, arguments);
+    this.name = 'wait';
+    this.time = 300;
   }
 
   return WaitAction;
@@ -37,11 +40,25 @@ MoveAction = (function(_super) {
 
   __extends(MoveAction, _super);
 
-  function MoveAction() {
+  function MoveAction(from, to) {
     MoveAction.__super__.constructor.apply(this, arguments);
-    this.from = null;
-    this.to = null;
+    this.name = 'move';
+    this.from = from;
+    this.to = to;
+    this.time = from.distance(to) * 100;
   }
+
+  MoveAction.prototype["do"] = function(brave) {
+    var nextAction, _ref;
+    MoveAction.__super__["do"].call(this, brave);
+    brave.spot = this.to;
+    console.log("" + brave.name + " is arrived at " + this.to.name);
+    nextAction = this.to.randomAction();
+    nextAction.prepare(brave);
+    brave.action = nextAction;
+    brave.destination = (_ref = nextAction.to) != null ? _ref : null;
+    return this.isSucceed;
+  };
 
   return MoveAction;
 
@@ -55,12 +72,15 @@ SearchAction = (function(_super) {
 
   function SearchAction(treasureDict) {
     SearchAction.__super__.constructor.apply(this, arguments);
+    this.name = 'search';
     this.treasureDict = treasureDict;
     this.treasure = null;
+    this.time = 1000;
   }
 
-  SearchAction.prototype["do"] = function() {
+  SearchAction.prototype["do"] = function(brave) {
     var i, needle, probabilities, probability, total, treasure, treasures, _len, _ref;
+    SearchAction.__super__["do"].call(this, brave);
     total = 0;
     _ref = this.treasureDict;
     for (treasure in _ref) {

@@ -25,11 +25,13 @@ class MoveAction extends Action
         @time = from.distance(to) * 100
     do: (brave) ->
         super brave
+        brave.spot = @to
         console.log "#{brave.name} is arrived at #{@to.name}"
         
         nextAction = @to.randomAction()
         nextAction.prepare brave
         brave.action = nextAction
+        brave.destination = nextAction.to ? null
         @isSucceed
 
 class SearchAction extends Action

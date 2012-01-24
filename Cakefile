@@ -4,22 +4,27 @@ files = [
     'coffee/brave.coffee',
     'coffee/action.coffee'
     'coffee/spot.coffee'
+    'coffee/simulator.coffee'
 ]
 
-viewfiles = [
-    'coffee/brave_status_view.coffee',
-]
+main4nodejs_coffee = 'coffee/main.coffee'
+main4nodejs_output= 'js/main.js'
 
-main4nodejs = 'coffee/main.coffee'
-mainfile = 'js/main.js'
+main4browser_coffee = 'coffee/game.coffee'
+main4browser_output= 'js/game.js'
 
 task 'jsfiles', 'make jsfiles', (options) ->
-    exec "coffee -b -o js -c #{files.join ' '} #{viewfiles.join ' '}", (error, stdout, stderr) ->
+    exec "coffee -b -o js -c #{files.join ' '}", (error, stdout, stderr) ->
         throw error if error
         console.log(stdout + stderr)
 
-task 'main', 'make main.js for nodejs', (options) ->
-    exec "coffee -b -o js -c -j #{mainfile} #{files.join ' '} #{main4nodejs}", (error, stdout, stderr) ->
+task 'node', 'make main.js for nodejs', (options) ->
+    exec "coffee -b -o js -c -j #{main4nodejs_output} #{files.join ' '} #{main4nodejs_coffee}", (error, stdout, stderr) ->
+        throw error if error
+        console.log(stdout + stderr)
+
+task 'browser', 'make main-browser.js for browser', (options) ->
+    exec "coffee -b -o js -c -j #{main4browser_output} #{files.join ' '} #{main4browser_coffee}", (error, stdout, stderr) ->
         throw error if error
         console.log(stdout + stderr)
 

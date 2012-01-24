@@ -1,4 +1,4 @@
-var Action, Brave, MoveAction, SearchAction, Spot, WaitAction, initialize, main, tick,
+var Action, Brave, MoveAction, SearchAction, Simulator, Spot, WaitAction, simulator,
   __hasProp = Object.prototype.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
@@ -176,63 +176,70 @@ Spot = (function() {
 
 })();
 
-initialize = function() {
-  var brave, dungeon, dungeon2inn, inn, inn2dungeon, name, spawn2inn, spawnSpot, _i, _len, _results;
-  spawnSpot = new Spot("spawn", 0, 0);
-  inn = new Spot("inn", 50, 50);
-  dungeon = new Spot("dungeon", 100, 50);
-  spawn2inn = new MoveAction(spawnSpot, inn);
-  inn2dungeon = new MoveAction(inn, dungeon);
-  dungeon2inn = new MoveAction(dungeon, inn);
-  spawnSpot.actions = [spawn2inn];
-  inn.actions = [inn2dungeon];
-  dungeon.actions = [dungeon2inn];
-  this.spotList = [spawnSpot, inn, dungeon];
-  this.braveList = (function() {
-    var _i, _len, _ref, _results;
-    _ref = ['armstrong', 'bob', 'clarisse'];
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      name = _ref[_i];
-      _results.push(new Brave(name, spawnSpot, {
-        speed: Math.floor(Math.random() * 100) + 10
-      }));
-    }
-    return _results;
-  })();
-  _results = [];
-  for (_i = 0, _len = braveList.length; _i < _len; _i++) {
-    brave = braveList[_i];
-    _results.push((function(brave) {
+Simulator = (function() {
+
+  function Simulator() {
+    var brave, dungeon, dungeon2inn, inn, inn2dungeon, name, spawn2inn, spawnSpot, _fn, _i, _len, _ref;
+    spawnSpot = new Spot("spawn", 0, 0);
+    inn = new Spot("inn", 50, 50);
+    dungeon = new Spot("dungeon", 100, 50);
+    spawn2inn = new MoveAction(spawnSpot, inn);
+    inn2dungeon = new MoveAction(inn, dungeon);
+    dungeon2inn = new MoveAction(dungeon, inn);
+    spawnSpot.actions = [spawn2inn];
+    inn.actions = [inn2dungeon];
+    dungeon.actions = [dungeon2inn];
+    this.spotList = [spawnSpot, inn, dungeon];
+    this.braveList = (function() {
+      var _i, _len, _ref, _results;
+      _ref = ['armstrong', 'bob', 'clarisse'];
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        name = _ref[_i];
+        _results.push(new Brave(name, spawnSpot, {
+          speed: Math.floor(Math.random() * 100) + 10
+        }));
+      }
+      return _results;
+    })();
+    _ref = this.braveList;
+    _fn = function(brave) {
       var action;
       action = spawnSpot.randomAction();
       action.prepare(brave);
       return brave.action = action;
-    })(brave));
+    };
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      brave = _ref[_i];
+      _fn(brave);
+    }
   }
-  return _results;
-};
 
-main = function() {
-  var count, timer;
-  initialize();
-  count = 0;
-  return timer = setInterval(function() {
-    console.log("" + (count++));
-    tick();
-    if (count > 100) return clearInterval(timer);
-  }, 30);
-};
+  Simulator.prototype.start = function() {
+    var count, timer,
+      _this = this;
+    count = 0;
+    return timer = setInterval(function() {
+      console.log("" + (count++));
+      return _this.tick();
+    }, 30);
+  };
 
-tick = function() {
-  var brave, _i, _len, _ref, _results;
-  _ref = this.braveList;
-  _results = [];
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    brave = _ref[_i];
-    _results.push(brave.tick());
-  }
-  return _results;
-};
+  Simulator.prototype.tick = function() {
+    var brave, _i, _len, _ref, _results;
+    _ref = this.braveList;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      brave = _ref[_i];
+      _results.push(brave.tick());
+    }
+    return _results;
+  };
 
-main();
+  return Simulator;
+
+})();
+
+simulator = new Simulator();
+
+simulator.start();

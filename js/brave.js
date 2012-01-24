@@ -1,23 +1,33 @@
-var Brave,
-  __hasProp = Object.prototype.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+var Brave;
 
-Brave = (function(_super) {
+Brave = (function() {
 
-  __extends(Brave, _super);
-
-  function Brave() {
-    this.lv = 1;
-    this.atk = 1;
-    this.matk = 1;
-    this.hp = 10;
-    this.mp = 10;
-    this.brave = 50;
-    this.faith = 50;
-    this.speed = 3;
+  function Brave(name, spawnSpot, options) {
+    var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+    if (options == null) options = {};
+    this.name = name;
+    this.lv = (_ref = options.lv) != null ? _ref : 1;
+    this.atk = (_ref2 = options.atk) != null ? _ref2 : 1;
+    this.matk = (_ref3 = options.matk) != null ? _ref3 : 1;
+    this.hp = (_ref4 = options.hp) != null ? _ref4 : 10;
+    this.mp = (_ref5 = options.mp) != null ? _ref5 : 10;
+    this.brave = (_ref6 = options.brave) != null ? _ref6 : 50;
+    this.faith = (_ref7 = options.faith) != null ? _ref7 : 50;
+    this.speed = (_ref8 = options.speed) != null ? _ref8 : 3;
     this.action = null;
+    this.actionProcess = 0.0;
+    this.spot = spawnSpot;
+    this.destination = null;
   }
+
+  Brave.prototype.tick = function() {
+    var isSucceed;
+    if (this.action != null) {
+      this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
+      if (this.actionProcess >= 1.0) return isSucceed = this.action["do"](this);
+    }
+  };
 
   return Brave;
 
-})(Backbone.Model);
+})();
