@@ -1,6 +1,7 @@
 {exec} = require 'child_process'
 
 files = [
+    'coffee/settings.coffee'
     'coffee/brave.coffee',
     'coffee/action.coffee'
     'coffee/spot.coffee'

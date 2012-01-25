@@ -4,7 +4,7 @@ $ ->
 
 class Game
     constructor: ->
-        @simulator = new Simulator()
+        @simulator = new Simulator(settings)
         @canvas = new Canvas($("#main").get(0), 640, 480)
         @mapScale = 2.0
         @appendRoute route for route in @simulator.routeList
@@ -15,10 +15,10 @@ class Game
     appendRoute: (route) ->
         routeColor = 'rgba(0, 255, 0, 0.2)'
         routeObject = new Line(
-            @canvas.width / 2 + route.from.posX * @mapScale,
-            @canvas.height / 2 + route.from.posY * @mapScale,
-            @canvas.width / 2 + route.to.posX * @mapScale,
-            @canvas.height / 2 + route.to.posY * @mapScale,
+            @canvas.width / 2 + route[0].posX * @mapScale,
+            @canvas.height / 2 + route[0].posY * @mapScale,
+            @canvas.width / 2 + route[1].posX * @mapScale,
+            @canvas.height / 2 + route[1].posY * @mapScale,
             {stroke: routeColor, strokeWidth: 20, lineCap: 'round'})
         @canvas.append routeObject
     appendSpot: (spot) ->
