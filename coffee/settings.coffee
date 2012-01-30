@@ -1,14 +1,30 @@
 settings = {
     "spawnSpot": "castle"
     "spotList": [
-        {"name": "townA",    "posX":   20, "posY":  -60}
-        {"name": "townB",    "posX": -100, "posY":  -20}
-        {"name": "townC",    "posX":   20, "posY":   40}
-        {"name": "dungeonA", "posX":  120, "posY":  -80}
-        {"name": "dungeonB", "posX":  -60, "posY":  -80}
-        {"name": "dungeonC", "posX":  -80, "posY":   60}
-        {"name": "castle",   "posX":  -40, "posY":    0}
-        {"name": "temple",   "posX":   60, "posY":  -20}
+        {"name": "townA",    "posX":   20, "posY":  -60, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "townB",    "posX": -100, "posY":  -20, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "townC",    "posX":   20, "posY":   40, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "dungeonA", "posX":  120, "posY":  -80, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "dungeonB", "posX":  -60, "posY":  -80, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "dungeonC", "posX":  -80, "posY":   60, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "castle",   "posX":  -40, "posY":    0, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
+        {"name": "temple",   "posX":   60, "posY":  -20, "actions": [
+            {"type": "wait", "time": 3000}
+        ]}
     ]
     "routeList": [
         ["townA", "dungeonB"]

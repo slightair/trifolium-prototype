@@ -6,15 +6,25 @@ class Action
     prepare: (brave) ->
         
     do: (brave) ->
-        @isSucceed = true
         brave.action = null
         brave.actionProcess = 0.0
+        @isSucceed = true
+    after: (brave, nextAction) ->
+        nextAction.prepare brave
+        brave.action = nextAction
+        brave.destination = nextAction.to ? brave.spot
 
 class WaitAction extends Action
-    constructor: ->
+    constructor: (time) ->
         super
         @name = 'wait'
-        @time = 300
+        @time = time
+    do: (brave) ->
+        super brave
+        console.log "#{brave.name} is waiting..."
+        
+        @after(brave, brave.spot.randomAction())
+        @isSucceed = true
 
 class MoveAction extends Action
     constructor: (from, to) ->
@@ -28,11 +38,8 @@ class MoveAction extends Action
         brave.spot = @to
         console.log "#{brave.name} is arrived at #{@to.name}"
         
-        nextAction = @to.randomAction()
-        nextAction.prepare brave
-        brave.action = nextAction
-        brave.destination = nextAction.to ? null
-        @isSucceed
+        @after(brave, @to.randomAction())
+        @isSucceed = true
 
 class SearchAction extends Action
     probabilityMax: 1000
