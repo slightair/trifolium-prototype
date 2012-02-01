@@ -1,31 +1,27 @@
 {exec} = require 'child_process'
 
 files = [
-    'coffee/settings.coffee'
-    'coffee/brave.coffee',
-    'coffee/action.coffee'
-    'coffee/spot.coffee'
-    'coffee/simulator.coffee'
+    'coffeescripts/settings.coffee'
+    'coffeescripts/brave.coffee',
+    'coffeescripts/action.coffee'
+    'coffeescripts/spot.coffee'
+    'coffeescripts/simulator.coffee'
 ]
 
-main4nodejs_coffee = 'coffee/main.coffee'
-main4nodejs_output= 'js/main.js'
+main4nodejs_coffee = 'coffeescripts/console-app.coffee'
+main4nodejs_output= 'console-app.js'
 
-main4browser_coffee = 'coffee/game.coffee'
-main4browser_output= 'js/game.js'
+main4browser_coffee = 'coffeescripts/game.coffee'
+main4browser_output= 'public/javascripts/game.js'
 
-task 'jsfiles', 'make jsfiles', (options) ->
-    exec "coffee -b -o js -c #{files.join ' '}", (error, stdout, stderr) ->
+task 'console-app', 'make console-app.js for console', (options) ->
+    exec "coffee -b -c -j #{main4nodejs_output} #{files.join ' '} #{main4nodejs_coffee}", (error, stdout, stderr) ->
         throw error if error
         console.log(stdout + stderr)
 
-task 'node', 'make main.js for nodejs', (options) ->
-    exec "coffee -b -o js -c -j #{main4nodejs_output} #{files.join ' '} #{main4nodejs_coffee}", (error, stdout, stderr) ->
-        throw error if error
-        console.log(stdout + stderr)
-
-task 'browser', 'make game.js for browser', (options) ->
-    exec "coffee -b -o js -c -j #{main4browser_output} #{files.join ' '} #{main4browser_coffee}", (error, stdout, stderr) ->
+task 'app', 'make app.js and game.js for web', (options) ->
+    exec "coffee -c app.coffee"
+    exec "coffee -b -c -j #{main4browser_output} #{files.join ' '} #{main4browser_coffee}", (error, stdout, stderr) ->
         throw error if error
         console.log(stdout + stderr)
 

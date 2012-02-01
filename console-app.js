@@ -88,7 +88,7 @@ settings = {
     }
   ],
   "routeList": [["townA", "dungeonB"], ["townA", "castle"], ["townA", "temple"], ["townB", "dungeonB"], ["townB", "castle"], ["townC", "castle"], ["townC", "temple"], ["dungeonA", "temple"], ["dungeonC", "castle"]],
-  "braveNames": ['anderson', 'bob', 'clarisse']
+  "braveNames": ['anderson', 'bob', 'clarisse', 'daniel', 'eric', 'fredelic', 'george', 'heinkel', 'iris', 'jennifer', 'kirby', 'leonard', 'michael', 'nick', 'orlando', 'pierre', 'qian', 'richard', 'sara', 'thomas', 'ulrich', 'veeder', 'walter', 'xavier', 'yakov', 'zach']
 };
 
 Brave = (function() {
@@ -189,10 +189,6 @@ MoveAction = (function(_super) {
     console.log("" + brave.name + " is arrived at " + this.to.name);
     this.after(brave, this.to.randomAction());
     return this.isSucceed = true;
-  };
-
-  MoveAction.prototype.after = function(brave, nextAction) {
-    return MoveAction.__super__.after.call(this, brave, nextAction);
   };
 
   return MoveAction;
