@@ -1,11 +1,11 @@
 {exec} = require 'child_process'
 
 files = [
-    'coffeescripts/settings.coffee'
-    'coffeescripts/brave.coffee',
-    'coffeescripts/action.coffee'
-    'coffeescripts/spot.coffee'
-    'coffeescripts/simulator.coffee'
+    'coffeescripts/engine/settings.coffee'
+    'coffeescripts/engine/brave.coffee',
+    'coffeescripts/engine/action.coffee'
+    'coffeescripts/engine/spot.coffee'
+    'coffeescripts/engine/simulator.coffee'
 ]
 
 main4nodejs_coffee = 'coffeescripts/console-app.coffee'
