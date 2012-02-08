@@ -404,7 +404,7 @@ Game = (function() {
     this.debugMatrix = __bind(this.debugMatrix, this);
     var brave, route, spot, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
     this.simulator = new Simulator(settings);
-    this.canvas = new Canvas($("#main").get(0), 640, 480);
+    this.canvas = new Canvas($("#main-screen").get(0), 600, 450);
     this.mapScale = 2.0;
     _ref = this.simulator.routeList;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {

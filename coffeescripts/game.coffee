@@ -5,7 +5,7 @@ $ ->
 class Game
     constructor: ->
         @simulator = new Simulator(settings)
-        @canvas = new Canvas($("#main").get(0), 640, 480)
+        @canvas = new Canvas($("#main-screen").get(0), 600, 450)
         @mapScale = 2.0
         @appendRoute route for route in @simulator.routeList
         @appendSpot spot for spot in @simulator.spotList

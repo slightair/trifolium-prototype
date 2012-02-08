@@ -1,8 +1,19 @@
 
-/*
- * GET home page.
- */
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' })
+exports.index = function(req, res) {
+  return res.render("index", {
+    title: "Express",
+    params: {
+      Name: '',
+      Lv: '',
+      Attack: '',
+      MagicAttack: '',
+      HP: '',
+      MP: '',
+      Brave: '',
+      Faith: '',
+      Speed: '',
+      Action: '',
+      ActionProcess: ''
+    }
+  });
 };
