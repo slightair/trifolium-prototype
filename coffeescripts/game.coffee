@@ -47,8 +47,15 @@ class Game
         braveObject.addFrameListener (t, dt) =>
             braveObject.x = bravePosX brave
             braveObject.y = bravePosY brave
+        braveObject.addEventListener('mousedown', (event) =>
+            @displayBraveInfo brave
+        )
+            
         @canvas.append braveObject
-        
+    
+    displayBraveInfo: (brave) ->
+        $('#brave-name-value').text(brave.name)
+    
     start: ->
         @simulator.start()
     

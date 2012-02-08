@@ -10,9 +10,10 @@ div.container
                     table.table.table-striped.table-bordered.table-condensed
                         thead
                             tr
-                                th(colspan='2') brave status
+                                th parameter name
+                                th value
                         tbody
                             each id, name in params
                                 tr
                                     td #{name}
-                                    td 0
+                                    td(id="#{id}-value")

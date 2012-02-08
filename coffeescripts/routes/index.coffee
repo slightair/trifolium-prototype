@@ -1,15 +1,15 @@
 exports.index = (req, res) ->
     res.render "index",
-        title: "Express"
+        title: "trifolium"
         params:
-            Name: ''
-            Lv: ''
-            Attack: ''
-            MagicAttack: ''
-            HP: ''
-            MP: ''
-            Brave: ''
-            Faith: ''
-            Speed: ''
-            Action: ''
-            ActionProcess: ''
+            Name: 'brave-name'
+            Lv: 'brave-lv'
+            Attack: 'brave-atk'
+            MagicAttack: 'brave-matk'
+            HP: 'brave-hp'
+            MP: 'brave-mp'
+            Brave: 'brave-brave'
+            Faith: 'brave-faith'
+            Speed: 'brave-speed'
+            Action: 'brave-action'
+            ActionProcess: 'brave-actionProcess'

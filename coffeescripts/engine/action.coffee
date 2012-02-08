@@ -21,7 +21,7 @@ class WaitAction extends Action
         @time = time
     do: (brave) ->
         super brave
-        console.log "#{brave.name} is waiting..."
+        # console.log "#{brave.name} is waiting..."
         
         @after(brave, brave.spot.randomAction())
         @isSucceed = true
@@ -36,7 +36,7 @@ class MoveAction extends Action
     do: (brave) ->
         super brave
         brave.spot = @to
-        console.log "#{brave.name} is arrived at #{@to.name}"
+        # console.log "#{brave.name} is arrived at #{@to.name}"
         
         @after(brave, @to.randomAction())
         @isSucceed = true

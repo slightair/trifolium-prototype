@@ -163,7 +163,6 @@ WaitAction = (function(_super) {
 
   WaitAction.prototype["do"] = function(brave) {
     WaitAction.__super__["do"].call(this, brave);
-    console.log("" + brave.name + " is waiting...");
     this.after(brave, brave.spot.randomAction());
     return this.isSucceed = true;
   };
@@ -187,7 +186,6 @@ MoveAction = (function(_super) {
   MoveAction.prototype["do"] = function(brave) {
     MoveAction.__super__["do"].call(this, brave);
     brave.spot = this.to;
-    console.log("" + brave.name + " is arrived at " + this.to.name);
     this.after(brave, this.to.randomAction());
     return this.isSucceed = true;
   };
@@ -468,7 +466,15 @@ Game = (function() {
       braveObject.x = bravePosX(brave);
       return braveObject.y = bravePosY(brave);
     });
+    braveObject.addEventListener('mousedown', function(event) {
+      return _this.displayBraveInfo(brave);
+    });
     return this.canvas.append(braveObject);
+  };
+
+  Game.prototype.displayBraveInfo = function(brave) {
+    console.log("" + ($('#brave-name-value')) + " is element.");
+    return $('#brave-name-value').text(brave.name);
   };
 
   Game.prototype.start = function() {
