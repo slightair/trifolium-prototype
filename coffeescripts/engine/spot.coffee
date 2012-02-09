@@ -15,7 +15,7 @@ class Spot
             for actionInfo in actionInfoList
                 action = null
                 switch actionInfo.type
-                    when "wait" then action = new WaitAction(actionInfo.time)
+                    when 'wait' then action = new WaitAction(actionInfo.time)
                 actions.push action if action?
         actions
         

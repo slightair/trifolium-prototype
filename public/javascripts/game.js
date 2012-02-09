@@ -97,6 +97,7 @@ Brave = (function() {
   function Brave(name, spawnSpot, options) {
     var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
     if (options == null) options = {};
+    this.listeners = [];
     this.name = name;
     this.lv = (_ref = options.lv) != null ? _ref : 1;
     this.atk = (_ref2 = options.atk) != null ? _ref2 : 1;
@@ -120,6 +121,35 @@ Brave = (function() {
     }
   };
 
+  Brave.prototype.addListener = function(listener) {
+    return this.listeners.push(listener);
+  };
+
+  Brave.prototype.removeListener = function(remove) {
+    var listener;
+    return this.listeners = (function() {
+      var _i, _len, _ref, _results;
+      _ref = this.listeners;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        listener = _ref[_i];
+        if (listener !== remove) _results.push(listener);
+      }
+      return _results;
+    }).call(this);
+  };
+
+  Brave.prototype.doneAction = function(action) {
+    var listener, _i, _len, _ref, _results;
+    _ref = this.listeners;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      listener = _ref[_i];
+      _results.push(listener.completeBraveAction(this, action));
+    }
+    return _results;
+  };
+
   return Brave;
 
 })();
@@ -137,7 +167,8 @@ Action = (function() {
   Action.prototype["do"] = function(brave) {
     brave.action = null;
     brave.actionProcess = 0.0;
-    return this.isSucceed = true;
+    this.isSucceed = true;
+    return brave.doneAction(this);
   };
 
   Action.prototype.after = function(brave, nextAction) {
@@ -281,7 +312,7 @@ Spot = (function() {
         actionInfo = actionInfoList[_i];
         action = null;
         switch (actionInfo.type) {
-          case "wait":
+          case 'wait':
             action = new WaitAction(actionInfo.time);
         }
         if (action != null) actions.push(action);
@@ -344,6 +375,7 @@ Simulator = (function() {
     _ref3 = this.braveList;
     for (_l = 0, _len4 = _ref3.length; _l < _len4; _l++) {
       brave = _ref3[_l];
+      brave.addListener(this);
       action = brave.spot.randomAction();
       action.prepare(brave);
       brave.action = action;
@@ -370,6 +402,15 @@ Simulator = (function() {
       _results.push(brave.tick());
     }
     return _results;
+  };
+
+  Simulator.prototype.completeBraveAction = function(brave, action) {
+    switch (action.name) {
+      case 'move':
+        return console.log("" + brave.name + " is arrived at " + action.to.name);
+      case 'wait':
+        return console.log("" + brave.name + " is waiting...");
+    }
   };
 
   Simulator.prototype.spotForName = function(name) {
@@ -473,7 +514,6 @@ Game = (function() {
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
-    console.log("" + ($('#brave-name-value')) + " is element.");
     return $('#brave-name-value').text(brave.name);
   };
 

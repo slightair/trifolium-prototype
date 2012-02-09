@@ -18,6 +18,7 @@ class Simulator
         
         @braveList = (new Brave(name, spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for name in settings.braveNames)
         for brave in @braveList
+            brave.addListener @
             action = brave.spot.randomAction()
             action.prepare brave
             brave.action = action
@@ -31,6 +32,13 @@ class Simulator
         
     tick: ->
         brave.tick() for brave in @braveList
-    
+        
+    completeBraveAction: (brave, action) ->
+        switch action.name
+            when 'move'
+                console.log "#{brave.name} is arrived at #{action.to.name}"
+            when 'wait'
+                console.log "#{brave.name} is waiting..."
+        
     spotForName: (name) ->
         (spot for spot in @spotList when spot.name == name)[0]

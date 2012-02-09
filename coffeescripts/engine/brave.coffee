@@ -1,5 +1,7 @@
 class Brave
     constructor: (name, spawnSpot, options = {}) ->
+        @listeners = []
+        
         @name = name
         @lv    = options.lv    ? 1
         @atk   = options.atk   ? 1
@@ -18,4 +20,10 @@ class Brave
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
             if @actionProcess >= 1.0
                 isSucceed = @action.do @
-                
+    
+    addListener: (listener) ->
+        @listeners.push listener
+    removeListener: (remove) ->
+        @listeners = (listener for listener in @listeners when listener != remove)
+    doneAction: (action) ->
+        listener.completeBraveAction(@, action) for listener in @listeners
