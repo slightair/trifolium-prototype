@@ -60,8 +60,16 @@ compile_game = (callback) ->
     coffee.on 'exit', (status) -> callback?() if status is 0
 
 minify_game = (callback) ->
-    callback?()
-    
+    options = [
+            '-o'
+            'public/javascripts/game.min.js'
+            'public/javascripts/game.js'
+    ]
+    uglify = spawn 'uglifyjs', options
+    uglify.stdout.on 'data', stream_data_handler
+    uglify.stderr.on 'data', stream_data_handler
+    uglify.on 'exit', (status) -> callback?() if status is 0
+
 build_game = (callback) ->
     compile_game -> minify_game -> callback?()
 

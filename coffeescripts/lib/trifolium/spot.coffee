@@ -2,7 +2,7 @@ if require?
     {Action, WaitAction, MoveAction, SearchAction} = require './action'
 
 class Spot
-    constructor: (name, posX, posY, actionInfoList) ->
+    constructor: (name, posX, posY, actionInfoList = []) ->
         @name = name
         @posX = posX
         @posY = posY
