@@ -4,12 +4,13 @@ virtual world simulator / game.
 
 required
 ----
-node - http://nodejs.org/
-coffee script - http://coffeescript.org/
+* node - http://nodejs.org/
+* coffee script - http://coffeescript.org/
 
 for developer
 ----
 information for developer
+
 ### build command
     > cake game
     > coffee -wcb -o routes coffeescripts/routes
