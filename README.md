@@ -1,12 +1,19 @@
 trifolium
 ====
+virtual world simulator / game.
 
-dev commands
+required
 ----
-    coffee -wcb -o routes coffeescripts/routes
-    coffee -wc -o . coffeescripts/app.coffee
+node - http://nodejs.org/
+coffee script - http://coffeescript.org/
 
-images
+for developer
 ----
+information for developer
+### build command
+    > cake game
+    > coffee -wcb -o routes coffeescripts/routes
+    > coffee -wc -o . coffeescripts/app.coffee
+
+###images
     pull on img.
-
