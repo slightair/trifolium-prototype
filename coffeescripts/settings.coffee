@@ -66,3 +66,5 @@ settings = {
         'zach'
     ]
 }
+
+exports?.settings = settings

@@ -62,3 +62,8 @@ class SearchAction extends Action
         @treasure = treasure for treasure, i in treasures when not @treasure? and needle < probabilities[i]
         
         @isSucceed = @treasure?
+
+exports?.Action = Action
+exports?.WaitAction = WaitAction
+exports?.MoveAction = MoveAction
+exports?.SearchAction = SearchAction

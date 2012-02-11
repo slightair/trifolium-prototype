@@ -1,3 +1,6 @@
+if require?
+    {Action, WaitAction, MoveAction, SearchAction} = require './action'
+
 class Spot
     constructor: (name, posX, posY, actionInfoList) ->
         @name = name
@@ -18,4 +21,5 @@ class Spot
                     when 'wait' then action = new WaitAction(actionInfo.time)
                 actions.push action if action?
         actions
-        
+
+exports?.Spot = Spot

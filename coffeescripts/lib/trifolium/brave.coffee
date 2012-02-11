@@ -27,3 +27,5 @@ class Brave
         @listeners = (listener for listener in @listeners when listener != remove)
     doneAction: (action) ->
         listener.completeBraveAction(@, action) for listener in @listeners
+
+exports?.Brave = Brave

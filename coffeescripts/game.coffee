@@ -4,7 +4,7 @@ $ ->
 
 class Game
     constructor: ->
-        @simulator = new Simulator(settings)
+        @simulator = new Trifolium(settings)
         @canvas = new Canvas($("#main-screen").get(0), 600, 450)
         @mapScale = 2.0
         @appendRoute route for route in @simulator.routeList

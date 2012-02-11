@@ -1,4 +1,9 @@
-class Simulator
+if require?
+    {Brave} = require './trifolium/brave'
+    {Spot} = require './trifolium/spot'
+    {Action, WaitAction, MoveAction, SearchAction} = require './trifolium/action'
+
+class Trifolium
     constructor : (settings) ->
         @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in settings.spotList)
         
@@ -42,3 +47,5 @@ class Simulator
         
     spotForName: (name) ->
         (spot for spot in @spotList when spot.name == name)[0]
+
+exports?.Trifolium = Trifolium
