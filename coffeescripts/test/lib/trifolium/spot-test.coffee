@@ -1,33 +1,32 @@
-vows = require 'vows'
-assert = require 'assert'
-Spot = require('../../../lib/trifolium/spot').Spot
-{Action, WaitAction, MoveAction, SearchAction} = require '../../../lib/trifolium/action'
+{Spot} = require '../lib/trifolium/spot'
+{Action, WaitAction, MoveAction, SearchAction} = require '../lib/trifolium/action'
 
-vows.describe('Spot').addBatch
-    'a instance':
-        topic: new Spot('testSpot', 0, 0, [
-                    {type: 'wait', time: 3000}
-                    {type: 'wait', time: 4000}
-                    {type: 'wait', time: 5000}
-                ])
-        'hasName': (spot) ->
-            assert.equal(spot.name, 'testSpot')
-        'hasPosX': (spot) ->
-            assert.equal(spot.posX, 0)
-        'hasPosY': (spot) ->
-            assert.equal(spot.posY, 0)
-        'hasActions': (spot) ->
-            assert.isArray(spot.actions)
-            assert.instanceOf(spot.actions[0], WaitAction)
-        'selectRandomAction': (spot) ->
-            action = spot.randomAction()
-            assert.instanceOf(action, WaitAction)
-            assert.strictEqual(3000 <= action.time <= 5000, true)
-        'distanceBetweenAnother': (spot) ->
-            another = new Spot('another', 50, 0)
-            assert.equal(spot.distance(another), 50)
-            another = new Spot('another', 0, 50)
-            assert.equal(spot.distance(another), 50)
-            another = new Spot('another', 30, 40)
-            assert.equal(spot.distance(another), 50)
-.export module
+describe "Spot", ->
+    spot = new Spot 'testSpot', 0, 0, [
+        {type: 'wait', time: 3000}
+        {type: 'wait', time: 4000}
+        {type: 'wait', time: 5000}
+    ]
+        
+    it 'should have name', ->
+        spot.name.should.equal('testSpot')
+    it 'should have posX', ->
+        spot.posX.should.equal(0)
+    it 'should have posY', ->
+        spot.posY.should.equal(0)
+    it 'should have actions', ->
+        spot.actions.should.be.an.instanceof(Array)
+        spot.actions[0].should.be.an.instanceof(WaitAction)
+    it 'should be return a random action', ->
+        action = spot.randomAction()
+        action.should.be.an.instanceof(WaitAction)
+        action.time.should.be.within(3000, 5000)
+    it 'should be return distance between another spot', ->
+        another = new Spot 'another', 100, 0
+        spot.distance(another).should.equal(100)
+            
+        another = new Spot 'another', 0, 20
+        spot.distance(another).should.equal(20)
+            
+        another = new Spot 'another', 30, 40
+        spot.distance(another).should.equal(50)

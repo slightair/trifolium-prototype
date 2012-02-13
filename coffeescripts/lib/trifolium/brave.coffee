@@ -1,8 +1,7 @@
 class Brave
-    constructor: (name, spawnSpot, options = {}) ->
+    constructor: (@name, spawnSpot, options = {}) ->
         @listeners = []
         
-        @name = name
         @lv    = options.lv    ? 1
         @atk   = options.atk   ? 1
         @matk  = options.matk  ? 1

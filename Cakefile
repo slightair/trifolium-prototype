@@ -1,7 +1,8 @@
-fs            = require 'fs'
-{spawn, exec} = require 'child_process'
+{spawn} = require 'child_process'
+util = require 'util'
 
-stream_data_handler = (data) -> console.log data.toString()
+bin_path = './node_modules/.bin'
+stream_data_handler = (data) -> util.print data.toString()
 
 compile_lib = (callback) ->
     options = [
@@ -11,7 +12,7 @@ compile_lib = (callback) ->
         'lib'
         'coffeescripts/lib/'
     ]
-    coffee = spawn 'coffee', options
+    coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
@@ -24,7 +25,7 @@ compile_settings = (callback) ->
         '.'
         'coffeescripts/settings.coffee'
     ]
-    coffee = spawn 'coffee', options
+    coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
@@ -36,7 +37,7 @@ compile_console_app = (callback) ->
         '.'
         'coffeescripts/console-app.coffee'
     ]
-    coffee = spawn 'coffee', options
+    coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
@@ -54,7 +55,7 @@ compile_game = (callback) ->
         'coffeescripts/settings.coffee'
         'coffeescripts/game.coffee'
     ]
-    coffee = spawn 'coffee', options
+    coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
@@ -65,7 +66,7 @@ minify_game = (callback) ->
             'public/javascripts/game.min.js'
             'public/javascripts/game.js'
     ]
-    uglify = spawn 'uglifyjs', options
+    uglify = spawn "#{bin_path}/uglifyjs", options
     uglify.stdout.on 'data', stream_data_handler
     uglify.stderr.on 'data', stream_data_handler
     uglify.on 'exit', (status) -> callback?() if status is 0
@@ -79,28 +80,29 @@ compile_test = (callback) ->
         '-c'
         '-o'
         'test'
-        'coffeescripts/test/'
+        'coffeescripts/test/lib/trifolium/'
     ]
-    coffee = spawn 'coffee', options
+    coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
 
 run_test = (callback) ->
     options = [
-        '--spec'
+        '-r'
+        'should'
+        '-R'
+        'spec'
+        '-c'
     ]
-    vows = spawn 'vows', options
+    mocha = spawn "#{bin_path}/mocha", options
     output = ''
     data_handler = (data) ->
         output =+ data if data
         stream_data_handler data
-    vows.stdout.on 'data', data_handler
-    vows.stderr.on 'data', data_handler
-    vows.on 'exit', (status) ->
-        if 0 isnt status or (output and -1 isnt output.indexOf("✗ Broken"))
-            return process.exit 1
-        callback?()
+    mocha.stdout.on 'data', data_handler
+    mocha.stderr.on 'data', data_handler
+    mocha.on 'exit', (status) -> callback?() if status is 0
 
 task 'console', 'make console-app.js', ->
     build_console_app -> 'All done.'

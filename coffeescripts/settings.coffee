@@ -1,6 +1,6 @@
 settings = {
-    "spawnSpot": "castle"
-    "spotList": [
+    "spawnSpotName": "castle"
+    "spotInfoList": [
         {"name": "townA",    "posX":   20, "posY":  -60, "actions": [
             {"type": "wait", "time": 3000}
         ]}
@@ -26,7 +26,7 @@ settings = {
             {"type": "wait", "time": 3000}
         ]}
     ]
-    "routeList": [
+    "routeInfoList": [
         ["townA", "dungeonB"]
         ["townA", "castle"]
         ["townA", "temple"]
@@ -37,7 +37,7 @@ settings = {
         ["dungeonA", "temple"]
         ["dungeonC", "castle"]
     ]
-    "braveNames": [
+    "braveNameList": [
         'anderson'
         'bob'
         'clarisse'

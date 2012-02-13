@@ -2,10 +2,7 @@ if require?
     {Action, WaitAction, MoveAction, SearchAction} = require './action'
 
 class Spot
-    constructor: (name, posX, posY, actionInfoList = []) ->
-        @name = name
-        @posX = posX
-        @posY = posY
+    constructor: (@name, @posX, @posY, actionInfoList = []) ->
         @actions = @makeActions(actionInfoList)
     randomAction: ->
         index = Math.floor(Math.random() * @actions.length)

@@ -16,8 +16,8 @@ Action = (function() {
   Action.prototype["do"] = function(brave) {
     brave.action = null;
     brave.actionProcess = 0.0;
-    this.isSucceed = true;
-    return brave.doneAction(this);
+    brave.doneAction(this);
+    return this.isSucceed = true;
   };
 
   Action.prototype.after = function(brave, nextAction) {
@@ -152,9 +152,9 @@ Brave = (function() {
 
   function Brave(name, spawnSpot, options) {
     var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+    this.name = name;
     if (options == null) options = {};
     this.listeners = [];
-    this.name = name;
     this.lv = (_ref = options.lv) != null ? _ref : 1;
     this.atk = (_ref2 = options.atk) != null ? _ref2 : 1;
     this.matk = (_ref3 = options.matk) != null ? _ref3 : 1;
@@ -219,10 +219,10 @@ if (typeof require !== "undefined" && require !== null) {
 Spot = (function() {
 
   function Spot(name, posX, posY, actionInfoList) {
-    if (actionInfoList == null) actionInfoList = [];
     this.name = name;
     this.posX = posX;
     this.posY = posY;
+    if (actionInfoList == null) actionInfoList = [];
     this.actions = this.makeActions(actionInfoList);
   }
 
@@ -268,58 +268,55 @@ if (typeof require !== "undefined" && require !== null) {
 Trifolium = (function() {
 
   function Trifolium(settings) {
-    var action, brave, moveAction, moveActionList, name, routeInfo, spawnSpot, spot, spot1, spot2, spotInfo, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref3, _ref4, _ref5, _ref6;
+    var action, brave, braveNameList, moveAction, moveActionList, name, routeInfo, routeInfoList, spawnSpot, spawnSpotName, spot, spot1, spot2, spotInfo, spotInfoList, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref3, _ref4, _ref5;
+    spotInfoList = settings.spotInfoList, routeInfoList = settings.routeInfoList, spawnSpotName = settings.spawnSpotName, braveNameList = settings.braveNameList;
     this.spotList = (function() {
-      var _i, _len, _ref3, _results;
-      _ref3 = settings.spotList;
+      var _i, _len, _results;
       _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        spotInfo = _ref3[_i];
+      for (_i = 0, _len = spotInfoList.length; _i < _len; _i++) {
+        spotInfo = spotInfoList[_i];
         _results.push(new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions));
       }
       return _results;
     })();
     this.routeList = [];
     moveActionList = [];
-    _ref3 = settings.routeList;
-    for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-      routeInfo = _ref3[_i];
+    for (_i = 0, _len = routeInfoList.length; _i < _len; _i++) {
+      routeInfo = routeInfoList[_i];
       spot1 = this.spotForName(routeInfo[0]);
       spot2 = this.spotForName(routeInfo[1]);
       moveActionList.push(new MoveAction(spot1, spot2));
       moveActionList.push(new MoveAction(spot2, spot1));
       this.routeList.push([spot1, spot2]);
     }
-    spawnSpot = null;
-    _ref4 = this.spotList;
-    for (_j = 0, _len2 = _ref4.length; _j < _len2; _j++) {
-      spot = _ref4[_j];
+    spawnSpot = this.spotForName(spawnSpotName);
+    _ref3 = this.spotList;
+    for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
+      spot = _ref3[_j];
       for (_k = 0, _len3 = moveActionList.length; _k < _len3; _k++) {
         moveAction = moveActionList[_k];
         if (moveAction.from === spot) spot.actions.push(moveAction);
       }
-      if (spot.name === settings.spawnSpot) spawnSpot = spot;
     }
     this.braveList = (function() {
-      var _l, _len4, _ref5, _results;
-      _ref5 = settings.braveNames;
+      var _l, _len4, _results;
       _results = [];
-      for (_l = 0, _len4 = _ref5.length; _l < _len4; _l++) {
-        name = _ref5[_l];
+      for (_l = 0, _len4 = braveNameList.length; _l < _len4; _l++) {
+        name = braveNameList[_l];
         _results.push(new Brave(name, spawnSpot, {
           speed: Math.floor(Math.random() * 50) + 20
         }));
       }
       return _results;
     })();
-    _ref5 = this.braveList;
-    for (_l = 0, _len4 = _ref5.length; _l < _len4; _l++) {
-      brave = _ref5[_l];
+    _ref4 = this.braveList;
+    for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
+      brave = _ref4[_l];
       brave.addListener(this);
       action = brave.spot.randomAction();
       action.prepare(brave);
       brave.action = action;
-      brave.destination = (_ref6 = action.to) != null ? _ref6 : brave.spot;
+      brave.destination = (_ref5 = action.to) != null ? _ref5 : brave.spot;
     }
   }
 
@@ -376,8 +373,8 @@ if (typeof exports !== "undefined" && exports !== null) {
 }
 
 settings = {
-  "spawnSpot": "castle",
-  "spotList": [
+  "spawnSpotName": "castle",
+  "spotInfoList": [
     {
       "name": "townA",
       "posX": 20,
@@ -460,8 +457,8 @@ settings = {
       ]
     }
   ],
-  "routeList": [["townA", "dungeonB"], ["townA", "castle"], ["townA", "temple"], ["townB", "dungeonB"], ["townB", "castle"], ["townC", "castle"], ["townC", "temple"], ["dungeonA", "temple"], ["dungeonC", "castle"]],
-  "braveNames": ['anderson', 'bob', 'clarisse', 'daniel', 'eric', 'fredelic', 'george', 'heinkel', 'iris', 'jennifer', 'kirby', 'leonard', 'michael', 'nick', 'orlando', 'pierre', 'qian', 'richard', 'sara', 'thomas', 'ulrich', 'veeder', 'walter', 'xavier', 'yakov', 'zach']
+  "routeInfoList": [["townA", "dungeonB"], ["townA", "castle"], ["townA", "temple"], ["townB", "dungeonB"], ["townB", "castle"], ["townC", "castle"], ["townC", "temple"], ["dungeonA", "temple"], ["dungeonC", "castle"]],
+  "braveNameList": ['anderson', 'bob', 'clarisse', 'daniel', 'eric', 'fredelic', 'george', 'heinkel', 'iris', 'jennifer', 'kirby', 'leonard', 'michael', 'nick', 'orlando', 'pierre', 'qian', 'richard', 'sara', 'thomas', 'ulrich', 'veeder', 'walter', 'xavier', 'yakov', 'zach']
 };
 
 if (typeof exports !== "undefined" && exports !== null) {

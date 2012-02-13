@@ -5,23 +5,22 @@ if require?
 
 class Trifolium
     constructor : (settings) ->
-        @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in settings.spotList)
+        {spotInfoList, routeInfoList, spawnSpotName, braveNameList} = settings
+        @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
         
         @routeList = []
         moveActionList = []
-        for routeInfo in settings.routeList
+        for routeInfo in routeInfoList
             spot1 = @spotForName routeInfo[0]
             spot2 = @spotForName routeInfo[1]
             moveActionList.push new MoveAction(spot1, spot2)
             moveActionList.push new MoveAction(spot2, spot1)
             @routeList.push [spot1, spot2]
             
-        spawnSpot = null
-        for spot in @spotList
-            spot.actions.push moveAction for moveAction in moveActionList when moveAction.from == spot
-            spawnSpot = spot if spot.name == settings.spawnSpot
+        spawnSpot = @spotForName spawnSpotName
+        (spot.actions.push moveAction for moveAction in moveActionList when moveAction.from == spot) for spot in @spotList
         
-        @braveList = (new Brave(name, spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for name in settings.braveNames)
+        @braveList = (new Brave(name, spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for name in braveNameList)
         for brave in @braveList
             brave.addListener @
             action = brave.spot.randomAction()
