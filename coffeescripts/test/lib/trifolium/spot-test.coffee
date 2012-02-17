@@ -1,5 +1,5 @@
 {Spot} = require '../lib/trifolium/spot'
-{Action, WaitAction, MoveAction, SearchAction} = require '../lib/trifolium/action'
+{WaitAction} = require '../lib/trifolium/action'
 
 describe "Spot", ->
     spot = new Spot 'testSpot', 0, 0, [
@@ -15,8 +15,8 @@ describe "Spot", ->
     it 'should have posY', ->
         spot.posY.should.equal(0)
     it 'should have actions', ->
-        spot.actions.should.be.an.instanceof(Array)
-        spot.actions[0].should.be.an.instanceof(WaitAction)
+        spot.actions.should.be.an.instanceof Array
+        spot.actions[0].should.be.an.instanceof WaitAction
     it 'should be return a random action', ->
         action = spot.randomAction()
         action.should.be.an.instanceof(WaitAction)

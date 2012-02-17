@@ -19,6 +19,10 @@ class Brave
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
             if @actionProcess >= 1.0
                 isSucceed = @action.do @
+            else
+                null
+        else
+            null
     
     addListener: (listener) ->
         @listeners.push listener

@@ -9,7 +9,7 @@ class Action
         brave.action = null
         brave.actionProcess = 0.0
         brave.doneAction @
-        @isSucceed = true
+        @isSucceed = false
     after: (brave, nextAction) ->
         nextAction.prepare brave
         brave.action = nextAction

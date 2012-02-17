@@ -1,8 +1,8 @@
-var Action, MoveAction, SearchAction, Spot, WaitAction, _ref;
+var Spot, WaitAction;
 
 Spot = require('../lib/trifolium/spot').Spot;
 
-_ref = require('../lib/trifolium/action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
+WaitAction = require('../lib/trifolium/action').WaitAction;
 
 describe("Spot", function() {
   var spot;
