@@ -1,8 +1,9 @@
 exports.index = (req, res) ->
     res.render "index",
-        title: "trifolium"
+        title: "World"
         params:
             Name: 'brave-name'
+            Position: 'brave-position'
             Lv: 'brave-lv'
             Attack: 'brave-atk'
             MagicAttack: 'brave-matk'
@@ -12,4 +13,3 @@ exports.index = (req, res) ->
             Faith: 'brave-faith'
             Speed: 'brave-speed'
             Action: 'brave-action'
-            ActionProcess: 'brave-actionProcess'

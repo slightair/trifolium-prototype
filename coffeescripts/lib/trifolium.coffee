@@ -38,11 +38,11 @@ class Trifolium
         brave.tick() for brave in @braveList
         
     completeBraveAction: (brave, action) ->
-        switch action.name
-            when 'move'
-                console.log "#{brave.name} is arrived at #{action.to.name}"
-            when 'wait'
-                console.log "#{brave.name} is waiting..."
+        # switch action.name
+        #     when 'move'
+        #         console.log "#{brave.name} is arrived at #{action.to.name}"
+        #     when 'wait'
+        #         console.log "#{brave.name} is waiting..."
         
     spotForName: (name) ->
         (spot for spot in @spotList when spot.name == name)[0]

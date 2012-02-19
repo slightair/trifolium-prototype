@@ -17,7 +17,7 @@ Action = (function() {
     brave.action = null;
     brave.actionProcess = 0.0;
     brave.doneAction(this);
-    return this.isSucceed = true;
+    return this.isSucceed = false;
   };
 
   Action.prototype.after = function(brave, nextAction) {
@@ -173,7 +173,13 @@ Brave = (function() {
     var isSucceed;
     if (this.action != null) {
       this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
-      if (this.actionProcess >= 1.0) return isSucceed = this.action["do"](this);
+      if (this.actionProcess >= 1.0) {
+        return isSucceed = this.action["do"](this);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
     }
   };
 
@@ -341,14 +347,7 @@ Trifolium = (function() {
     return _results;
   };
 
-  Trifolium.prototype.completeBraveAction = function(brave, action) {
-    switch (action.name) {
-      case 'move':
-        return console.log("" + brave.name + " is arrived at " + action.to.name);
-      case 'wait':
-        return console.log("" + brave.name + " is waiting...");
-    }
-  };
+  Trifolium.prototype.completeBraveAction = function(brave, action) {};
 
   Trifolium.prototype.spotForName = function(name) {
     var spot;
@@ -474,11 +473,93 @@ $(function() {
 Game = (function() {
 
   function Game() {
-    this.debugMatrix = __bind(this.debugMatrix, this);
-    var brave, route, spot, _i, _j, _k, _len, _len2, _len3, _ref3, _ref4, _ref5;
-    this.simulator = new Trifolium(settings);
+    this.debugMatrix = __bind(this.debugMatrix, this);    this.simulator = new Trifolium(settings);
     this.canvas = new Canvas($("#main-screen").get(0), 600, 450);
     this.mapScale = 2.0;
+    this.selectedBrave = null;
+  }
+
+  Game.prototype.appendRoute = function(route) {
+    var routeColor, routeObject;
+    routeColor = 'rgba(0, 255, 0, 0.2)';
+    routeObject = new Line(this.canvas.width / 2 + route[0].posX * this.mapScale, this.canvas.height / 2 + route[0].posY * this.mapScale, this.canvas.width / 2 + route[1].posX * this.mapScale, this.canvas.height / 2 + route[1].posY * this.mapScale, {
+      stroke: routeColor,
+      strokeWidth: 10 * this.mapScale,
+      lineCap: 'round'
+    });
+    return this.canvas.append(routeObject);
+  };
+
+  Game.prototype.appendSpot = function(spot) {
+    var spotObject;
+    spotObject = new Circle(10 * this.mapScale, {
+      id: spot.name,
+      x: this.canvas.width / 2 + spot.posX * this.mapScale,
+      y: this.canvas.height / 2 + spot.posY * this.mapScale,
+      stroke: 'rgba(0, 0, 255, 1.0)',
+      strokeWidth: this.mapScale,
+      endAngle: Math.PI * 2
+    });
+    return this.canvas.append(spotObject);
+  };
+
+  Game.prototype.appendBrave = function(brave) {
+    var body, braveObject, color, head,
+      _this = this;
+    braveObject = new CanvasNode(3 * this.mapScale, {
+      id: brave.name,
+      x: this.bravePosX(brave),
+      y: this.bravePosY(brave)
+    });
+    braveObject.addFrameListener(function(t, dt) {
+      braveObject.x = _this.bravePosX(brave);
+      return braveObject.y = _this.bravePosY(brave);
+    });
+    braveObject.addEventListener('mousedown', function(event) {
+      return _this.selectedBrave = brave;
+    });
+    color = "hsla(" + (parseInt(Math.random() * 360)) + ", 70%, 50%, 1.0)";
+    head = new Circle(2 * this.mapScale, {
+      x: 0,
+      y: -2 * this.mapScale,
+      fill: color,
+      endAngle: Math.PI * 2
+    });
+    body = new Rectangle(4 * this.mapScale, 4 * this.mapScale, {
+      x: -2 * this.mapScale,
+      y: 0,
+      fill: color
+    });
+    braveObject.append(head);
+    braveObject.append(body);
+    return this.canvas.append(braveObject);
+  };
+
+  Game.prototype.displayBraveInfo = function(brave) {
+    var actionProcessPercentage, paramName, paramNames, _i, _len;
+    paramNames = ['name', 'lv', 'atk', 'matk', 'hp', 'mp', 'brave', 'faith', 'speed'];
+    for (_i = 0, _len = paramNames.length; _i < _len; _i++) {
+      paramName = paramNames[_i];
+      $("#brave-" + paramName + "-value").text(brave[paramName]);
+    }
+    $("#brave-position-value").text("" + brave.spot.name);
+    $("#brave-action-value").text("" + brave.action.name);
+    actionProcessPercentage = (brave.actionProcess * 100).toFixed(1);
+    $("#brave-actionProcess-bar").text("" + actionProcessPercentage + "%");
+    return $("#brave-actionProcess-bar").css("width", "" + actionProcessPercentage + "%");
+  };
+
+  Game.prototype.bravePosX = function(brave) {
+    return this.canvas.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * this.mapScale;
+  };
+
+  Game.prototype.bravePosY = function(brave) {
+    return this.canvas.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * this.mapScale;
+  };
+
+  Game.prototype.prepareDisplayObjects = function() {
+    var brave, markerSize, route, selectedBraveMarker, spot, _i, _j, _k, _len, _len2, _len3, _ref3, _ref4, _ref5,
+      _this = this;
     _ref3 = this.simulator.routeList;
     for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
       route = _ref3[_i];
@@ -495,81 +576,51 @@ Game = (function() {
       this.appendBrave(brave);
     }
     this.debugMatrix();
-  }
-
-  Game.prototype.appendRoute = function(route) {
-    var routeColor, routeObject;
-    routeColor = 'rgba(0, 255, 0, 0.2)';
-    routeObject = new Line(this.canvas.width / 2 + route[0].posX * this.mapScale, this.canvas.height / 2 + route[0].posY * this.mapScale, this.canvas.width / 2 + route[1].posX * this.mapScale, this.canvas.height / 2 + route[1].posY * this.mapScale, {
-      stroke: routeColor,
-      strokeWidth: 20,
-      lineCap: 'round'
-    });
-    return this.canvas.append(routeObject);
-  };
-
-  Game.prototype.appendSpot = function(spot) {
-    var spotObject;
-    spotObject = new Circle(10 * this.mapScale, {
-      id: spot.name,
-      x: this.canvas.width / 2 + spot.posX * this.mapScale,
-      y: this.canvas.height / 2 + spot.posY * this.mapScale,
-      stroke: 'rgba(0, 0, 255, 1.0)',
-      strokeWidth: 3,
+    markerSize = 16 * this.mapScale;
+    selectedBraveMarker = new Rectangle(markerSize, markerSize, {
+      rx: 4,
+      ry: 4,
+      x: -markerSize,
+      y: -markerSize,
+      fill: "rgba(255, 128, 0, 0.3)",
+      stroke: "rgba(255, 128, 0, 0.5)",
+      strokeWidth: this.mapScale,
       endAngle: Math.PI * 2
     });
-    return this.canvas.append(spotObject);
-  };
-
-  Game.prototype.appendBrave = function(brave) {
-    var braveObject, bravePosX, bravePosY,
-      _this = this;
-    bravePosX = function(brave) {
-      return _this.canvas.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * _this.mapScale;
-    };
-    bravePosY = function(brave) {
-      return _this.canvas.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * _this.mapScale;
-    };
-    braveObject = new Circle(3 * this.mapScale, {
-      id: brave.name,
-      x: bravePosX(brave),
-      y: bravePosY(brave),
-      fill: 'red',
-      endAngle: Math.PI * 2
+    selectedBraveMarker.addFrameListener(function(t, dt) {
+      if (_this.selectedBrave) {
+        selectedBraveMarker.x = _this.bravePosX(_this.selectedBrave) - markerSize / 2;
+        return selectedBraveMarker.y = _this.bravePosY(_this.selectedBrave) - markerSize / 2;
+      }
     });
-    braveObject.addFrameListener(function(t, dt) {
-      braveObject.x = bravePosX(brave);
-      return braveObject.y = bravePosY(brave);
+    this.canvas.append(selectedBraveMarker);
+    return this.canvas.addFrameListener(function(t, dt) {
+      if (_this.selectedBrave) return _this.displayBraveInfo(_this.selectedBrave);
     });
-    braveObject.addEventListener('mousedown', function(event) {
-      return _this.displayBraveInfo(brave);
-    });
-    return this.canvas.append(braveObject);
-  };
-
-  Game.prototype.displayBraveInfo = function(brave) {
-    return $('#brave-name-value').text(brave.name);
   };
 
   Game.prototype.start = function() {
+    this.prepareDisplayObjects();
     return this.simulator.start();
   };
 
   Game.prototype.debugMatrix = function() {
-    var centerLineColor, gridSize, lineColor, x, y, _ref3, _ref4;
-    gridSize = 20;
+    var centerLineColor, gapX, gapY, gridSize, lineColor, x, y, _ref3, _ref4;
+    gridSize = 10 * this.mapScale;
     lineColor = 'rgba(0, 0, 255, 0.1)';
     centerLineColor = 'rgba(0, 0, 255, 0.5)';
-    for (y = 1, _ref3 = this.canvas.height / gridSize; 1 <= _ref3 ? y < _ref3 : y > _ref3; 1 <= _ref3 ? y++ : y--) {
+    gapX = this.canvas.width % gridSize / 2;
+    gapY = this.canvas.height % gridSize / 2;
+    for (y = 0, _ref3 = this.canvas.height / gridSize; 0 <= _ref3 ? y < _ref3 : y > _ref3; 0 <= _ref3 ? y++ : y--) {
       if (y !== this.canvas.height / 2 / gridSize) {
-        this.canvas.append(new Line(0, y * gridSize, this.canvas.width, y * gridSize, {
+        this.canvas.append(new Line(0, y * gridSize + gapY, this.canvas.width, y * gridSize + gapY, {
           stroke: lineColor
         }));
       }
     }
-    for (x = 1, _ref4 = this.canvas.width / gridSize; 1 <= _ref4 ? x < _ref4 : x > _ref4; 1 <= _ref4 ? x++ : x--) {
+    for (x = 0, _ref4 = this.canvas.width / gridSize; 0 <= _ref4 ? x < _ref4 : x > _ref4; 0 <= _ref4 ? x++ : x--) {
       if (x !== this.canvas.width / 2 / gridSize) {
-        this.canvas.append(new Line(x * gridSize, 0, x * gridSize, this.canvas.height, {
+        this.canvas.append(new Line(x * gridSize + gapX, 0, x * gridSize + gapX, this.canvas.height, {
           stroke: lineColor
         }));
       }

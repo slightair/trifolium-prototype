@@ -1,3 +1,7 @@
+div.navbar
+    div.navbar-inner
+        div.container
+            a.brand(href='#') trifolium
 div.container
     div.row
         div.span12
@@ -10,10 +14,15 @@ div.container
                     table.table.table-striped.table-bordered.table-condensed
                         thead
                             tr
-                                th parameter name
-                                th value
+                                th#parameter-name parameter name
+                                th#value value
                         tbody
                             each id, name in params
                                 tr
                                     td #{name}
                                     td(id="#{id}-value")
+                            tr
+                                td actionProcess
+                                td
+                                    div.progress.progress-striped.active
+                                        div(class="bar", id="brave-actionProcess-bar")
