@@ -466,15 +466,19 @@ if (typeof exports !== "undefined" && exports !== null) {
 
 $(function() {
   var game;
-  game = new Game();
+  game = new Game(600, 450);
   return game.start();
 });
 
 Game = (function() {
 
-  function Game() {
-    this.debugMatrix = __bind(this.debugMatrix, this);    this.simulator = new Trifolium(settings);
-    this.canvas = new Canvas($("#main-screen").get(0), 600, 450);
+  function Game(width, height) {
+    this.width = width;
+    this.height = height;
+    this.debugMatrix = __bind(this.debugMatrix, this);
+    this.simulator = new Trifolium(settings);
+    this.canvas = new Canvas($("#main-screen").get(0), this.width, this.height);
+    this.infoLayer = new CanvasNode;
     this.mapScale = 2.0;
     this.selectedBrave = null;
   }
@@ -506,7 +510,7 @@ Game = (function() {
   Game.prototype.appendBrave = function(brave) {
     var body, braveObject, color, head,
       _this = this;
-    braveObject = new CanvasNode(3 * this.mapScale, {
+    braveObject = new CanvasNode({
       id: brave.name,
       x: this.bravePosX(brave),
       y: this.bravePosY(brave)
@@ -594,9 +598,10 @@ Game = (function() {
       }
     });
     this.canvas.append(selectedBraveMarker);
-    return this.canvas.addFrameListener(function(t, dt) {
+    this.canvas.addFrameListener(function(t, dt) {
       if (_this.selectedBrave) return _this.displayBraveInfo(_this.selectedBrave);
     });
+    return this.canvas.append(this.infoLayer);
   };
 
   Game.prototype.start = function() {

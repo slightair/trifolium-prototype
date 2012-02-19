@@ -1,11 +1,12 @@
 $ ->
-    game = new Game()
+    game = new Game(600, 450)
     game.start()
 
 class Game
-    constructor: ->
-        @simulator = new Trifolium(settings)
-        @canvas = new Canvas($("#main-screen").get(0), 600, 450)
+    constructor: (@width, @height)->
+        @simulator = new Trifolium settings
+        @canvas = new Canvas $("#main-screen").get(0), @width, @height
+        @infoLayer = new CanvasNode
         @mapScale = 2.0
         @selectedBrave = null
     
@@ -29,11 +30,10 @@ class Game
         })
         @canvas.append spotObject
     appendBrave: (brave) ->
-        braveObject = new CanvasNode(3 * @mapScale, {
+        braveObject = new CanvasNode
                     id: brave.name
                     x: @bravePosX brave
                     y: @bravePosY brave
-        })
         braveObject.addFrameListener (t, dt) =>
             braveObject.x = @bravePosX brave
             braveObject.y = @bravePosY brave
@@ -106,6 +106,8 @@ class Game
         
         @canvas.addFrameListener (t, dt) =>
             @displayBraveInfo @selectedBrave if @selectedBrave
+        
+        @canvas.append @infoLayer
     
     start: ->
         @prepareDisplayObjects()
