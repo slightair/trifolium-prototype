@@ -16,7 +16,6 @@ Action = (function() {
   Action.prototype["do"] = function(brave) {
     brave.action = null;
     brave.actionProcess = 0.0;
-    brave.doneAction(this);
     return this.isSucceed = false;
   };
 
@@ -154,7 +153,6 @@ Brave = (function() {
     var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
     this.name = name;
     if (options == null) options = {};
-    this.listeners = [];
     this.lv = (_ref = options.lv) != null ? _ref : 1;
     this.atk = (_ref2 = options.atk) != null ? _ref2 : 1;
     this.matk = (_ref3 = options.matk) != null ? _ref3 : 1;
@@ -167,49 +165,19 @@ Brave = (function() {
     this.actionProcess = 0.0;
     this.spot = spawnSpot;
     this.destination = spawnSpot;
+    this.onCompleteAction = null;
   }
 
   Brave.prototype.tick = function() {
-    var isSucceed;
+    var isSucceed, prevAction;
     if (this.action != null) {
       this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
       if (this.actionProcess >= 1.0) {
-        return isSucceed = this.action["do"](this);
-      } else {
-        return null;
+        prevAction = this.action;
+        isSucceed = this.action["do"](this);
+        return typeof this.onCompleteAction === "function" ? this.onCompleteAction(this, prevAction, isSucceed) : void 0;
       }
-    } else {
-      return null;
     }
-  };
-
-  Brave.prototype.addListener = function(listener) {
-    return this.listeners.push(listener);
-  };
-
-  Brave.prototype.removeListener = function(remove) {
-    var listener;
-    return this.listeners = (function() {
-      var _i, _len, _ref, _results;
-      _ref = this.listeners;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        listener = _ref[_i];
-        if (listener !== remove) _results.push(listener);
-      }
-      return _results;
-    }).call(this);
-  };
-
-  Brave.prototype.doneAction = function(action) {
-    var listener, _i, _len, _ref, _results;
-    _ref = this.listeners;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      listener = _ref[_i];
-      _results.push(listener.completeBraveAction(this, action));
-    }
-    return _results;
   };
 
   return Brave;
@@ -318,7 +286,6 @@ Trifolium = (function() {
     _ref4 = this.braveList;
     for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
       brave = _ref4[_l];
-      brave.addListener(this);
       action = brave.spot.randomAction();
       action.prepare(brave);
       brave.action = action;
@@ -346,8 +313,6 @@ Trifolium = (function() {
     }
     return _results;
   };
-
-  Trifolium.prototype.completeBraveAction = function(brave, action) {};
 
   Trifolium.prototype.spotForName = function(name) {
     var spot;
@@ -466,7 +431,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 
 $(function() {
   var game;
-  game = new Game(600, 450);
+  game = new Game(580, 450);
   return game.start();
 });
 
@@ -481,6 +446,7 @@ Game = (function() {
     this.infoLayer = new CanvasNode;
     this.mapScale = 2.0;
     this.selectedBrave = null;
+    this.logMax = 6;
   }
 
   Game.prototype.appendRoute = function(route) {
@@ -536,7 +502,15 @@ Game = (function() {
     });
     braveObject.append(head);
     braveObject.append(body);
-    return this.canvas.append(braveObject);
+    this.canvas.append(braveObject);
+    return brave.onCompleteAction = function(brave, action, isSucceed) {
+      switch (action.name) {
+        case 'move':
+          return _this.log("" + brave.name + " is arrived at " + action.to.name);
+        case 'wait':
+          return _this.log("" + brave.name + " is waiting...");
+      }
+    };
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
@@ -601,12 +575,25 @@ Game = (function() {
     this.canvas.addFrameListener(function(t, dt) {
       if (_this.selectedBrave) return _this.displayBraveInfo(_this.selectedBrave);
     });
+    this.infoLayer.append(new ElementNode(E('div', {
+      id: 'log'
+    }), {
+      valign: "bottom",
+      y: this.height
+    }));
     return this.canvas.append(this.infoLayer);
   };
 
   Game.prototype.start = function() {
     this.prepareDisplayObjects();
     return this.simulator.start();
+  };
+
+  Game.prototype.log = function(text) {
+    if (this.logMax <= $("div#log").children().length) {
+      $("div#log").children(":first").remove();
+    }
+    return $("div#log").append($("<div class='logItem'>" + text + "</div>"));
   };
 
   Game.prototype.debugMatrix = function() {

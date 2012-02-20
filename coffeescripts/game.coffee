@@ -1,5 +1,5 @@
 $ ->
-    game = new Game(600, 450)
+    game = new Game(580, 450)
     game.start()
 
 class Game
@@ -9,6 +9,7 @@ class Game
         @infoLayer = new CanvasNode
         @mapScale = 2.0
         @selectedBrave = null
+        @logMax = 6
     
     appendRoute: (route) ->
         routeColor = 'rgba(0, 255, 0, 0.2)'
@@ -55,6 +56,13 @@ class Game
         braveObject.append body
         
         @canvas.append braveObject
+        
+        brave.onCompleteAction = (brave, action, isSucceed) =>
+            switch action.name
+                when 'move'
+                    @log "#{brave.name} is arrived at #{action.to.name}"
+                when 'wait'
+                    @log "#{brave.name} is waiting..."
     
     displayBraveInfo: (brave) ->
         paramNames = [
@@ -107,12 +115,22 @@ class Game
         @canvas.addFrameListener (t, dt) =>
             @displayBraveInfo @selectedBrave if @selectedBrave
         
+        @infoLayer.append new ElementNode E('div', id: 'log'),
+            valign: "bottom"
+            y: @height
+        
         @canvas.append @infoLayer
     
     start: ->
         @prepareDisplayObjects()
         @simulator.start()
     
+    log: (text) ->
+        if @logMax <= $("div#log").children().length
+            $("div#log").children(":first").remove()
+        
+        $("div#log").append($("<div class='logItem'>#{text}</div>"))
+        
     debugMatrix: =>
         gridSize = 10 * @mapScale
         lineColor = 'rgba(0, 0, 255, 0.1)'

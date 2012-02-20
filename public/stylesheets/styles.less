@@ -1,14 +1,20 @@
 @import "bootstrap/bootstrap.less";
 
+@mainScreenWidth: 580px;
+
 body {
   font: @baseFontSize @baseFontFamily;
+}
+
+div.well {
+    background-color: @white;
 }
 
 div#main-content {
 }
 
 div#main-screen {
-    width: 600px;
+    width: @mainScreenWidth;
     .center-block();
 }
 
@@ -25,4 +31,15 @@ div#brave-info .progress {
 
 div#brave-info .progress .bar {
     .transition(none);
+}
+
+div#log {
+    @padding: 4px;
+    
+    #translucent > .background(@black, 0.1);
+    .border-radius();
+    color: fadeout(@gray, 10%);
+    width: @mainScreenWidth - @padding * 2;
+    bottom: 0px;
+    padding: @padding;
 }

@@ -31,12 +31,6 @@ describe 'Action', ->
         it 'should set 0.0 to brave.actionProcess', ->
             action.do brave
             brave.actionProcess.should.equal 0
-        
-        it 'should call brave.doneAction()', (done) ->
-            brave.addListener
-                completeBraveAction: ->
-                    done()
-            action.do brave
     
     describe '#after()', ->
         nextAction = new Action

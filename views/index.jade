@@ -4,13 +4,14 @@ div.navbar
             a.brand(href='#') trifolium
 div.container
     div.row
-        div.span12
-            h1= title
         div.row
             div.span8#main-content
-                div#main-screen
+                div.well
+                    h3= title
+                    div#main-screen
             div.span4#side-content
-                div#brave-info
+                div.well#brave-info
+                    h3 brave info
                     table.table.table-striped.table-bordered.table-condensed
                         thead
                             tr

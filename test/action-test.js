@@ -33,17 +33,9 @@ describe('Action', function() {
       action["do"](brave);
       return should.not.exist(brave.action);
     });
-    it('should set 0.0 to brave.actionProcess', function() {
+    return it('should set 0.0 to brave.actionProcess', function() {
       action["do"](brave);
       return brave.actionProcess.should.equal(0);
-    });
-    return it('should call brave.doneAction()', function(done) {
-      brave.addListener({
-        completeBraveAction: function() {
-          return done();
-        }
-      });
-      return action["do"](brave);
     });
   });
   return describe('#after()', function() {

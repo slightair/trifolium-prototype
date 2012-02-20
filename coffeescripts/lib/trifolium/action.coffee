@@ -8,7 +8,6 @@ class Action
     do: (brave) ->
         brave.action = null
         brave.actionProcess = 0.0
-        brave.doneAction @
         @isSucceed = false
     after: (brave, nextAction) ->
         nextAction.prepare brave
