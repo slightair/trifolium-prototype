@@ -5,7 +5,7 @@ if require?
 
 class Trifolium
     constructor : (settings) ->
-        {spotInfoList, routeInfoList, spawnSpotName, braveNameList} = settings
+        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary} = settings
         @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
         
         @routeList = []
@@ -20,7 +20,11 @@ class Trifolium
         spawnSpot = @spotForName spawnSpotName
         (spot.actions.push moveAction for moveAction in moveActionList when moveAction.from == spot) for spot in @spotList
         
-        @braveList = (new Brave(name, spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for name in braveNameList)
+        (@braveNamePrefixes ?= []).push term for term in dict for dict in [braveNameDictionary.prefixes, braveNameDictionary.terms]
+        (@braveNameSuffixes ?= []).push term for term in dict for dict in [braveNameDictionary.suffixes, braveNameDictionary.terms]
+        
+        numBraves = 10
+        @braveList = (new Brave(@makeBraveName(braveNameDictionary), spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for i in [0...numBraves])
         for brave in @braveList
             action = brave.spot.randomAction()
             action.prepare brave
@@ -35,6 +39,12 @@ class Trifolium
         
     tick: ->
         brave.tick() for brave in @braveList
+    
+    makeBraveName: ->
+        prefixIndex = parseInt(Math.random() * @braveNamePrefixes.length)
+        suffixIndex = parseInt(Math.random() * @braveNameSuffixes.length)
+        
+        "#{@braveNamePrefixes[prefixIndex]}#{@braveNameSuffixes[suffixIndex]}"
     
     spotForName: (name) ->
         (spot for spot in @spotList when spot.name == name)[0]

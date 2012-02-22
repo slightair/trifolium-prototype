@@ -1,10 +1,10 @@
 var settings;
 
 settings = {
-  "spawnSpotName": "castle",
+  "spawnSpotName": "ちくわ城",
   "spotInfoList": [
     {
-      "name": "townA",
+      "name": "こんぶシティー",
       "posX": 20,
       "posY": -60,
       "actions": [
@@ -14,7 +14,7 @@ settings = {
         }
       ]
     }, {
-      "name": "townB",
+      "name": "もずくタウン",
       "posX": -100,
       "posY": -20,
       "actions": [
@@ -24,7 +24,7 @@ settings = {
         }
       ]
     }, {
-      "name": "townC",
+      "name": "わかめビレッジ",
       "posX": 20,
       "posY": 40,
       "actions": [
@@ -34,7 +34,7 @@ settings = {
         }
       ]
     }, {
-      "name": "dungeonA",
+      "name": "なめこの洞窟",
       "posX": 120,
       "posY": -80,
       "actions": [
@@ -44,7 +44,7 @@ settings = {
         }
       ]
     }, {
-      "name": "dungeonB",
+      "name": "たけのこ山",
       "posX": -60,
       "posY": -80,
       "actions": [
@@ -54,7 +54,7 @@ settings = {
         }
       ]
     }, {
-      "name": "dungeonC",
+      "name": "かまぼこの迷宮",
       "posX": -80,
       "posY": 60,
       "actions": [
@@ -64,7 +64,7 @@ settings = {
         }
       ]
     }, {
-      "name": "castle",
+      "name": "ちくわ城",
       "posX": -40,
       "posY": 0,
       "actions": [
@@ -74,7 +74,7 @@ settings = {
         }
       ]
     }, {
-      "name": "temple",
+      "name": "たまねぎ寺院",
       "posX": 60,
       "posY": -20,
       "actions": [
@@ -85,8 +85,12 @@ settings = {
       ]
     }
   ],
-  "routeInfoList": [["townA", "dungeonB"], ["townA", "castle"], ["townA", "temple"], ["townB", "dungeonB"], ["townB", "castle"], ["townC", "castle"], ["townC", "temple"], ["dungeonA", "temple"], ["dungeonC", "castle"]],
-  "braveNameList": ['anderson', 'bob', 'clarisse', 'daniel', 'eric', 'fredelic', 'george', 'heinkel', 'iris', 'jennifer', 'kirby', 'leonard', 'michael', 'nick', 'orlando', 'pierre', 'qian', 'richard', 'sara', 'thomas', 'ulrich', 'veeder', 'walter', 'xavier', 'yakov', 'zach']
+  "routeInfoList": [["こんぶシティー", "たけのこ山"], ["こんぶシティー", "ちくわ城"], ["こんぶシティー", "たまねぎ寺院"], ["もずくタウン", "たけのこ山"], ["もずくタウン", "ちくわ城"], ["わかめビレッジ", "ちくわ城"], ["わかめビレッジ", "たまねぎ寺院"], ["なめこの洞窟", "たまねぎ寺院"], ["かまぼこの迷宮", "ちくわ城"]],
+  "braveNameDictionary": {
+    "terms": ["ポチ", "タマ", "ヒロ", "チン", "ペロ", "ヒコ", "テル", "ユキ", "トロ", "リン", "ポコ", "タラ", "ナリ", "イチ", "ユウ", "ヨシ", "オリ", "タケ", "マサ", "タカ", "ナオ", "スケ", "ピヨ", "フウ", "ツネ", "ノロ", "ポロ", "ポポ", "トト", "テロ", "ピロ", "ポン", "ポワ", "ヨネ", "ウメ", "ノリ", "ロウ", "ゾウ", "ヤン", "ハン", "リィ", "オウ", "チィ", "ケン", "チヨ", "リリ", "ザム", "ラム", "ヒム", "タキ", "ザワ"],
+    "prefixes": [],
+    "suffixes": ["ミ", "カ", "コ", "リ", "ヨ", "エ", "ノ", "ッピ", "ッチ", "ッペ", "ヲ", "オ", "シ", "ス", "ッス", "ッツ", "ト", "ジ", "ザ", "ラ"]
+  }
 };
 
 if (typeof exports !== "undefined" && exports !== null) {

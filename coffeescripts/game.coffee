@@ -60,9 +60,9 @@ class Game
         brave.onCompleteAction = (brave, action, isSucceed) =>
             switch action.name
                 when 'move'
-                    @log "#{brave.name} is arrived at #{action.to.name}"
+                    @log "勇者#{brave.name}が#{action.to.name}に到着しました"
                 when 'wait'
-                    @log "#{brave.name} is waiting..."
+                    @log "勇者#{brave.name}はぼーっとしている"
     
     displayBraveInfo: (brave) ->
         paramNames = [

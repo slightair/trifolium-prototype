@@ -242,8 +242,8 @@ if (typeof require !== "undefined" && require !== null) {
 Trifolium = (function() {
 
   function Trifolium(settings) {
-    var action, brave, braveNameList, moveAction, moveActionList, name, routeInfo, routeInfoList, spawnSpot, spawnSpotName, spot, spot1, spot2, spotInfo, spotInfoList, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref3, _ref4, _ref5;
-    spotInfoList = settings.spotInfoList, routeInfoList = settings.routeInfoList, spawnSpotName = settings.spawnSpotName, braveNameList = settings.braveNameList;
+    var action, brave, braveNameDictionary, dict, i, moveAction, moveActionList, numBraves, routeInfo, routeInfoList, spawnSpot, spawnSpotName, spot, spot1, spot2, spotInfo, spotInfoList, term, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _len6, _len7, _len8, _m, _n, _o, _p, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+    spotInfoList = settings.spotInfoList, routeInfoList = settings.routeInfoList, spawnSpotName = settings.spawnSpotName, braveNameDictionary = settings.braveNameDictionary;
     this.spotList = (function() {
       var _i, _len, _results;
       _results = [];
@@ -272,24 +272,40 @@ Trifolium = (function() {
         if (moveAction.from === spot) spot.actions.push(moveAction);
       }
     }
+    _ref4 = [braveNameDictionary.prefixes, braveNameDictionary.terms];
+    for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
+      dict = _ref4[_l];
+      for (_m = 0, _len5 = dict.length; _m < _len5; _m++) {
+        term = dict[_m];
+        ((_ref5 = this.braveNamePrefixes) != null ? _ref5 : this.braveNamePrefixes = []).push(term);
+      }
+    }
+    _ref6 = [braveNameDictionary.suffixes, braveNameDictionary.terms];
+    for (_n = 0, _len6 = _ref6.length; _n < _len6; _n++) {
+      dict = _ref6[_n];
+      for (_o = 0, _len7 = dict.length; _o < _len7; _o++) {
+        term = dict[_o];
+        ((_ref7 = this.braveNameSuffixes) != null ? _ref7 : this.braveNameSuffixes = []).push(term);
+      }
+    }
+    numBraves = 10;
     this.braveList = (function() {
-      var _l, _len4, _results;
+      var _results;
       _results = [];
-      for (_l = 0, _len4 = braveNameList.length; _l < _len4; _l++) {
-        name = braveNameList[_l];
-        _results.push(new Brave(name, spawnSpot, {
+      for (i = 0; 0 <= numBraves ? i < numBraves : i > numBraves; 0 <= numBraves ? i++ : i--) {
+        _results.push(new Brave(this.makeBraveName(braveNameDictionary), spawnSpot, {
           speed: Math.floor(Math.random() * 50) + 20
         }));
       }
       return _results;
-    })();
-    _ref4 = this.braveList;
-    for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
-      brave = _ref4[_l];
+    }).call(this);
+    _ref8 = this.braveList;
+    for (_p = 0, _len8 = _ref8.length; _p < _len8; _p++) {
+      brave = _ref8[_p];
       action = brave.spot.randomAction();
       action.prepare(brave);
       brave.action = action;
-      brave.destination = (_ref5 = action.to) != null ? _ref5 : brave.spot;
+      brave.destination = (_ref9 = action.to) != null ? _ref9 : brave.spot;
     }
   }
 
@@ -312,6 +328,13 @@ Trifolium = (function() {
       _results.push(brave.tick());
     }
     return _results;
+  };
+
+  Trifolium.prototype.makeBraveName = function() {
+    var prefixIndex, suffixIndex;
+    prefixIndex = parseInt(Math.random() * this.braveNamePrefixes.length);
+    suffixIndex = parseInt(Math.random() * this.braveNameSuffixes.length);
+    return "" + this.braveNamePrefixes[prefixIndex] + this.braveNameSuffixes[suffixIndex];
   };
 
   Trifolium.prototype.spotForName = function(name) {
@@ -337,10 +360,10 @@ if (typeof exports !== "undefined" && exports !== null) {
 }
 
 settings = {
-  "spawnSpotName": "castle",
+  "spawnSpotName": "ちくわ城",
   "spotInfoList": [
     {
-      "name": "townA",
+      "name": "こんぶシティー",
       "posX": 20,
       "posY": -60,
       "actions": [
@@ -350,7 +373,7 @@ settings = {
         }
       ]
     }, {
-      "name": "townB",
+      "name": "もずくタウン",
       "posX": -100,
       "posY": -20,
       "actions": [
@@ -360,7 +383,7 @@ settings = {
         }
       ]
     }, {
-      "name": "townC",
+      "name": "わかめビレッジ",
       "posX": 20,
       "posY": 40,
       "actions": [
@@ -370,7 +393,7 @@ settings = {
         }
       ]
     }, {
-      "name": "dungeonA",
+      "name": "なめこの洞窟",
       "posX": 120,
       "posY": -80,
       "actions": [
@@ -380,7 +403,7 @@ settings = {
         }
       ]
     }, {
-      "name": "dungeonB",
+      "name": "たけのこ山",
       "posX": -60,
       "posY": -80,
       "actions": [
@@ -390,7 +413,7 @@ settings = {
         }
       ]
     }, {
-      "name": "dungeonC",
+      "name": "かまぼこの迷宮",
       "posX": -80,
       "posY": 60,
       "actions": [
@@ -400,7 +423,7 @@ settings = {
         }
       ]
     }, {
-      "name": "castle",
+      "name": "ちくわ城",
       "posX": -40,
       "posY": 0,
       "actions": [
@@ -410,7 +433,7 @@ settings = {
         }
       ]
     }, {
-      "name": "temple",
+      "name": "たまねぎ寺院",
       "posX": 60,
       "posY": -20,
       "actions": [
@@ -421,8 +444,12 @@ settings = {
       ]
     }
   ],
-  "routeInfoList": [["townA", "dungeonB"], ["townA", "castle"], ["townA", "temple"], ["townB", "dungeonB"], ["townB", "castle"], ["townC", "castle"], ["townC", "temple"], ["dungeonA", "temple"], ["dungeonC", "castle"]],
-  "braveNameList": ['anderson', 'bob', 'clarisse', 'daniel', 'eric', 'fredelic', 'george', 'heinkel', 'iris', 'jennifer', 'kirby', 'leonard', 'michael', 'nick', 'orlando', 'pierre', 'qian', 'richard', 'sara', 'thomas', 'ulrich', 'veeder', 'walter', 'xavier', 'yakov', 'zach']
+  "routeInfoList": [["こんぶシティー", "たけのこ山"], ["こんぶシティー", "ちくわ城"], ["こんぶシティー", "たまねぎ寺院"], ["もずくタウン", "たけのこ山"], ["もずくタウン", "ちくわ城"], ["わかめビレッジ", "ちくわ城"], ["わかめビレッジ", "たまねぎ寺院"], ["なめこの洞窟", "たまねぎ寺院"], ["かまぼこの迷宮", "ちくわ城"]],
+  "braveNameDictionary": {
+    "terms": ["ポチ", "タマ", "ヒロ", "チン", "ペロ", "ヒコ", "テル", "ユキ", "トロ", "リン", "ポコ", "タラ", "ナリ", "イチ", "ユウ", "ヨシ", "オリ", "タケ", "マサ", "タカ", "ナオ", "スケ", "ピヨ", "フウ", "ツネ", "ノロ", "ポロ", "ポポ", "トト", "テロ", "ピロ", "ポン", "ポワ", "ヨネ", "ウメ", "ノリ", "ロウ", "ゾウ", "ヤン", "ハン", "リィ", "オウ", "チィ", "ケン", "チヨ", "リリ", "ザム", "ラム", "ヒム", "タキ", "ザワ"],
+    "prefixes": [],
+    "suffixes": ["ミ", "カ", "コ", "リ", "ヨ", "エ", "ノ", "ッピ", "ッチ", "ッペ", "ヲ", "オ", "シ", "ス", "ッス", "ッツ", "ト", "ジ", "ザ", "ラ"]
+  }
 };
 
 if (typeof exports !== "undefined" && exports !== null) {
@@ -506,9 +533,9 @@ Game = (function() {
     return brave.onCompleteAction = function(brave, action, isSucceed) {
       switch (action.name) {
         case 'move':
-          return _this.log("" + brave.name + " is arrived at " + action.to.name);
+          return _this.log("勇者" + brave.name + "が" + action.to.name + "に到着しました");
         case 'wait':
-          return _this.log("" + brave.name + " is waiting...");
+          return _this.log("勇者" + brave.name + "はぼーっとしている");
       }
     };
   };

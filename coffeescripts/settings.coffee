@@ -1,70 +1,120 @@
 settings = {
-    "spawnSpotName": "castle"
+    "spawnSpotName": "ちくわ城"
     "spotInfoList": [
-        {"name": "townA",    "posX":   20, "posY":  -60, "actions": [
+        {"name": "こんぶシティー",    "posX":   20, "posY":  -60, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "townB",    "posX": -100, "posY":  -20, "actions": [
+        {"name": "もずくタウン",    "posX": -100, "posY":  -20, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "townC",    "posX":   20, "posY":   40, "actions": [
+        {"name": "わかめビレッジ",    "posX":   20, "posY":   40, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "dungeonA", "posX":  120, "posY":  -80, "actions": [
+        {"name": "なめこの洞窟", "posX":  120, "posY":  -80, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "dungeonB", "posX":  -60, "posY":  -80, "actions": [
+        {"name": "たけのこ山", "posX":  -60, "posY":  -80, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "dungeonC", "posX":  -80, "posY":   60, "actions": [
+        {"name": "かまぼこの迷宮", "posX":  -80, "posY":   60, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "castle",   "posX":  -40, "posY":    0, "actions": [
+        {"name": "ちくわ城",   "posX":  -40, "posY":    0, "actions": [
             {"type": "wait", "time": 3000}
         ]}
-        {"name": "temple",   "posX":   60, "posY":  -20, "actions": [
+        {"name": "たまねぎ寺院",   "posX":   60, "posY":  -20, "actions": [
             {"type": "wait", "time": 3000}
         ]}
     ]
     "routeInfoList": [
-        ["townA", "dungeonB"]
-        ["townA", "castle"]
-        ["townA", "temple"]
-        ["townB", "dungeonB"]
-        ["townB", "castle"]
-        ["townC", "castle"]
-        ["townC", "temple"]
-        ["dungeonA", "temple"]
-        ["dungeonC", "castle"]
+        ["こんぶシティー", "たけのこ山"]
+        ["こんぶシティー", "ちくわ城"]
+        ["こんぶシティー", "たまねぎ寺院"]
+        ["もずくタウン", "たけのこ山"]
+        ["もずくタウン", "ちくわ城"]
+        ["わかめビレッジ", "ちくわ城"]
+        ["わかめビレッジ", "たまねぎ寺院"]
+        ["なめこの洞窟", "たまねぎ寺院"]
+        ["かまぼこの迷宮", "ちくわ城"]
     ]
-    "braveNameList": [
-        'anderson'
-        'bob'
-        'clarisse'
-        'daniel'
-        'eric'
-        'fredelic'
-        'george'
-        'heinkel'
-        'iris'
-        'jennifer'
-        'kirby'
-        'leonard'
-        'michael'
-        'nick'
-        'orlando'
-        'pierre'
-        'qian'
-        'richard'
-        'sara'
-        'thomas'
-        'ulrich'
-        'veeder'
-        'walter'
-        'xavier'
-        'yakov'
-        'zach'
-    ]
+    "braveNameDictionary":
+        "terms": [
+            "ポチ"
+            "タマ"
+            "ヒロ"
+            "チン"
+            "ペロ"
+            "ヒコ"
+            "テル"
+            "ユキ"
+            "トロ"
+            "リン"
+            "ポコ"
+            "タラ"
+            "ナリ"
+            "イチ"
+            "ユウ"
+            "ヨシ"
+            "オリ"
+            "タケ"
+            "マサ"
+            "タカ"
+            "ナオ"
+            "スケ"
+            "ピヨ"
+            "フウ"
+            "ツネ"
+            "ノロ"
+            "ポロ"
+            "ポポ"
+            "トト"
+            "テロ"
+            "ピロ"
+            "ポン"
+            "ポワ"
+            "ヨネ"
+            "ウメ"
+            "ノリ"
+            "ロウ"
+            "ゾウ"
+            "ヤン"
+            "ハン"
+            "リィ"
+            "オウ"
+            "チィ"
+            "ケン"
+            "チヨ"
+            "リリ"
+            "ザム"
+            "ラム"
+            "ヒム"
+            "タキ"
+            "ザワ"
+        ]
+        "prefixes": [
+        ]
+        "suffixes": [
+            "ミ"
+            "カ"
+            "コ"
+            "リ"
+            "ヨ"
+            "エ"
+            "ノ"
+            "ッピ"
+            "ッチ"
+            "ッペ"
+            "ヲ"
+            "オ"
+            "シ"
+            "ス"
+            "ッス"
+            "ッツ"
+            "ト"
+            "ジ"
+            "ザ"
+            "ラ"
+        ]
 }
 
 exports?.settings = settings

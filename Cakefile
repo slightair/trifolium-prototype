@@ -50,7 +50,7 @@ compile_game = (callback) ->
         '-b'
         '-c'
         '-j'
-        'public/javascripts/game.js'
+        'game.js'
         'coffeescripts/lib/'
         'coffeescripts/settings.coffee'
         'coffeescripts/game.coffee'
@@ -64,7 +64,7 @@ minify_game = (callback) ->
     options = [
             '-o'
             'public/javascripts/game.min.js'
-            'public/javascripts/game.js'
+            'game.js'
     ]
     uglify = spawn "#{bin_path}/uglifyjs", options
     uglify.stdout.on 'data', stream_data_handler
