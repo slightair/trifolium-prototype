@@ -1,5 +1,5 @@
 (function() {
-  var app, express, routes;
+  var app, express, port, routes, _ref;
 
   express = require("express");
 
@@ -29,7 +29,8 @@
 
   app.get("/", routes.index);
 
-  port = process.env.PORT || 3000
+  port = (_ref = process.env.PORT) != null ? _ref : 3000;
+
   app.listen(port);
 
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
