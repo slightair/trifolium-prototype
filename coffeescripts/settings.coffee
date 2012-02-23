@@ -1,4 +1,5 @@
 settings = {
+    "tickInterval": 30
     "spawnSpotName": "ちくわ城"
     "spotInfoList": [
         {"name": "こんぶシティー",    "posX":   20, "posY":  -60, "actions": [
@@ -37,6 +38,7 @@ settings = {
         ["なめこの洞窟", "たまねぎ寺院"]
         ["かまぼこの迷宮", "ちくわ城"]
     ]
+    "numBraves": 12
     "braveNameDictionary":
         "terms": [
             "ポチ"

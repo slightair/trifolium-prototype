@@ -112,3 +112,6 @@ task 'game', 'make game.js for web browser', (options) ->
 
 task 'test', 'run test', (options) ->
     compile_lib -> compile_test -> run_test -> 'All done.'
+
+task 'all', 'compile all scripts', ->
+    build_console_app -> build_game -> compile_test -> 'All done.'

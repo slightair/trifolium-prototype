@@ -243,7 +243,7 @@ Trifolium = (function() {
 
   function Trifolium(settings) {
     var action, brave, braveNameDictionary, dict, i, moveAction, moveActionList, numBraves, routeInfo, routeInfoList, spawnSpot, spawnSpotName, spot, spot1, spot2, spotInfo, spotInfoList, term, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _len6, _len7, _len8, _m, _n, _o, _p, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
-    spotInfoList = settings.spotInfoList, routeInfoList = settings.routeInfoList, spawnSpotName = settings.spawnSpotName, braveNameDictionary = settings.braveNameDictionary;
+    spotInfoList = settings.spotInfoList, routeInfoList = settings.routeInfoList, spawnSpotName = settings.spawnSpotName, braveNameDictionary = settings.braveNameDictionary, numBraves = settings.numBraves, this.tickInterval = settings.tickInterval;
     this.spotList = (function() {
       var _i, _len, _results;
       _results = [];
@@ -288,7 +288,6 @@ Trifolium = (function() {
         ((_ref7 = this.braveNameSuffixes) != null ? _ref7 : this.braveNameSuffixes = []).push(term);
       }
     }
-    numBraves = 10;
     this.braveList = (function() {
       var _results;
       _results = [];
@@ -316,7 +315,7 @@ Trifolium = (function() {
     return timer = setInterval(function() {
       _this.tick();
       return _this.count++;
-    }, 30);
+    }, this.tickInterval);
   };
 
   Trifolium.prototype.tick = function() {
@@ -360,6 +359,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 }
 
 settings = {
+  "tickInterval": 30,
   "spawnSpotName": "ちくわ城",
   "spotInfoList": [
     {
@@ -445,6 +445,7 @@ settings = {
     }
   ],
   "routeInfoList": [["こんぶシティー", "たけのこ山"], ["こんぶシティー", "ちくわ城"], ["こんぶシティー", "たまねぎ寺院"], ["もずくタウン", "たけのこ山"], ["もずくタウン", "ちくわ城"], ["わかめビレッジ", "ちくわ城"], ["わかめビレッジ", "たまねぎ寺院"], ["なめこの洞窟", "たまねぎ寺院"], ["かまぼこの迷宮", "ちくわ城"]],
+  "numBraves": 12,
   "braveNameDictionary": {
     "terms": ["ポチ", "タマ", "ヒロ", "チン", "ペロ", "ヒコ", "テル", "ユキ", "トロ", "リン", "ポコ", "タラ", "ナリ", "イチ", "ユウ", "ヨシ", "オリ", "タケ", "マサ", "タカ", "ナオ", "スケ", "ピヨ", "フウ", "ツネ", "ノロ", "ポロ", "ポポ", "トト", "テロ", "ピロ", "ポン", "ポワ", "ヨネ", "ウメ", "ノリ", "ロウ", "ゾウ", "ヤン", "ハン", "リィ", "オウ", "チィ", "ケン", "チヨ", "リリ", "ザム", "ラム", "ヒム", "タキ", "ザワ"],
     "prefixes": [],

@@ -5,7 +5,7 @@ if require?
 
 class Trifolium
     constructor : (settings) ->
-        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary} = settings
+        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval} = settings
         @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
         
         @routeList = []
@@ -23,7 +23,6 @@ class Trifolium
         (@braveNamePrefixes ?= []).push term for term in dict for dict in [braveNameDictionary.prefixes, braveNameDictionary.terms]
         (@braveNameSuffixes ?= []).push term for term in dict for dict in [braveNameDictionary.suffixes, braveNameDictionary.terms]
         
-        numBraves = 10
         @braveList = (new Brave(@makeBraveName(braveNameDictionary), spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for i in [0...numBraves])
         for brave in @braveList
             action = brave.spot.randomAction()
@@ -35,7 +34,7 @@ class Trifolium
         timer = setInterval( =>
             @tick()
             @count++
-        , 30)
+        , @tickInterval)
         
     tick: ->
         brave.tick() for brave in @braveList
