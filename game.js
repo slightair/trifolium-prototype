@@ -510,11 +510,18 @@ Game = (function() {
       y: this.bravePosY(brave)
     });
     braveObject.addFrameListener(function(t, dt) {
+      var actionProcessPercentage;
       braveObject.x = _this.bravePosX(brave);
-      return braveObject.y = _this.bravePosY(brave);
+      braveObject.y = _this.bravePosY(brave);
+      if (brave === _this.selectedBrave) {
+        actionProcessPercentage = (brave.actionProcess * 100).toFixed(1);
+        $("#brave-actionProcess-bar").text("" + actionProcessPercentage + "%");
+        return $("#brave-actionProcess-bar").css("width", "" + actionProcessPercentage + "%");
+      }
     });
     braveObject.addEventListener('mousedown', function(event) {
-      return _this.selectedBrave = brave;
+      _this.selectedBrave = brave;
+      return _this.displayBraveInfo(brave);
     });
     color = "hsla(" + (parseInt(Math.random() * 360)) + ", 70%, 50%, 1.0)";
     head = new Circle(2 * this.mapScale, {
@@ -532,27 +539,49 @@ Game = (function() {
     braveObject.append(body);
     this.canvas.append(braveObject);
     return brave.onCompleteAction = function(brave, action, isSucceed) {
+      var actionEffect, circleRadiusMax, effectTime;
+      circleRadiusMax = 20.0;
+      effectTime = 800;
+      actionEffect = new Circle(1 * _this.mapScale, {
+        x: 0,
+        y: 0,
+        stroke: "rgba(33, 66, 255, 0.8)",
+        strokeWidth: _this.mapScale,
+        fill: "rgba(33, 66, 255, 0.5)",
+        endAngle: Math.PI * 2,
+        opacity: 1.0
+      });
+      actionEffect.addFrameListener(function(t, dt) {
+        if (dt > effectTime) actionEffect.removeSelf;
+        actionEffect.radius += dt / effectTime * circleRadiusMax;
+        actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax;
+        if (actionEffect.radius > circleRadiusMax) {
+          return actionEffect.removeSelf();
+        }
+      });
+      braveObject.append(actionEffect);
+      if (brave === _this.selectedBrave) {
+        $("#brave-position-value").text("" + brave.spot.name);
+        $("#brave-action-value").text("" + brave.action.name);
+      }
       switch (action.name) {
         case 'move':
           return _this.log("勇者" + brave.name + "が" + action.to.name + "に到着しました");
         case 'wait':
-          return _this.log("勇者" + brave.name + "はぼーっとしている");
+          return _this.log("勇者" + brave.name + "はぼーっとしていた");
       }
     };
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
-    var actionProcessPercentage, paramName, paramNames, _i, _len;
+    var paramName, paramNames, _i, _len;
     paramNames = ['name', 'lv', 'atk', 'matk', 'hp', 'mp', 'brave', 'faith', 'speed'];
     for (_i = 0, _len = paramNames.length; _i < _len; _i++) {
       paramName = paramNames[_i];
       $("#brave-" + paramName + "-value").text(brave[paramName]);
     }
     $("#brave-position-value").text("" + brave.spot.name);
-    $("#brave-action-value").text("" + brave.action.name);
-    actionProcessPercentage = (brave.actionProcess * 100).toFixed(1);
-    $("#brave-actionProcess-bar").text("" + actionProcessPercentage + "%");
-    return $("#brave-actionProcess-bar").css("width", "" + actionProcessPercentage + "%");
+    return $("#brave-action-value").text("" + brave.action.name);
   };
 
   Game.prototype.bravePosX = function(brave) {
@@ -600,9 +629,6 @@ Game = (function() {
       }
     });
     this.canvas.append(selectedBraveMarker);
-    this.canvas.addFrameListener(function(t, dt) {
-      if (_this.selectedBrave) return _this.displayBraveInfo(_this.selectedBrave);
-    });
     this.infoLayer.append(new ElementNode(E('div', {
       id: 'log'
     }), {

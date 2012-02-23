@@ -38,8 +38,13 @@ class Game
         braveObject.addFrameListener (t, dt) =>
             braveObject.x = @bravePosX brave
             braveObject.y = @bravePosY brave
+            if brave == @selectedBrave
+                actionProcessPercentage = (brave.actionProcess * 100).toFixed(1)
+                $("#brave-actionProcess-bar").text("#{actionProcessPercentage}%")
+                $("#brave-actionProcess-bar").css("width", "#{actionProcessPercentage}%")
         braveObject.addEventListener('mousedown', (event) =>
             @selectedBrave = brave
+            @displayBraveInfo brave
         )
         
         color = "hsla(#{parseInt(Math.random() * 360)}, 70%, 50%, 1.0)"
@@ -52,17 +57,39 @@ class Game
                     x: -2 * @mapScale
                     y: 0
                     fill: color
+        
         braveObject.append head
         braveObject.append body
         
         @canvas.append braveObject
         
         brave.onCompleteAction = (brave, action, isSucceed) =>
+            circleRadiusMax = 20.0
+            effectTime = 800
+            actionEffect = new Circle 1 * @mapScale,
+                        x: 0
+                        y: 0
+                        stroke: "rgba(33, 66, 255, 0.8)"
+                        strokeWidth: @mapScale
+                        fill: "rgba(33, 66, 255, 0.5)"
+                        endAngle: Math.PI * 2
+                        opacity: 1.0
+            actionEffect.addFrameListener (t, dt) =>
+                actionEffect.removeSelf if dt > effectTime
+                actionEffect.radius += dt / effectTime * circleRadiusMax
+                actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax
+                actionEffect.removeSelf() if actionEffect.radius > circleRadiusMax
+            braveObject.append actionEffect
+            
+            if brave == @selectedBrave
+                $("#brave-position-value").text("#{brave.spot.name}")
+                $("#brave-action-value").text("#{brave.action.name}")
+            
             switch action.name
                 when 'move'
                     @log "勇者#{brave.name}が#{action.to.name}に到着しました"
                 when 'wait'
-                    @log "勇者#{brave.name}はぼーっとしている"
+                    @log "勇者#{brave.name}はぼーっとしていた"
     
     displayBraveInfo: (brave) ->
         paramNames = [
@@ -79,10 +106,6 @@ class Game
         $("#brave-#{paramName}-value").text(brave[paramName]) for paramName in paramNames
         $("#brave-position-value").text("#{brave.spot.name}")
         $("#brave-action-value").text("#{brave.action.name}")
-        
-        actionProcessPercentage = (brave.actionProcess * 100).toFixed(1)
-        $("#brave-actionProcess-bar").text("#{actionProcessPercentage}%")
-        $("#brave-actionProcess-bar").css("width", "#{actionProcessPercentage}%")
     
     bravePosX: (brave) ->
         @canvas.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * @mapScale
@@ -111,9 +134,6 @@ class Game
                 selectedBraveMarker.x = @bravePosX(@selectedBrave) - markerSize / 2
                 selectedBraveMarker.y = @bravePosY(@selectedBrave) - markerSize / 2
         @canvas.append selectedBraveMarker
-        
-        @canvas.addFrameListener (t, dt) =>
-            @displayBraveInfo @selectedBrave if @selectedBrave
         
         @infoLayer.append new ElementNode E('div', id: 'log'),
             valign: "bottom"
