@@ -1,4 +1,4 @@
-var Brave, Spot, WaitAction, should;
+var Brave, Item, Spot, WaitAction, should;
 
 should = require('should');
 
@@ -7,6 +7,8 @@ Brave = require('../lib/trifolium/brave').Brave;
 Spot = require('../lib/trifolium/spot').Spot;
 
 WaitAction = require('../lib/trifolium/action').WaitAction;
+
+Item = require('../lib/trifolium/item').Item;
 
 describe('Brave', function() {
   var brave, spot;
@@ -56,7 +58,14 @@ describe('Brave', function() {
   it('should have destination', function() {
     return brave.destination.should.equal(spot);
   });
-  return describe('#tick()', function() {
+  it('should have items', function() {
+    brave.items.should.be.an["instanceof"](Array);
+    return brave.items.should.be.empty;
+  });
+  it('should have gold', function() {
+    return brave.gold.should.equal(300);
+  });
+  describe('#tick()', function() {
     beforeEach(function() {
       brave.action = new WaitAction(3000);
       return brave.actionProcess = 0.0;
@@ -83,6 +92,54 @@ describe('Brave', function() {
       brave.tick();
       brave.actionProcess.should.be.within(0.998, 1.000);
       return brave.tick();
+    });
+  });
+  describe('#addItem()', function() {
+    beforeEach(function() {
+      return brave.items = [];
+    });
+    it('should add an item', function() {
+      var item, result;
+      item = new Item;
+      brave.items.should.be.empty;
+      result = brave.addItem(item);
+      brave.items.should.include(item);
+      return result.should.be.ok;
+    });
+    return it('should not add item over 10 items', function() {
+      var i, result;
+      for (i = 0; i < 10; i++) {
+        brave.addItem(new Item);
+      }
+      brave.items.should.have.length(10);
+      result = brave.addItem(new Item);
+      result.should.not.be.ok;
+      return brave.items.should.have.length(10);
+    });
+  });
+  return describe('#removeItem()', function() {
+    var item;
+    item = new Item;
+    beforeEach(function() {
+      return brave.items = [item];
+    });
+    it('should remove an item', function() {
+      brave.items.should.not.be.empty;
+      brave.items.should.include(item);
+      brave.removeItem(item);
+      brave.items.should.not.include(item);
+      return brave.items.should.be.empty;
+    });
+    return it('should not remove no include item', function() {
+      var another;
+      another = new Item;
+      brave.items.should.not.be.empty;
+      brave.items.should.include(item);
+      brave.items.should.not.include(another);
+      brave.removeItem(another);
+      brave.items.should.not.be.empty;
+      brave.items.should.include(item);
+      return brave.items.should.not.include(another);
     });
   });
 });

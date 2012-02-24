@@ -1,4 +1,4 @@
-var Action, Brave, Game, MoveAction, SearchAction, Spot, Trifolium, WaitAction, settings, _ref, _ref2,
+var Action, Brave, Game, Item, MoveAction, SearchAction, Spot, Trifolium, WaitAction, settings, _ref, _ref2,
   __hasProp = Object.prototype.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -150,7 +150,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 Brave = (function() {
 
   function Brave(name, spawnSpot, options) {
-    var _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+    var _ref, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
     this.name = name;
     if (options == null) options = {};
     this.lv = (_ref = options.lv) != null ? _ref : 1;
@@ -161,6 +161,8 @@ Brave = (function() {
     this.brave = (_ref6 = options.brave) != null ? _ref6 : 50;
     this.faith = (_ref7 = options.faith) != null ? _ref7 : 50;
     this.speed = (_ref8 = options.speed) != null ? _ref8 : 3;
+    this.gold = (_ref9 = options.gold) != null ? _ref9 : 300;
+    this.items = (_ref10 = options.items) != null ? _ref10 : [];
     this.action = null;
     this.actionProcess = 0.0;
     this.spot = spawnSpot;
@@ -180,11 +182,49 @@ Brave = (function() {
     }
   };
 
+  Brave.prototype.addItem = function(item) {
+    if (this.items.length < 10) {
+      this.items.push(item);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  Brave.prototype.removeItem = function(item) {
+    var i;
+    return this.items = (function() {
+      var _i, _len, _ref, _results;
+      _ref = this.items;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        i = _ref[_i];
+        if (i !== item) _results.push(i);
+      }
+      return _results;
+    }).call(this);
+  };
+
   return Brave;
 
 })();
 
 if (typeof exports !== "undefined" && exports !== null) exports.Brave = Brave;
+
+Item = (function() {
+
+  function Item(name) {
+    var date;
+    this.name = name != null ? name : 'unknown';
+    date = new Date;
+    this.id = "" + (date.getTime()) + (date.getMilliseconds());
+  }
+
+  return Item;
+
+})();
+
+if (typeof exports !== "undefined" && exports !== null) exports.Item = Item;
 
 if (typeof require !== "undefined" && require !== null) {
   _ref = require('./action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;

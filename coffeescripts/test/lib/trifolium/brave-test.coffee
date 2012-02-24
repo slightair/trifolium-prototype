@@ -2,6 +2,7 @@ should = require 'should'
 {Brave} = require '../lib/trifolium/brave'
 {Spot} = require '../lib/trifolium/spot'
 {WaitAction} = require '../lib/trifolium/action'
+{Item} = require '../lib/trifolium/item'
 
 describe 'Brave', ->
     spot = new Spot 'testSpot', 0, 0, [
@@ -48,6 +49,13 @@ describe 'Brave', ->
     it 'should have destination', ->
         brave.destination.should.equal spot
     
+    it 'should have items', ->
+        brave.items.should.be.an.instanceof Array
+        brave.items.should.be.empty
+    
+    it 'should have gold', ->
+        brave.gold.should.equal 300
+    
     describe '#tick()', ->
         
         beforeEach ->
@@ -78,4 +86,49 @@ describe 'Brave', ->
             brave.actionProcess.should.be.within 0.998, 1.000
             
             brave.tick() # => call brave.onCompleteAction()
+    
+    describe '#addItem()', ->
         
+        beforeEach ->
+            brave.items = []
+        
+        it 'should add an item', ->
+            item = new Item
+            
+            brave.items.should.be.empty
+            result = brave.addItem item
+            brave.items.should.include item
+            result.should.be.ok
+        
+        it 'should not add item over 10 items', ->
+            brave.addItem new Item for i in [0...10]
+            brave.items.should.have.length 10
+            result = brave.addItem new Item
+            result.should.not.be.ok
+            brave.items.should.have.length 10
+    
+    describe '#removeItem()', ->
+        item = new Item
+        
+        beforeEach ->
+            brave.items = [item]
+        
+        it 'should remove an item', ->
+            brave.items.should.not.be.empty
+            brave.items.should.include item
+            brave.removeItem item
+            brave.items.should.not.include item
+            brave.items.should.be.empty
+        
+        it 'should not remove no include item', ->
+            another = new Item
+            
+            brave.items.should.not.be.empty
+            brave.items.should.include(item)
+            brave.items.should.not.include(another)
+            brave.removeItem another
+            brave.items.should.not.be.empty
+            brave.items.should.include(item)
+            brave.items.should.not.include(another)
+
+    

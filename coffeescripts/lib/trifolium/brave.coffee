@@ -8,6 +8,8 @@ class Brave
         @brave = options.brave ? 50
         @faith = options.faith ? 50
         @speed = options.speed ? 3
+        @gold  = options.gold  ? 300
+        @items = options.items ? []
         @action = null
         @actionProcess = 0.0
         @spot = spawnSpot
@@ -21,5 +23,12 @@ class Brave
                 prevAction = @action
                 isSucceed = @action.do @
                 @onCompleteAction?(@, prevAction, isSucceed)
-    
+    addItem: (item) ->
+        if @items.length < 10
+            @items.push item 
+            true
+        else
+            false
+    removeItem: (item) ->
+        @items = (i for i in @items when i != item)
 exports?.Brave = Brave
