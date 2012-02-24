@@ -540,7 +540,7 @@ Game = (function() {
     this.canvas.append(braveObject);
     return brave.onCompleteAction = function(brave, action, isSucceed) {
       var actionEffect, circleRadiusMax, effectTime;
-      circleRadiusMax = 20.0;
+      circleRadiusMax = 40.0;
       effectTime = 800;
       actionEffect = new Circle(1 * _this.mapScale, {
         x: 0,

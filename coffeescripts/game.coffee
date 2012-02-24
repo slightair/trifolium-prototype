@@ -64,7 +64,7 @@ class Game
         @canvas.append braveObject
         
         brave.onCompleteAction = (brave, action, isSucceed) =>
-            circleRadiusMax = 20.0
+            circleRadiusMax = 40.0
             effectTime = 800
             actionEffect = new Circle 1 * @mapScale,
                         x: 0
