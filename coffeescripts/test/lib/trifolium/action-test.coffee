@@ -131,6 +131,75 @@ describe 'MoveAction', ->
             brave.action.time.should.equal 5000
 
 describe 'SearchAction', ->
-    it 'should have name'
-    it 'should have time'
-    it 'should ...'
+    action = new SearchAction 3000,
+        'kinoko': 500
+        'banana': 300
+        'apple': 200
+    
+    it 'should have name', ->
+        action.name.should.equal 'search'
+    
+    it 'should have time', ->
+        action.time.should.equal 3000
+    
+    it 'should have probabilityMax', ->
+        action.probabilityMax.should.equal 1000
+    
+    it 'should have tresureDict', ->
+        action.treasureDict.should.be.an.instanceof Object
+    
+    it 'should not have tresure', ->
+        should.not.exist action.treasure
+    
+    describe '#do()', ->
+        brave = new Brave 'testBrave', new Spot 'testSpot', 10, 10
+        
+        beforeEach ->
+            brave.items = []
+        
+        it 'should return false over probabilityMax', ->
+            failureAction = new SearchAction 3000,
+                'kinoko': 500
+                'banana': 500
+                'apple': 500
+            
+            result = failureAction.do brave
+            result.should.not.be.ok
+        
+        it 'should add item to brave', ->
+            successAction = new SearchAction 3000,
+                'kinoko': 1000
+            
+            result = successAction.do brave
+            result.should.be.ok
+            brave.items.should.include 'kinoko'
+            successAction.treasure.should.equal 'kinoko'
+        
+        it 'should return false if brave failed to get item', ->
+            success = 0
+            failure = 0
+            
+            for i in [1..50]
+                randomAction = new SearchAction 3000,
+                    'kinoko': 500
+                brave.items = []
+                
+                result = randomAction.do brave
+                if randomAction.treasure
+                    result.should.be.ok
+                    success += 1
+                else
+                    result.should.not.be.ok
+                    failure += 1
+            
+            success.should.above 10
+            failure.should.above 10
+        
+        it 'should return false if brave cannot take a getting item', ->
+            failureAction = new SearchAction 3000,
+                'kinoko': 1000
+            
+            brave.items = [1..10]
+            result = failureAction.do brave
+            result.should.not.be.ok
+            failureAction.treasure.should.equal 'kinoko'

@@ -2,7 +2,7 @@ class Action
     constructor: ->
         @name = null
         @isSucceed = false
-        @time = 0
+        @time ?= 0
     prepare: (brave) ->
         
     do: (brave) ->
@@ -15,10 +15,9 @@ class Action
         brave.destination = nextAction.to ? brave.spot
 
 class WaitAction extends Action
-    constructor: (time) ->
+    constructor: (@time) ->
         super
         @name = 'wait'
-        @time = time
     do: (brave) ->
         super brave
         
@@ -26,12 +25,10 @@ class WaitAction extends Action
         @isSucceed = true
 
 class MoveAction extends Action
-    constructor: (from, to) ->
+    constructor: (@from, @to) ->
         super
         @name = 'move'
-        @from = from
-        @to = to
-        @time = from.distance(to) * 100
+        @time = @from.distance(@to) * 100
     do: (brave) ->
         super brave
         brave.spot = @to
@@ -41,12 +38,10 @@ class MoveAction extends Action
 
 class SearchAction extends Action
     probabilityMax: 1000
-    constructor: (treasureDict) ->
+    constructor: (@time, @treasureDict = {}) ->
         super
         @name = 'search'
-        @treasureDict = treasureDict
         @treasure = null
-        @time = 1000
     do: (brave) ->
         super brave
         total = 0
@@ -60,7 +55,12 @@ class SearchAction extends Action
         needle = Math.random() * @probabilityMax
         @treasure = treasure for treasure, i in treasures when not @treasure? and needle < probabilities[i]
         
-        @isSucceed = @treasure?
+        if @treasure && brave.addItem @treasure
+            @isSucceed = true
+        else
+            @isSucceed = false
+        
+        @isSucceed
 
 exports?.Action = Action
 exports?.WaitAction = WaitAction

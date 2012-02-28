@@ -1,4 +1,4 @@
-var settings;
+var itemDict, settings;
 
 settings = {
   "tickInterval": 30,
@@ -95,6 +95,31 @@ settings = {
   }
 };
 
+itemDict = {
+  1: {
+    name: 'きのこ'
+  },
+  2: {
+    name: 'ちくわ'
+  },
+  3: {
+    name: 'いいちくわ'
+  },
+  4: {
+    name: 'おにく'
+  },
+  5: {
+    name: 'いいおにく'
+  },
+  10: {
+    name: '竹の槍'
+  }
+};
+
 if (typeof exports !== "undefined" && exports !== null) {
   exports.settings = settings;
+}
+
+if (typeof exports !== "undefined" && exports !== null) {
+  exports.itemDict = itemDict;
 }

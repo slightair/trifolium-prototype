@@ -156,7 +156,83 @@ describe('MoveAction', function() {
 });
 
 describe('SearchAction', function() {
-  it('should have name');
-  it('should have time');
-  return it('should ...');
+  var action;
+  action = new SearchAction(3000, {
+    'kinoko': 500,
+    'banana': 300,
+    'apple': 200
+  });
+  it('should have name', function() {
+    return action.name.should.equal('search');
+  });
+  it('should have time', function() {
+    return action.time.should.equal(3000);
+  });
+  it('should have probabilityMax', function() {
+    return action.probabilityMax.should.equal(1000);
+  });
+  it('should have tresureDict', function() {
+    return action.treasureDict.should.be.an["instanceof"](Object);
+  });
+  it('should not have tresure', function() {
+    return should.not.exist(action.treasure);
+  });
+  return describe('#do()', function() {
+    var brave;
+    brave = new Brave('testBrave', new Spot('testSpot', 10, 10));
+    beforeEach(function() {
+      return brave.items = [];
+    });
+    it('should return false over probabilityMax', function() {
+      var failureAction, result;
+      failureAction = new SearchAction(3000, {
+        'kinoko': 500,
+        'banana': 500,
+        'apple': 500
+      });
+      result = failureAction["do"](brave);
+      return result.should.not.be.ok;
+    });
+    it('should add item to brave', function() {
+      var result, successAction;
+      successAction = new SearchAction(3000, {
+        'kinoko': 1000
+      });
+      result = successAction["do"](brave);
+      result.should.be.ok;
+      brave.items.should.include('kinoko');
+      return successAction.treasure.should.equal('kinoko');
+    });
+    it('should return false if brave failed to get item', function() {
+      var failure, i, randomAction, result, success;
+      success = 0;
+      failure = 0;
+      for (i = 1; i <= 50; i++) {
+        randomAction = new SearchAction(3000, {
+          'kinoko': 500
+        });
+        brave.items = [];
+        result = randomAction["do"](brave);
+        if (randomAction.treasure) {
+          result.should.be.ok;
+          success += 1;
+        } else {
+          result.should.not.be.ok;
+          failure += 1;
+        }
+      }
+      success.should.above(10);
+      return failure.should.above(10);
+    });
+    return it('should return false if brave cannot take a getting item', function() {
+      var failureAction, result;
+      failureAction = new SearchAction(3000, {
+        'kinoko': 1000
+      });
+      brave.items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      result = failureAction["do"](brave);
+      result.should.not.be.ok;
+      return failureAction.treasure.should.equal('kinoko');
+    });
+  });
 });

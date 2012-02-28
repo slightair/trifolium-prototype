@@ -1,4 +1,4 @@
-var Action, Brave, Game, Item, MoveAction, SearchAction, Spot, Trifolium, WaitAction, settings, _ref, _ref2,
+var Action, Brave, Game, Item, ItemCreator, MoveAction, SearchAction, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
   __hasProp = Object.prototype.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -8,7 +8,7 @@ Action = (function() {
   function Action() {
     this.name = null;
     this.isSucceed = false;
-    this.time = 0;
+    if (this.time == null) this.time = 0;
   }
 
   Action.prototype.prepare = function(brave) {};
@@ -35,9 +35,9 @@ WaitAction = (function(_super) {
   __extends(WaitAction, _super);
 
   function WaitAction(time) {
+    this.time = time;
     WaitAction.__super__.constructor.apply(this, arguments);
     this.name = 'wait';
-    this.time = time;
   }
 
   WaitAction.prototype["do"] = function(brave) {
@@ -55,11 +55,11 @@ MoveAction = (function(_super) {
   __extends(MoveAction, _super);
 
   function MoveAction(from, to) {
-    MoveAction.__super__.constructor.apply(this, arguments);
-    this.name = 'move';
     this.from = from;
     this.to = to;
-    this.time = from.distance(to) * 100;
+    MoveAction.__super__.constructor.apply(this, arguments);
+    this.name = 'move';
+    this.time = this.from.distance(this.to) * 100;
   }
 
   MoveAction.prototype["do"] = function(brave) {
@@ -79,12 +79,12 @@ SearchAction = (function(_super) {
 
   SearchAction.prototype.probabilityMax = 1000;
 
-  function SearchAction(treasureDict) {
+  function SearchAction(time, treasureDict) {
+    this.time = time;
+    this.treasureDict = treasureDict != null ? treasureDict : {};
     SearchAction.__super__.constructor.apply(this, arguments);
     this.name = 'search';
-    this.treasureDict = treasureDict;
     this.treasure = null;
-    this.time = 1000;
   }
 
   SearchAction.prototype["do"] = function(brave) {
@@ -126,7 +126,12 @@ SearchAction = (function(_super) {
         this.treasure = treasure;
       }
     }
-    return this.isSucceed = this.treasure != null;
+    if (this.treasure && brave.addItem(this.treasure)) {
+      this.isSucceed = true;
+    } else {
+      this.isSucceed = false;
+    }
+    return this.isSucceed;
   };
 
   return SearchAction;
@@ -213,9 +218,10 @@ if (typeof exports !== "undefined" && exports !== null) exports.Brave = Brave;
 
 Item = (function() {
 
-  function Item(name) {
+  function Item(itemId, name) {
     var date;
-    this.name = name != null ? name : 'unknown';
+    this.itemId = itemId;
+    this.name = name;
     date = new Date;
     this.id = "" + (date.getTime()) + (date.getMilliseconds());
   }
@@ -224,7 +230,30 @@ Item = (function() {
 
 })();
 
+ItemCreator = (function() {
+
+  function ItemCreator(itemDict) {
+    this.itemDict = itemDict;
+  }
+
+  ItemCreator.prototype.createItem = function(itemId, name) {
+    if (name == null) name = null;
+    if (this.itemDict[itemId] != null) {
+      return new Item(itemId, name != null ? name : this.itemDict[itemId].name);
+    } else {
+      return null;
+    }
+  };
+
+  return ItemCreator;
+
+})();
+
 if (typeof exports !== "undefined" && exports !== null) exports.Item = Item;
+
+if (typeof exports !== "undefined" && exports !== null) {
+  exports.ItemCreator = ItemCreator;
+}
 
 if (typeof require !== "undefined" && require !== null) {
   _ref = require('./action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
@@ -493,8 +522,33 @@ settings = {
   }
 };
 
+itemDict = {
+  1: {
+    name: 'きのこ'
+  },
+  2: {
+    name: 'ちくわ'
+  },
+  3: {
+    name: 'いいちくわ'
+  },
+  4: {
+    name: 'おにく'
+  },
+  5: {
+    name: 'いいおにく'
+  },
+  10: {
+    name: '竹の槍'
+  }
+};
+
 if (typeof exports !== "undefined" && exports !== null) {
   exports.settings = settings;
+}
+
+if (typeof exports !== "undefined" && exports !== null) {
+  exports.itemDict = itemDict;
 }
 
 $(function() {
