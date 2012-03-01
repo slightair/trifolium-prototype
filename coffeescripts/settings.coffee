@@ -13,6 +13,20 @@ settings = {
         ]}
         {"name": "なめこの洞窟", "posX":  120, "posY":  -80, "actions": [
             {"type": "wait", "time": 3000}
+            {
+                "type": "search"
+                "time": 5000
+                "treasures": [
+                    {
+                        "itemId": 1
+                        "probability": 500
+                    }
+                    {
+                        "itemId": 2
+                        "probability": 100
+                    }
+                ]
+            }
         ]}
         {"name": "たけのこ山", "posX":  -60, "posY":  -80, "actions": [
             {"type": "wait", "time": 3000}
@@ -123,12 +137,14 @@ itemDict = {
     1:
         name: 'きのこ'
     2:
-        name: 'ちくわ'
+        name: 'いいきのこ'
     3:
-        name: 'いいちくわ'
+        name: 'ちくわ'
     4:
-        name: 'おにく'
+        name: 'いいちくわ'
     5:
+        name: 'おにく'
+    6:
         name: 'いいおにく'
     10:
         name: '竹の槍'

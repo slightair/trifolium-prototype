@@ -1,4 +1,4 @@
-var Action, Brave, Game, Item, ItemCreator, MoveAction, SearchAction, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
+var Action, Brave, Game, Item, ItemCreator, MoveAction, SearchAction, SharedItemCreator, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
   __hasProp = Object.prototype.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -88,22 +88,22 @@ SearchAction = (function(_super) {
   }
 
   SearchAction.prototype["do"] = function(brave) {
-    var i, needle, probabilities, probability, total, treasure, treasures, _len, _ref;
+    var i, id, needle, probabilities, probability, total, treasureIds, treasureInfo, _len, _ref;
     SearchAction.__super__["do"].call(this, brave);
     total = 0;
     _ref = this.treasureDict;
-    for (treasure in _ref) {
-      probability = _ref[treasure];
-      total += probability;
+    for (id in _ref) {
+      treasureInfo = _ref[id];
+      total += treasureInfo.probability;
     }
     if (total > this.probabilityMax) return this.isSucceed = false;
-    treasures = ((function() {
+    treasureIds = ((function() {
       var _ref2, _results;
       _ref2 = this.treasureDict;
       _results = [];
-      for (treasure in _ref2) {
-        probability = _ref2[treasure];
-        _results.push(treasure);
+      for (id in _ref2) {
+        treasureInfo = _ref2[id];
+        _results.push(id);
       }
       return _results;
     }).call(this)).sort(function(a, b) {
@@ -113,17 +113,17 @@ SearchAction = (function(_super) {
     probabilities = (function() {
       var _i, _len, _results;
       _results = [];
-      for (_i = 0, _len = treasures.length; _i < _len; _i++) {
-        treasure = treasures[_i];
-        _results.push(probability += this.treasureDict[treasure]);
+      for (_i = 0, _len = treasureIds.length; _i < _len; _i++) {
+        id = treasureIds[_i];
+        _results.push(probability += this.treasureDict[id].probability);
       }
       return _results;
     }).call(this);
     needle = Math.random() * this.probabilityMax;
-    for (i = 0, _len = treasures.length; i < _len; i++) {
-      treasure = treasures[i];
+    for (i = 0, _len = treasureIds.length; i < _len; i++) {
+      id = treasureIds[i];
       if (!(this.treasure != null) && needle < probabilities[i]) {
-        this.treasure = treasure;
+        this.treasure = this.treasureDict[id].item;
       }
     }
     if (this.treasure && brave.addItem(this.treasure)) {
@@ -216,6 +216,10 @@ Brave = (function() {
 
 if (typeof exports !== "undefined" && exports !== null) exports.Brave = Brave;
 
+if (typeof require !== "undefined" && require !== null) {
+  itemDict = require('../../settings').itemDict;
+}
+
 Item = (function() {
 
   function Item(itemId, name) {
@@ -223,7 +227,7 @@ Item = (function() {
     this.itemId = itemId;
     this.name = name;
     date = new Date;
-    this.id = "" + (date.getTime()) + (date.getMilliseconds());
+    this.id = "" + (date.getTime()) + (date.getMilliseconds()) + this.itemId + this.name;
   }
 
   return Item;
@@ -249,14 +253,21 @@ ItemCreator = (function() {
 
 })();
 
+SharedItemCreator = new ItemCreator(itemDict);
+
 if (typeof exports !== "undefined" && exports !== null) exports.Item = Item;
 
 if (typeof exports !== "undefined" && exports !== null) {
   exports.ItemCreator = ItemCreator;
 }
 
+if (typeof exports !== "undefined" && exports !== null) {
+  exports.SharedItemCreator = SharedItemCreator;
+}
+
 if (typeof require !== "undefined" && require !== null) {
   _ref = require('./action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
+  SharedItemCreator = require('./item').SharedItemCreator;
 }
 
 Spot = (function() {
@@ -280,7 +291,7 @@ Spot = (function() {
   };
 
   Spot.prototype.makeActions = function(actionInfoList) {
-    var action, actionInfo, actions, _i, _len;
+    var action, actionInfo, actions, item, treasureDict, treasureInfo, _i, _j, _len, _len2, _ref2;
     actions = [];
     if (actionInfoList != null) {
       for (_i = 0, _len = actionInfoList.length; _i < _len; _i++) {
@@ -289,6 +300,19 @@ Spot = (function() {
         switch (actionInfo.type) {
           case 'wait':
             action = new WaitAction(actionInfo.time);
+            break;
+          case 'search':
+            treasureDict = {};
+            _ref2 = actionInfo.treasures;
+            for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+              treasureInfo = _ref2[_j];
+              item = SharedItemCreator.createItem(treasureInfo.itemId, treasureInfo.name);
+              treasureDict[item.id] = {
+                item: item,
+                probability: treasureInfo.probability
+              };
+            }
+            action = new SearchAction(actionInfo.time, treasureDict);
         }
         if (action != null) actions.push(action);
       }
@@ -469,6 +493,18 @@ settings = {
         {
           "type": "wait",
           "time": 3000
+        }, {
+          "type": "search",
+          "time": 5000,
+          "treasures": [
+            {
+              "itemId": 1,
+              "probability": 500
+            }, {
+              "itemId": 2,
+              "probability": 100
+            }
+          ]
         }
       ]
     }, {
@@ -527,15 +563,18 @@ itemDict = {
     name: 'きのこ'
   },
   2: {
-    name: 'ちくわ'
+    name: 'いいきのこ'
   },
   3: {
-    name: 'いいちくわ'
+    name: 'ちくわ'
   },
   4: {
-    name: 'おにく'
+    name: 'いいちくわ'
   },
   5: {
+    name: 'おにく'
+  },
+  6: {
     name: 'いいおにく'
   },
   10: {
@@ -660,9 +699,22 @@ Game = (function() {
       }
       switch (action.name) {
         case 'move':
-          return _this.log("勇者" + brave.name + "が" + action.to.name + "に到着しました");
+          return _this.log("勇者" + brave.name + " が " + action.to.name + " に到着しました");
         case 'wait':
-          return _this.log("勇者" + brave.name + "はぼーっとしていた");
+          return _this.log("勇者" + brave.name + " はぼーっとしていた");
+        case 'search':
+          if (isSucceed) {
+            return _this.log("勇者" + brave.name + " は " + action.treasure.name + " を手に入れた!");
+          } else {
+            if (action.treasure) {
+              return _this.log("勇者" + brave.name + " は " + action.treasure + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+            } else {
+              return _this.log("勇者" + brave.name + " はアイテムを見つけられなかった…");
+            }
+          }
+          break;
+        default:
+          return _this.log("unknown event - " + action.name);
       }
     };
   };

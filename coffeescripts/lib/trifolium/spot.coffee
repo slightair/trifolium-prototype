@@ -1,5 +1,6 @@
 if require?
     {Action, WaitAction, MoveAction, SearchAction} = require './action'
+    {SharedItemCreator} = require './item'
 
 class Spot
     constructor: (@name, @posX, @posY, actionInfoList = []) ->
@@ -15,7 +16,18 @@ class Spot
             for actionInfo in actionInfoList
                 action = null
                 switch actionInfo.type
-                    when 'wait' then action = new WaitAction(actionInfo.time)
+                    when 'wait'
+                        action = new WaitAction actionInfo.time
+                    when 'search'
+                        treasureDict = {}
+                        for treasureInfo in actionInfo.treasures
+                            item = SharedItemCreator.createItem treasureInfo.itemId, treasureInfo.name
+                            treasureDict[item.id] = {
+                                item: item
+                                probability: treasureInfo.probability
+                            }
+                        action = new SearchAction actionInfo.time, treasureDict
+                        
                 actions.push action if action?
         actions
 

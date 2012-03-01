@@ -2,6 +2,7 @@ should = require 'should'
 {Brave} = require '../lib/trifolium/brave'
 {Spot} = require '../lib/trifolium/spot'
 {Action, WaitAction, MoveAction, SearchAction} = require '../lib/trifolium/action'
+{SharedItemCreator} = require '../lib/trifolium/item'
 
 describe 'Action', ->
     action = new Action
@@ -131,10 +132,7 @@ describe 'MoveAction', ->
             brave.action.time.should.equal 5000
 
 describe 'SearchAction', ->
-    action = new SearchAction 3000,
-        'kinoko': 500
-        'banana': 300
-        'apple': 200
+    action = new SearchAction 3000, {}
     
     it 'should have name', ->
         action.name.should.equal 'search'
@@ -145,43 +143,53 @@ describe 'SearchAction', ->
     it 'should have probabilityMax', ->
         action.probabilityMax.should.equal 1000
     
-    it 'should have tresureDict', ->
+    it 'should have treasureDict', ->
         action.treasureDict.should.be.an.instanceof Object
     
     it 'should not have tresure', ->
         should.not.exist action.treasure
     
     describe '#do()', ->
+        kinoko = SharedItemCreator.createItem 1
+        goodKinoko = SharedItemCreator.createItem 2
+        tikuwa = SharedItemCreator.createItem 3
+        
         brave = new Brave 'testBrave', new Spot 'testSpot', 10, 10
         
         beforeEach ->
             brave.items = []
         
         it 'should return false over probabilityMax', ->
-            failureAction = new SearchAction 3000,
-                'kinoko': 500
-                'banana': 500
-                'apple': 500
+            treasureDict = {}
+            treasureDict[kinoko.id] = {item: kinoko, probability: 500}
+            treasureDict[goodKinoko.id] = {item: goodKinoko, probability: 500}
+            treasureDict[tikuwa.id] = {item: tikuwa, probability: 500}
+            
+            failureAction = new SearchAction 3000, treasureDict
             
             result = failureAction.do brave
             result.should.not.be.ok
         
         it 'should add item to brave', ->
-            successAction = new SearchAction 3000,
-                'kinoko': 1000
+            treasureDict = {}
+            treasureDict[kinoko.id] = {item: kinoko, probability: 1000}
+            
+            successAction = new SearchAction 3000, treasureDict
             
             result = successAction.do brave
             result.should.be.ok
-            brave.items.should.include 'kinoko'
-            successAction.treasure.should.equal 'kinoko'
+            brave.items.should.include kinoko
+            successAction.treasure.should.equal kinoko
         
         it 'should return false if brave failed to get item', ->
+            treasureDict = {}
+            treasureDict[kinoko.id] = {item: kinoko, probability: 500}
+            
             success = 0
             failure = 0
             
             for i in [1..50]
-                randomAction = new SearchAction 3000,
-                    'kinoko': 500
+                randomAction = new SearchAction 3000, treasureDict
                 brave.items = []
                 
                 result = randomAction.do brave
@@ -196,10 +204,12 @@ describe 'SearchAction', ->
             failure.should.above 10
         
         it 'should return false if brave cannot take a getting item', ->
-            failureAction = new SearchAction 3000,
-                'kinoko': 1000
+            treasureDict = {}
+            treasureDict[kinoko.id] = {item: kinoko, probability: 1000}
+            
+            failureAction = new SearchAction 3000, treasureDict
             
             brave.items = [1..10]
             result = failureAction.do brave
             result.should.not.be.ok
-            failureAction.treasure.should.equal 'kinoko'
+            failureAction.treasure.should.equal kinoko

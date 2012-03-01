@@ -42,6 +42,18 @@ settings = {
         {
           "type": "wait",
           "time": 3000
+        }, {
+          "type": "search",
+          "time": 5000,
+          "treasures": [
+            {
+              "itemId": 1,
+              "probability": 500
+            }, {
+              "itemId": 2,
+              "probability": 100
+            }
+          ]
         }
       ]
     }, {
@@ -100,15 +112,18 @@ itemDict = {
     name: 'きのこ'
   },
   2: {
-    name: 'ちくわ'
+    name: 'いいきのこ'
   },
   3: {
-    name: 'いいちくわ'
+    name: 'ちくわ'
   },
   4: {
-    name: 'おにく'
+    name: 'いいちくわ'
   },
   5: {
+    name: 'おにく'
+  },
+  6: {
     name: 'いいおにく'
   },
   10: {

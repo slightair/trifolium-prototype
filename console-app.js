@@ -13,9 +13,22 @@
     brave.onCompleteAction = function(brave, action, isSucceed) {
       switch (action.name) {
         case 'move':
-          return console.log("" + brave.name + " is arrived at " + action.to.name);
+          return console.log("勇者" + brave.name + " が " + action.to.name + " に到着しました");
         case 'wait':
-          return console.log("" + brave.name + " is waiting...");
+          return console.log("勇者" + brave.name + " はぼーっとしていた");
+        case 'search':
+          if (isSucceed) {
+            return console.log("勇者" + brave.name + " は " + action.treasure.name + " を手に入れた!");
+          } else {
+            if (action.treasure) {
+              return console.log("勇者" + brave.name + " は " + action.treasure + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+            } else {
+              return console.log("勇者" + brave.name + " はアイテムを見つけられなかった…");
+            }
+          }
+          break;
+        default:
+          return console.log("unknown event - " + action.name);
       }
     };
   }

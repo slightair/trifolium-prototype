@@ -4,7 +4,26 @@ should = require('should');
 
 _ref = require('../lib/trifolium/item'), Item = _ref.Item, ItemCreator = _ref.ItemCreator;
 
-itemDict = require('../settings.js').itemDict;
+itemDict = {
+  1: {
+    name: 'きのこ'
+  },
+  2: {
+    name: 'ちくわ'
+  },
+  3: {
+    name: 'いいちくわ'
+  },
+  4: {
+    name: 'おにく'
+  },
+  5: {
+    name: 'いいおにく'
+  },
+  10: {
+    name: '竹の槍'
+  }
+};
 
 describe('ItemCreator', function() {
   var itemCreator;

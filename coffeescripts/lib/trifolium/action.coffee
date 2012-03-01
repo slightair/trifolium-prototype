@@ -45,15 +45,16 @@ class SearchAction extends Action
     do: (brave) ->
         super brave
         total = 0
-        total += probability for treasure, probability of @treasureDict
+        total += treasureInfo.probability for id, treasureInfo of @treasureDict
         return @isSucceed = false if total > @probabilityMax
         
-        treasures = (treasure for treasure, probability of @treasureDict).sort (a, b) -> 0.5 - Math.random()
+        treasureIds = (id for id, treasureInfo of @treasureDict).sort (a, b) -> 0.5 - Math.random()
         probability = 0
-        probabilities = (probability += @treasureDict[treasure] for treasure in treasures)
+        probabilities = (probability += @treasureDict[id].probability for id in treasureIds)
         
         needle = Math.random() * @probabilityMax
-        @treasure = treasure for treasure, i in treasures when not @treasure? and needle < probabilities[i]
+        
+        @treasure = @treasureDict[id].item for id, i in treasureIds when not @treasure? and needle < probabilities[i]
         
         if @treasure && brave.addItem @treasure
             @isSucceed = true

@@ -87,9 +87,20 @@ class Game
             
             switch action.name
                 when 'move'
-                    @log "勇者#{brave.name}が#{action.to.name}に到着しました"
+                    @log "勇者#{brave.name} が #{action.to.name} に到着しました"
                 when 'wait'
-                    @log "勇者#{brave.name}はぼーっとしていた"
+                    @log "勇者#{brave.name} はぼーっとしていた"
+                when 'search'
+                    if isSucceed
+                        @log "勇者#{brave.name} は #{action.treasure.name} を手に入れた!"
+                    else
+                        if action.treasure
+                            @log "勇者#{brave.name} は #{action.treasure} を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                        else
+                            @log "勇者#{brave.name} はアイテムを見つけられなかった…"
+                else
+                    @log "unknown event - #{action.name}"
+                    
     
     displayBraveInfo: (brave) ->
         paramNames = [

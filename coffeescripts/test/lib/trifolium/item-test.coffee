@@ -1,6 +1,20 @@
 should = require 'should'
 {Item, ItemCreator} = require '../lib/trifolium/item'
-{itemDict} = require '../settings.js'
+
+itemDict = {
+    1:
+        name: 'きのこ'
+    2:
+        name: 'ちくわ'
+    3:
+        name: 'いいちくわ'
+    4:
+        name: 'おにく'
+    5:
+        name: 'いいおにく'
+    10:
+        name: '竹の槍'
+}
 
 describe 'ItemCreator', ->
     itemCreator = new ItemCreator itemDict
