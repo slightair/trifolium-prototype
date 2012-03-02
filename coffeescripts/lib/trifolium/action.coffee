@@ -8,6 +8,8 @@ class Action
     do: (brave) ->
         brave.action = null
         brave.actionProcess = 0.0
+        
+        # after を呼ばない!　サブクラスにまかせる
         @isSucceed = false
     after: (brave, nextAction) ->
         nextAction.prepare brave
@@ -61,6 +63,7 @@ class SearchAction extends Action
         else
             @isSucceed = false
         
+        @after(brave, brave.spot.randomAction())
         @isSucceed
 
 exports?.Action = Action

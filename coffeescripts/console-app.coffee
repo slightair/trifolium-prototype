@@ -14,7 +14,7 @@ for brave in simulator.braveList
                     console.log "勇者#{brave.name} は #{action.treasure.name} を手に入れた!"
                 else
                     if action.treasure
-                        console.log "勇者#{brave.name} は #{action.treasure} を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                        console.log "勇者#{brave.name} は #{action.treasure.name} を見つけたが、これ以上アイテムを持てないのであきらめた…"
                     else
                         console.log "勇者#{brave.name} はアイテムを見つけられなかった…"
             else

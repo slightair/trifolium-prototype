@@ -21,7 +21,7 @@
             return console.log("勇者" + brave.name + " は " + action.treasure.name + " を手に入れた!");
           } else {
             if (action.treasure) {
-              return console.log("勇者" + brave.name + " は " + action.treasure + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+              return console.log("勇者" + brave.name + " は " + action.treasure.name + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
             } else {
               return console.log("勇者" + brave.name + " はアイテムを見つけられなかった…");
             }

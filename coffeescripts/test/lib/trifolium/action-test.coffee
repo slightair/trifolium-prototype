@@ -32,6 +32,10 @@ describe 'Action', ->
         it 'should set 0.0 to brave.actionProcess', ->
             action.do brave
             brave.actionProcess.should.equal 0
+        
+        it 'should not have next action', ->
+            action.do brave
+            should.not.exist brave.action
     
     describe '#after()', ->
         nextAction = new Action
@@ -65,6 +69,9 @@ describe 'Action', ->
             brave.destination.should.equal toSpot
 
 describe 'WaitAction', ->
+    spot = new Spot 'testSpot', 0, 0, [
+        {type: 'wait', time: 3000}
+    ]
     action = new WaitAction 5000
     
     it 'should have name', ->
@@ -74,9 +81,6 @@ describe 'WaitAction', ->
         action.time.should.equal 5000
     
     describe '#do()', ->
-        spot = new Spot 'testSpot', 0, 0, [
-            {type: 'wait', time: 3000}
-        ]
         brave = new Brave 'testBrave', spot
         
         beforeEach ->
@@ -90,6 +94,11 @@ describe 'WaitAction', ->
             action.do brave
             brave.action.name.should.equal 'wait'
             brave.action.time.should.equal 3000
+        
+        it 'should have next action', ->
+            action.do brave
+            should.exist brave.action
+        
 
 describe 'MoveAction', ->
     fromSpot = new Spot 'from', 10, 10, [
@@ -130,8 +139,15 @@ describe 'MoveAction', ->
             action.do brave
             brave.action.name.should.equal 'wait'
             brave.action.time.should.equal 5000
+        
+        it 'should have next action', ->
+            action.do brave
+            should.exist brave.action
 
 describe 'SearchAction', ->
+    spot = new Spot 'testSpot', 0, 0, [
+        {type: 'wait', time: 3000}
+    ]
     action = new SearchAction 3000, {}
     
     it 'should have name', ->
@@ -154,9 +170,10 @@ describe 'SearchAction', ->
         goodKinoko = SharedItemCreator.createItem 2
         tikuwa = SharedItemCreator.createItem 3
         
-        brave = new Brave 'testBrave', new Spot 'testSpot', 10, 10
+        brave = new Brave 'testBrave', spot
         
         beforeEach ->
+            brave.action = 'dummy'
             brave.items = []
         
         it 'should return false over probabilityMax', ->
@@ -213,3 +230,8 @@ describe 'SearchAction', ->
             result = failureAction.do brave
             result.should.not.be.ok
             failureAction.treasure.should.equal kinoko
+        
+        it 'should have next action', ->
+            action.do brave
+            should.exist brave.action
+        

@@ -14,8 +14,6 @@ class ItemCreator
         else
             null
 
-SharedItemCreator = new ItemCreator itemDict
-
 exports?.Item = Item
 exports?.ItemCreator = ItemCreator
-exports?.SharedItemCreator = SharedItemCreator
+exports?.SharedItemCreator = new ItemCreator itemDict

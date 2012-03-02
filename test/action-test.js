@@ -35,9 +35,13 @@ describe('Action', function() {
       action["do"](brave);
       return should.not.exist(brave.action);
     });
-    return it('should set 0.0 to brave.actionProcess', function() {
+    it('should set 0.0 to brave.actionProcess', function() {
       action["do"](brave);
       return brave.actionProcess.should.equal(0);
+    });
+    return it('should not have next action', function() {
+      action["do"](brave);
+      return should.not.exist(brave.action);
     });
   });
   return describe('#after()', function() {
@@ -76,7 +80,13 @@ describe('Action', function() {
 });
 
 describe('WaitAction', function() {
-  var action;
+  var action, spot;
+  spot = new Spot('testSpot', 0, 0, [
+    {
+      type: 'wait',
+      time: 3000
+    }
+  ]);
   action = new WaitAction(5000);
   it('should have name', function() {
     return action.name.should.equal('wait');
@@ -85,13 +95,7 @@ describe('WaitAction', function() {
     return action.time.should.equal(5000);
   });
   return describe('#do()', function() {
-    var brave, spot;
-    spot = new Spot('testSpot', 0, 0, [
-      {
-        type: 'wait',
-        time: 3000
-      }
-    ]);
+    var brave;
     brave = new Brave('testBrave', spot);
     beforeEach(function() {
       brave.action = 'dummy';
@@ -100,10 +104,14 @@ describe('WaitAction', function() {
     it('should return true', function() {
       return (action["do"](brave)).should.be["true"];
     });
-    return it('should select next action from spot', function() {
+    it('should select next action from spot', function() {
       action["do"](brave);
       brave.action.name.should.equal('wait');
       return brave.action.time.should.equal(3000);
+    });
+    return it('should have next action', function() {
+      action["do"](brave);
+      return should.exist(brave.action);
     });
   });
 });
@@ -149,16 +157,26 @@ describe('MoveAction', function() {
       action["do"](brave);
       return brave.spot.name.should.equal('to');
     });
-    return it('should select next action from @to', function() {
+    it('should select next action from @to', function() {
       action["do"](brave);
       brave.action.name.should.equal('wait');
       return brave.action.time.should.equal(5000);
+    });
+    return it('should have next action', function() {
+      action["do"](brave);
+      return should.exist(brave.action);
     });
   });
 });
 
 describe('SearchAction', function() {
-  var action;
+  var action, spot;
+  spot = new Spot('testSpot', 0, 0, [
+    {
+      type: 'wait',
+      time: 3000
+    }
+  ]);
   action = new SearchAction(3000, {});
   it('should have name', function() {
     return action.name.should.equal('search');
@@ -180,8 +198,9 @@ describe('SearchAction', function() {
     kinoko = SharedItemCreator.createItem(1);
     goodKinoko = SharedItemCreator.createItem(2);
     tikuwa = SharedItemCreator.createItem(3);
-    brave = new Brave('testBrave', new Spot('testSpot', 10, 10));
+    brave = new Brave('testBrave', spot);
     beforeEach(function() {
+      brave.action = 'dummy';
       return brave.items = [];
     });
     it('should return false over probabilityMax', function() {
@@ -240,7 +259,7 @@ describe('SearchAction', function() {
       success.should.above(10);
       return failure.should.above(10);
     });
-    return it('should return false if brave cannot take a getting item', function() {
+    it('should return false if brave cannot take a getting item', function() {
       var failureAction, result, treasureDict;
       treasureDict = {};
       treasureDict[kinoko.id] = {
@@ -252,6 +271,10 @@ describe('SearchAction', function() {
       result = failureAction["do"](brave);
       result.should.not.be.ok;
       return failureAction.treasure.should.equal(kinoko);
+    });
+    return it('should have next action', function() {
+      action["do"](brave);
+      return should.exist(brave.action);
     });
   });
 });

@@ -1,4 +1,5 @@
 $ ->
+    SharedItemCreator = new ItemCreator itemDict
     game = new Game(580, 450)
     game.start()
 
@@ -95,7 +96,7 @@ class Game
                         @log "勇者#{brave.name} は #{action.treasure.name} を手に入れた!"
                     else
                         if action.treasure
-                            @log "勇者#{brave.name} は #{action.treasure} を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                            @log "勇者#{brave.name} は #{action.treasure.name} を見つけたが、これ以上アイテムを持てないのであきらめた…"
                         else
                             @log "勇者#{brave.name} はアイテムを見つけられなかった…"
                 else

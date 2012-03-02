@@ -131,6 +131,7 @@ SearchAction = (function(_super) {
     } else {
       this.isSucceed = false;
     }
+    this.after(brave, brave.spot.randomAction());
     return this.isSucceed;
   };
 
@@ -253,8 +254,6 @@ ItemCreator = (function() {
 
 })();
 
-SharedItemCreator = new ItemCreator(itemDict);
-
 if (typeof exports !== "undefined" && exports !== null) exports.Item = Item;
 
 if (typeof exports !== "undefined" && exports !== null) {
@@ -262,7 +261,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 }
 
 if (typeof exports !== "undefined" && exports !== null) {
-  exports.SharedItemCreator = SharedItemCreator;
+  exports.SharedItemCreator = new ItemCreator(itemDict);
 }
 
 if (typeof require !== "undefined" && require !== null) {
@@ -592,6 +591,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 
 $(function() {
   var game;
+  SharedItemCreator = new ItemCreator(itemDict);
   game = new Game(580, 450);
   return game.start();
 });
@@ -707,7 +707,7 @@ Game = (function() {
             return _this.log("勇者" + brave.name + " は " + action.treasure.name + " を手に入れた!");
           } else {
             if (action.treasure) {
-              return _this.log("勇者" + brave.name + " は " + action.treasure + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+              return _this.log("勇者" + brave.name + " は " + action.treasure.name + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
             } else {
               return _this.log("勇者" + brave.name + " はアイテムを見つけられなかった…");
             }
