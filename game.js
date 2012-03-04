@@ -640,7 +640,8 @@ Game = (function() {
     braveObject = new CanvasNode({
       id: brave.name,
       x: this.bravePosX(brave),
-      y: this.bravePosY(brave)
+      y: this.bravePosY(brave),
+      addedActionEffect: false
     });
     braveObject.addFrameListener(function(t, dt) {
       var actionProcessPercentage;
@@ -689,10 +690,14 @@ Game = (function() {
         actionEffect.radius += dt / effectTime * circleRadiusMax;
         actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax;
         if (actionEffect.radius > circleRadiusMax) {
-          return actionEffect.removeSelf();
+          actionEffect.removeSelf();
+          return braveObject.addedActionEffect = false;
         }
       });
-      braveObject.append(actionEffect);
+      if (!braveObject.addedActionEffect) {
+        braveObject.append(actionEffect);
+        braveObject.addedActionEffect = true;
+      }
       if (brave === _this.selectedBrave) {
         $("#brave-position-value").text("" + brave.spot.name);
         $("#brave-action-value").text("" + brave.action.name);

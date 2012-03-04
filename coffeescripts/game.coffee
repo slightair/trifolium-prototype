@@ -36,6 +36,7 @@ class Game
                     id: brave.name
                     x: @bravePosX brave
                     y: @bravePosY brave
+                    addedActionEffect: false
         braveObject.addFrameListener (t, dt) =>
             braveObject.x = @bravePosX brave
             braveObject.y = @bravePosY brave
@@ -79,8 +80,12 @@ class Game
                 actionEffect.removeSelf if dt > effectTime
                 actionEffect.radius += dt / effectTime * circleRadiusMax
                 actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax
-                actionEffect.removeSelf() if actionEffect.radius > circleRadiusMax
-            braveObject.append actionEffect
+                if actionEffect.radius > circleRadiusMax
+                    actionEffect.removeSelf()
+                    braveObject.addedActionEffect = false
+            unless braveObject.addedActionEffect
+                braveObject.append actionEffect
+                braveObject.addedActionEffect = true
             
             if brave == @selectedBrave
                 $("#brave-position-value").text("#{brave.spot.name}")
