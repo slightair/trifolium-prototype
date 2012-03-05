@@ -93,17 +93,17 @@ class Game
             
             switch action.name
                 when 'move'
-                    @log "勇者#{brave.name} が #{action.to.name} に到着しました"
+                    @log "勇者#{@logBraveName(brave.name)} が #{@logSpotName(action.to.name)} に到着しました"
                 when 'wait'
-                    @log "勇者#{brave.name} はぼーっとしていた"
+                    @log "勇者#{@logBraveName(brave.name)} はぼーっとしていた"
                 when 'search'
                     if isSucceed
-                        @log "勇者#{brave.name} は #{action.treasure.name} を手に入れた!"
+                        @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(action.treasure.name)} を手に入れた!"
                     else
                         if action.treasure
-                            @log "勇者#{brave.name} は #{action.treasure.name} を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                            @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(action.treasure.name)} を見つけたが、これ以上アイテムを持てないのであきらめた…"
                         else
-                            @log "勇者#{brave.name} はアイテムを見つけられなかった…"
+                            @log "勇者#{@logBraveName(brave.name)} はアイテムを見つけられなかった…"
                 else
                     @log "unknown event - #{action.name}"
                     
@@ -167,7 +167,11 @@ class Game
             $("div#log").children(":first").remove()
         
         $("div#log").append($("<div class='logItem'>#{text}</div>"))
-        
+    
+    logBraveName: (name) -> "<span class='log-brave-name'>#{name}</span>"
+    logSpotName: (name) -> "<span class='log-spot-name'>#{name}</span>"
+    logItemName: (name) -> "<span class='log-item-name'>#{name}</span>"
+    
     debugMatrix: =>
         gridSize = 10 * @mapScale
         lineColor = 'rgba(0, 0, 255, 0.1)'

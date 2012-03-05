@@ -442,6 +442,20 @@ Trifolium = (function() {
     }).call(this))[0];
   };
 
+  Trifolium.prototype.braveForName = function(name) {
+    var brave;
+    return ((function() {
+      var _i, _len, _ref3, _results;
+      _ref3 = this.braveList;
+      _results = [];
+      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+        brave = _ref3[_i];
+        if (brave.name === name) _results.push(brave);
+      }
+      return _results;
+    }).call(this))[0];
+  };
+
   return Trifolium;
 
 })();
@@ -704,17 +718,17 @@ Game = (function() {
       }
       switch (action.name) {
         case 'move':
-          return _this.log("勇者" + brave.name + " が " + action.to.name + " に到着しました");
+          return _this.log("勇者" + (_this.logBraveName(brave.name)) + " が " + (_this.logSpotName(action.to.name)) + " に到着しました");
         case 'wait':
-          return _this.log("勇者" + brave.name + " はぼーっとしていた");
+          return _this.log("勇者" + (_this.logBraveName(brave.name)) + " はぼーっとしていた");
         case 'search':
           if (isSucceed) {
-            return _this.log("勇者" + brave.name + " は " + action.treasure.name + " を手に入れた!");
+            return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(action.treasure.name)) + " を手に入れた!");
           } else {
             if (action.treasure) {
-              return _this.log("勇者" + brave.name + " は " + action.treasure.name + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+              return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(action.treasure.name)) + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
             } else {
-              return _this.log("勇者" + brave.name + " はアイテムを見つけられなかった…");
+              return _this.log("勇者" + (_this.logBraveName(brave.name)) + " はアイテムを見つけられなかった…");
             }
           }
           break;
@@ -799,6 +813,18 @@ Game = (function() {
       $("div#log").children(":first").remove();
     }
     return $("div#log").append($("<div class='logItem'>" + text + "</div>"));
+  };
+
+  Game.prototype.logBraveName = function(name) {
+    return "<span class='log-brave-name'>" + name + "</span>";
+  };
+
+  Game.prototype.logSpotName = function(name) {
+    return "<span class='log-spot-name'>" + name + "</span>";
+  };
+
+  Game.prototype.logItemName = function(name) {
+    return "<span class='log-item-name'>" + name + "</span>";
   };
 
   Game.prototype.debugMatrix = function() {

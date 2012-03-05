@@ -47,5 +47,8 @@ class Trifolium
     
     spotForName: (name) ->
         (spot for spot in @spotList when spot.name == name)[0]
-
+    
+    braveForName: (name) ->
+        (brave for brave in @braveList when brave.name == name)[0]
+    
 exports?.Trifolium = Trifolium

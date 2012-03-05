@@ -36,10 +36,26 @@ div#brave-info .progress .bar {
 div#log {
     @padding: 4px;
     
-    #translucent > .background(@black, 0.1);
-    .border-radius();
-    color: fadeout(@gray, 10%);
+    #translucent > .background(@black, 0.6);
+    .border-radius(4px);
+    color: @grayLighter;
     width: @mainScreenWidth - @padding * 2;
     bottom: 0px;
     padding: @padding;
+}
+
+.log-keyword() {
+    color: #a8ff60;
+}
+
+div#log .log-brave-name {
+    .log-keyword();
+}
+
+div#log .log-spot-name {
+    .log-keyword();
+}
+
+div#log .log-item-name {
+    .log-keyword();
 }
