@@ -22,8 +22,11 @@ describe 'Action', ->
             brave.action = 'dummy'
             brave.actionProcess = 0.5
         
-        it 'should return false', ->
-            (action.do brave).should.be.false
+        it 'should return Object', ->
+            action.do(brave).should.be.an.instanceof Object
+        
+        it 'should failure action every time', ->
+            action.do(brave).isSucceed.should.not.be.ok
         
         it 'should set null to brave.action', ->
             action.do brave
@@ -87,8 +90,11 @@ describe 'WaitAction', ->
             brave.action = 'dummy'
             brave.actionProcess = 0.5
         
-        it 'should return true', ->
-            (action.do brave).should.be.true
+        it 'should return Object', ->
+            action.do(brave).should.be.an.instanceof Object
+        
+        it 'should success action every time', ->
+            action.do(brave).isSucceed.should.be.ok
         
         it 'should select next action from spot', ->
             action.do brave
@@ -128,8 +134,11 @@ describe 'MoveAction', ->
             brave.action = 'dummy'
             brave.spot = fromSpot
         
-        it 'should return true', ->
-            (action.do brave).should.be.true
+        it 'should return Object', ->
+            action.do(brave).should.be.an.instanceof Object
+        
+        it 'should success action every time', ->
+            action.do(brave).isSucceed.should.be.ok
         
         it 'should set @to to brave.spot', ->
             action.do brave
@@ -162,9 +171,6 @@ describe 'SearchAction', ->
     it 'should have treasureDict', ->
         action.treasureDict.should.be.an.instanceof Object
     
-    it 'should not have tresure', ->
-        should.not.exist action.treasure
-    
     describe '#do()', ->
         kinoko = SharedItemCreator.createItem 1
         goodKinoko = SharedItemCreator.createItem 2
@@ -176,6 +182,9 @@ describe 'SearchAction', ->
             brave.action = 'dummy'
             brave.items = []
         
+        it 'should return Object', ->
+            action.do(brave).should.be.an.instanceof Object
+        
         it 'should return false over probabilityMax', ->
             treasureDict = {}
             treasureDict[kinoko.id] = {item: kinoko, probability: 500}
@@ -185,7 +194,7 @@ describe 'SearchAction', ->
             failureAction = new SearchAction 3000, treasureDict
             
             result = failureAction.do brave
-            result.should.not.be.ok
+            result.isSucceed.should.not.be.ok
         
         it 'should add item to brave', ->
             treasureDict = {}
@@ -194,9 +203,9 @@ describe 'SearchAction', ->
             successAction = new SearchAction 3000, treasureDict
             
             result = successAction.do brave
-            result.should.be.ok
+            result.isSucceed.should.be.ok
             brave.items.should.include kinoko
-            successAction.treasure.should.equal kinoko
+            result.treasure.should.equal kinoko
         
         it 'should return false if brave failed to get item', ->
             treasureDict = {}
@@ -205,16 +214,16 @@ describe 'SearchAction', ->
             success = 0
             failure = 0
             
+            randomAction = new SearchAction 3000, treasureDict
             for i in [1..50]
-                randomAction = new SearchAction 3000, treasureDict
                 brave.items = []
                 
                 result = randomAction.do brave
-                if randomAction.treasure
-                    result.should.be.ok
+                if result.treasure
+                    result.isSucceed.should.be.ok
                     success += 1
                 else
-                    result.should.not.be.ok
+                    result.isSucceed.should.not.be.ok
                     failure += 1
             
             success.should.above 10
@@ -228,8 +237,8 @@ describe 'SearchAction', ->
             
             brave.items = [1..10]
             result = failureAction.do brave
-            result.should.not.be.ok
-            failureAction.treasure.should.equal kinoko
+            result.isSucceed.should.not.be.ok
+            result.treasure.should.equal kinoko
         
         it 'should have next action', ->
             action.do brave

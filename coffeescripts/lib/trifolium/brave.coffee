@@ -21,8 +21,8 @@ class Brave
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
             if @actionProcess >= 1.0
                 prevAction = @action
-                isSucceed = @action.do @
-                @onCompleteAction?(@, prevAction, isSucceed)
+                result = @action.do @
+                @onCompleteAction?(@, prevAction, result)
     addItem: (item) ->
         if @items.length < 10
             @items.push item 

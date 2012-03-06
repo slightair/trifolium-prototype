@@ -65,7 +65,7 @@ class Game
         
         @canvas.append braveObject
         
-        brave.onCompleteAction = (brave, action, isSucceed) =>
+        brave.onCompleteAction = (brave, action, result) =>
             circleRadiusMax = 40.0
             effectTime = 800
             actionEffect = new Circle 1 * @mapScale,
@@ -90,6 +90,8 @@ class Game
             if brave == @selectedBrave
                 $("#brave-position-value").text("#{brave.spot.name}")
                 $("#brave-action-value").text("#{brave.action.name}")
+                if action.name == 'search' && result.isSucceed && result.treasure
+                    $("#brave-item-table tbody").append($("<tr><td></td><td>#{result.treasure.name}</td></tr>"))
             
             switch action.name
                 when 'move'
@@ -97,11 +99,11 @@ class Game
                 when 'wait'
                     @log "勇者#{@logBraveName(brave.name)} はぼーっとしていた"
                 when 'search'
-                    if isSucceed
-                        @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(action.treasure.name)} を手に入れた!"
+                    if result.isSucceed
+                        @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を手に入れた!"
                     else
                         if action.treasure
-                            @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(action.treasure.name)} を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                            @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を見つけたが、これ以上アイテムを持てないのであきらめた…"
                         else
                             @log "勇者#{@logBraveName(brave.name)} はアイテムを見つけられなかった…"
                 else
@@ -123,6 +125,8 @@ class Game
         $("#brave-#{paramName}-value").text(brave[paramName]) for paramName in paramNames
         $("#brave-position-value").text("#{brave.spot.name}")
         $("#brave-action-value").text("#{brave.action.name}")
+        $("#brave-item-table tbody").empty()
+        $("#brave-item-table tbody").append($("<tr><td></td><td>#{item.name}</td></tr>")) for item in brave.items
     
     bravePosX: (brave) ->
         @canvas.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * @mapScale

@@ -1,7 +1,6 @@
 class Action
     constructor: ->
         @name = null
-        @isSucceed = false
         @time ?= 0
     prepare: (brave) ->
         
@@ -10,7 +9,7 @@ class Action
         brave.actionProcess = 0.0
         
         # after を呼ばない!　サブクラスにまかせる
-        @isSucceed = false
+        {isSucceed: false}
     after: (brave, nextAction) ->
         nextAction.prepare brave
         brave.action = nextAction
@@ -24,7 +23,7 @@ class WaitAction extends Action
         super brave
         
         @after(brave, brave.spot.randomAction())
-        @isSucceed = true
+        {isSucceed: true}
 
 class MoveAction extends Action
     constructor: (@from, @to) ->
@@ -36,19 +35,18 @@ class MoveAction extends Action
         brave.spot = @to
         
         @after(brave, @to.randomAction())
-        @isSucceed = true
+        {isSucceed: true}
 
 class SearchAction extends Action
     probabilityMax: 1000
     constructor: (@time, @treasureDict = {}) ->
         super
         @name = 'search'
-        @treasure = null
     do: (brave) ->
         super brave
         total = 0
         total += treasureInfo.probability for id, treasureInfo of @treasureDict
-        return @isSucceed = false if total > @probabilityMax
+        return {isSucceed: false, treasure: null} if total > @probabilityMax
         
         treasureIds = (id for id, treasureInfo of @treasureDict).sort (a, b) -> 0.5 - Math.random()
         probability = 0
@@ -56,15 +54,16 @@ class SearchAction extends Action
         
         needle = Math.random() * @probabilityMax
         
-        @treasure = @treasureDict[id].item for id, i in treasureIds when not @treasure? and needle < probabilities[i]
+        treasure = @treasureDict[id].item for id, i in treasureIds when not treasure? and needle < probabilities[i]
         
-        if @treasure && brave.addItem @treasure
-            @isSucceed = true
+        isSucceed = null
+        if treasure && brave.addItem treasure
+            isSucceed = true
         else
-            @isSucceed = false
+            isSucceed = false
         
         @after(brave, brave.spot.randomAction())
-        @isSucceed
+        {isSucceed: isSucceed, treasure:treasure}
 
 exports?.Action = Action
 exports?.WaitAction = WaitAction

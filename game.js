@@ -7,7 +7,6 @@ Action = (function() {
 
   function Action() {
     this.name = null;
-    this.isSucceed = false;
     if (this.time == null) this.time = 0;
   }
 
@@ -16,7 +15,9 @@ Action = (function() {
   Action.prototype["do"] = function(brave) {
     brave.action = null;
     brave.actionProcess = 0.0;
-    return this.isSucceed = false;
+    return {
+      isSucceed: false
+    };
   };
 
   Action.prototype.after = function(brave, nextAction) {
@@ -43,7 +44,9 @@ WaitAction = (function(_super) {
   WaitAction.prototype["do"] = function(brave) {
     WaitAction.__super__["do"].call(this, brave);
     this.after(brave, brave.spot.randomAction());
-    return this.isSucceed = true;
+    return {
+      isSucceed: true
+    };
   };
 
   return WaitAction;
@@ -66,7 +69,9 @@ MoveAction = (function(_super) {
     MoveAction.__super__["do"].call(this, brave);
     brave.spot = this.to;
     this.after(brave, this.to.randomAction());
-    return this.isSucceed = true;
+    return {
+      isSucceed: true
+    };
   };
 
   return MoveAction;
@@ -84,11 +89,10 @@ SearchAction = (function(_super) {
     this.treasureDict = treasureDict != null ? treasureDict : {};
     SearchAction.__super__.constructor.apply(this, arguments);
     this.name = 'search';
-    this.treasure = null;
   }
 
   SearchAction.prototype["do"] = function(brave) {
-    var i, id, needle, probabilities, probability, total, treasureIds, treasureInfo, _len, _ref;
+    var i, id, isSucceed, needle, probabilities, probability, total, treasure, treasureIds, treasureInfo, _len, _ref;
     SearchAction.__super__["do"].call(this, brave);
     total = 0;
     _ref = this.treasureDict;
@@ -96,7 +100,12 @@ SearchAction = (function(_super) {
       treasureInfo = _ref[id];
       total += treasureInfo.probability;
     }
-    if (total > this.probabilityMax) return this.isSucceed = false;
+    if (total > this.probabilityMax) {
+      return {
+        isSucceed: false,
+        treasure: null
+      };
+    }
     treasureIds = ((function() {
       var _ref2, _results;
       _ref2 = this.treasureDict;
@@ -122,17 +131,21 @@ SearchAction = (function(_super) {
     needle = Math.random() * this.probabilityMax;
     for (i = 0, _len = treasureIds.length; i < _len; i++) {
       id = treasureIds[i];
-      if (!(this.treasure != null) && needle < probabilities[i]) {
-        this.treasure = this.treasureDict[id].item;
+      if (!(typeof treasure !== "undefined" && treasure !== null) && needle < probabilities[i]) {
+        treasure = this.treasureDict[id].item;
       }
     }
-    if (this.treasure && brave.addItem(this.treasure)) {
-      this.isSucceed = true;
+    isSucceed = null;
+    if (treasure && brave.addItem(treasure)) {
+      isSucceed = true;
     } else {
-      this.isSucceed = false;
+      isSucceed = false;
     }
     this.after(brave, brave.spot.randomAction());
-    return this.isSucceed;
+    return {
+      isSucceed: isSucceed,
+      treasure: treasure
+    };
   };
 
   return SearchAction;
@@ -177,13 +190,13 @@ Brave = (function() {
   }
 
   Brave.prototype.tick = function() {
-    var isSucceed, prevAction;
+    var prevAction, result;
     if (this.action != null) {
       this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
       if (this.actionProcess >= 1.0) {
         prevAction = this.action;
-        isSucceed = this.action["do"](this);
-        return typeof this.onCompleteAction === "function" ? this.onCompleteAction(this, prevAction, isSucceed) : void 0;
+        result = this.action["do"](this);
+        return typeof this.onCompleteAction === "function" ? this.onCompleteAction(this, prevAction, result) : void 0;
       }
     }
   };
@@ -686,7 +699,7 @@ Game = (function() {
     braveObject.append(head);
     braveObject.append(body);
     this.canvas.append(braveObject);
-    return brave.onCompleteAction = function(brave, action, isSucceed) {
+    return brave.onCompleteAction = function(brave, action, result) {
       var actionEffect, circleRadiusMax, effectTime;
       circleRadiusMax = 40.0;
       effectTime = 800;
@@ -715,6 +728,9 @@ Game = (function() {
       if (brave === _this.selectedBrave) {
         $("#brave-position-value").text("" + brave.spot.name);
         $("#brave-action-value").text("" + brave.action.name);
+        if (action.name === 'search' && result.isSucceed && result.treasure) {
+          $("#brave-item-table tbody").append($("<tr><td></td><td>" + result.treasure.name + "</td></tr>"));
+        }
       }
       switch (action.name) {
         case 'move':
@@ -722,11 +738,11 @@ Game = (function() {
         case 'wait':
           return _this.log("勇者" + (_this.logBraveName(brave.name)) + " はぼーっとしていた");
         case 'search':
-          if (isSucceed) {
-            return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(action.treasure.name)) + " を手に入れた!");
+          if (result.isSucceed) {
+            return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(result.treasure.name)) + " を手に入れた!");
           } else {
             if (action.treasure) {
-              return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(action.treasure.name)) + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+              return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(result.treasure.name)) + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
             } else {
               return _this.log("勇者" + (_this.logBraveName(brave.name)) + " はアイテムを見つけられなかった…");
             }
@@ -739,14 +755,22 @@ Game = (function() {
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
-    var paramName, paramNames, _i, _len;
+    var item, paramName, paramNames, _i, _j, _len, _len2, _ref3, _results;
     paramNames = ['name', 'lv', 'atk', 'matk', 'hp', 'mp', 'brave', 'faith', 'speed'];
     for (_i = 0, _len = paramNames.length; _i < _len; _i++) {
       paramName = paramNames[_i];
       $("#brave-" + paramName + "-value").text(brave[paramName]);
     }
     $("#brave-position-value").text("" + brave.spot.name);
-    return $("#brave-action-value").text("" + brave.action.name);
+    $("#brave-action-value").text("" + brave.action.name);
+    $("#brave-item-table tbody").empty();
+    _ref3 = brave.items;
+    _results = [];
+    for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
+      item = _ref3[_j];
+      _results.push($("#brave-item-table tbody").append($("<tr><td></td><td>" + item.name + "</td></tr>")));
+    }
+    return _results;
   };
 
   Game.prototype.bravePosX = function(brave) {

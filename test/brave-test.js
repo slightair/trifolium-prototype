@@ -78,7 +78,7 @@ describe('Brave', function() {
     });
     return it('should call @onCompleteAction()', function(done) {
       var i;
-      brave.onCompleteAction = function(brave, action, isSucceed) {
+      brave.onCompleteAction = function(brave, action, result) {
         action.time.should.equal(3000);
         return done();
       };

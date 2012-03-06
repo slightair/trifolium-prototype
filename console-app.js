@@ -10,18 +10,18 @@
   _ref = simulator.braveList;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     brave = _ref[_i];
-    brave.onCompleteAction = function(brave, action, isSucceed) {
+    brave.onCompleteAction = function(brave, action, result) {
       switch (action.name) {
         case 'move':
           return console.log("勇者" + brave.name + " が " + action.to.name + " に到着しました");
         case 'wait':
           return console.log("勇者" + brave.name + " はぼーっとしていた");
         case 'search':
-          if (isSucceed) {
-            return console.log("勇者" + brave.name + " は " + action.treasure.name + " を手に入れた!");
+          if (result.isSucceed) {
+            return console.log("勇者" + brave.name + " は " + result.treasure.name + " を手に入れた!");
           } else {
             if (action.treasure) {
-              return console.log("勇者" + brave.name + " は " + action.treasure.name + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+              return console.log("勇者" + brave.name + " は " + result.treasure.name + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
             } else {
               return console.log("勇者" + brave.name + " はアイテムを見つけられなかった…");
             }

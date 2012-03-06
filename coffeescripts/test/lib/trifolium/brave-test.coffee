@@ -70,7 +70,7 @@ describe 'Brave', ->
             brave.actionProcess.should.be.within 0.001, 0.003
         
         it 'should call @onCompleteAction()', (done) ->
-            brave.onCompleteAction = (brave, action, isSucceed) ->
+            brave.onCompleteAction = (brave, action, result) ->
                 action.time.should.equal 3000
                 done()
             

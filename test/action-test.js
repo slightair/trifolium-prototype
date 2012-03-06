@@ -28,8 +28,11 @@ describe('Action', function() {
       brave.action = 'dummy';
       return brave.actionProcess = 0.5;
     });
-    it('should return false', function() {
-      return (action["do"](brave)).should.be["false"];
+    it('should return Object', function() {
+      return action["do"](brave).should.be.an["instanceof"](Object);
+    });
+    it('should failure action every time', function() {
+      return action["do"](brave).isSucceed.should.not.be.ok;
     });
     it('should set null to brave.action', function() {
       action["do"](brave);
@@ -101,8 +104,11 @@ describe('WaitAction', function() {
       brave.action = 'dummy';
       return brave.actionProcess = 0.5;
     });
-    it('should return true', function() {
-      return (action["do"](brave)).should.be["true"];
+    it('should return Object', function() {
+      return action["do"](brave).should.be.an["instanceof"](Object);
+    });
+    it('should success action every time', function() {
+      return action["do"](brave).isSucceed.should.be.ok;
     });
     it('should select next action from spot', function() {
       action["do"](brave);
@@ -150,8 +156,11 @@ describe('MoveAction', function() {
       brave.action = 'dummy';
       return brave.spot = fromSpot;
     });
-    it('should return true', function() {
-      return (action["do"](brave)).should.be["true"];
+    it('should return Object', function() {
+      return action["do"](brave).should.be.an["instanceof"](Object);
+    });
+    it('should success action every time', function() {
+      return action["do"](brave).isSucceed.should.be.ok;
     });
     it('should set @to to brave.spot', function() {
       action["do"](brave);
@@ -190,9 +199,6 @@ describe('SearchAction', function() {
   it('should have treasureDict', function() {
     return action.treasureDict.should.be.an["instanceof"](Object);
   });
-  it('should not have tresure', function() {
-    return should.not.exist(action.treasure);
-  });
   return describe('#do()', function() {
     var brave, goodKinoko, kinoko, tikuwa;
     kinoko = SharedItemCreator.createItem(1);
@@ -202,6 +208,9 @@ describe('SearchAction', function() {
     beforeEach(function() {
       brave.action = 'dummy';
       return brave.items = [];
+    });
+    it('should return Object', function() {
+      return action["do"](brave).should.be.an["instanceof"](Object);
     });
     it('should return false over probabilityMax', function() {
       var failureAction, result, treasureDict;
@@ -220,7 +229,7 @@ describe('SearchAction', function() {
       };
       failureAction = new SearchAction(3000, treasureDict);
       result = failureAction["do"](brave);
-      return result.should.not.be.ok;
+      return result.isSucceed.should.not.be.ok;
     });
     it('should add item to brave', function() {
       var result, successAction, treasureDict;
@@ -231,9 +240,9 @@ describe('SearchAction', function() {
       };
       successAction = new SearchAction(3000, treasureDict);
       result = successAction["do"](brave);
-      result.should.be.ok;
+      result.isSucceed.should.be.ok;
       brave.items.should.include(kinoko);
-      return successAction.treasure.should.equal(kinoko);
+      return result.treasure.should.equal(kinoko);
     });
     it('should return false if brave failed to get item', function() {
       var failure, i, randomAction, result, success, treasureDict;
@@ -244,15 +253,15 @@ describe('SearchAction', function() {
       };
       success = 0;
       failure = 0;
+      randomAction = new SearchAction(3000, treasureDict);
       for (i = 1; i <= 50; i++) {
-        randomAction = new SearchAction(3000, treasureDict);
         brave.items = [];
         result = randomAction["do"](brave);
-        if (randomAction.treasure) {
-          result.should.be.ok;
+        if (result.treasure) {
+          result.isSucceed.should.be.ok;
           success += 1;
         } else {
-          result.should.not.be.ok;
+          result.isSucceed.should.not.be.ok;
           failure += 1;
         }
       }
@@ -269,8 +278,8 @@ describe('SearchAction', function() {
       failureAction = new SearchAction(3000, treasureDict);
       brave.items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       result = failureAction["do"](brave);
-      result.should.not.be.ok;
-      return failureAction.treasure.should.equal(kinoko);
+      result.isSucceed.should.not.be.ok;
+      return result.treasure.should.equal(kinoko);
     });
     return it('should have next action', function() {
       action["do"](brave);
