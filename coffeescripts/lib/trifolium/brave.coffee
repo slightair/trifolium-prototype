@@ -14,21 +14,32 @@ class Brave
         @actionProcess = 0.0
         @spot = spawnSpot
         @destination = spawnSpot
-        
-        @onCompleteAction = null
+        @eventDict = {}
+    
+    on: (event, callback) ->
+        @eventDict[event] = callback
+        @
+    
+    emit: (event, args...) ->
+        @eventDict[event]?.apply @, args
+    
     tick: ->
         if @action?
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
             if @actionProcess >= 1.0
                 prevAction = @action
                 result = @action.do @
-                @onCompleteAction?(@, prevAction, result)
+                
+                @emit 'completeAction', @, prevAction, result
+    
     addItem: (item) ->
         if @items.length < 10
             @items.push item 
             true
         else
             false
+    
     removeItem: (item) ->
         @items = (i for i in @items when i != item)
+    
 exports?.Brave = Brave

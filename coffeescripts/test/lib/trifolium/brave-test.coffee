@@ -56,6 +56,32 @@ describe 'Brave', ->
     it 'should have gold', ->
         brave.gold.should.equal 300
     
+    it 'should have eventDict', ->
+        brave.eventDict.should.be.an.instanceof Object
+    
+    describe '#on()', ->
+        it 'should add event', ->
+            should.not.exist brave.eventDict.hoge
+            
+            hogeCallback = -> 'hoge hoge hoge'
+            x = brave.on 'hoge', hogeCallback
+            x.should.equal brave
+            should.exist brave.eventDict.hoge
+            
+            brave.eventDict.hoge().should.equal 'hoge hoge hoge'
+            x = brave.on 'sum', (x, y) -> x + y
+            x.should.equal brave
+            brave.eventDict.sum(2, 3).should.equal 5
+    
+    describe '#emit()', ->
+        it 'should emit added events', ->
+            brave.on 'multi', (x, y) -> x * y
+            brave.emit('multi', 5, 2).should.equal 10
+            
+            brave.on 'concat', (args...) ->
+                args.join ''
+            brave.emit('concat', 'ha', 'hi', 'hu', 'he', 'ho').should.equal 'hahihuheho'
+    
     describe '#tick()', ->
         
         beforeEach ->
@@ -69,8 +95,8 @@ describe 'Brave', ->
             brave.tick()
             brave.actionProcess.should.be.within 0.001, 0.003
         
-        it 'should call @onCompleteAction()', (done) ->
-            brave.onCompleteAction = (brave, action, result) ->
+        it 'should emit \'completeAction\'', (done) ->
+            brave.on 'completeAction', (brave, action, result) ->
                 action.time.should.equal 3000
                 done()
             
@@ -85,7 +111,7 @@ describe 'Brave', ->
             brave.tick()
             brave.actionProcess.should.be.within 0.998, 1.000
             
-            brave.tick() # => call brave.onCompleteAction()
+            brave.tick() # => emit 'completeAction'
     
     describe '#addItem()', ->
         
