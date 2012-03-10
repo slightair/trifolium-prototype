@@ -1,4 +1,6 @@
-class Brave
+{EventEmitter} = require('events')
+
+class Brave extends EventEmitter
     constructor: (@name, spawnSpot, options = {}) ->
         @lv    = options.lv    ? 1
         @atk   = options.atk   ? 1
@@ -14,14 +16,6 @@ class Brave
         @actionProcess = 0.0
         @spot = spawnSpot
         @destination = spawnSpot
-        @eventDict = {}
-    
-    on: (event, callback) ->
-        @eventDict[event] = callback
-        @
-    
-    emit: (event, args...) ->
-        @eventDict[event]?.apply @, args
     
     tick: ->
         if @action?
