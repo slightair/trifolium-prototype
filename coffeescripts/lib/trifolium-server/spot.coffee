@@ -1,6 +1,5 @@
-if require?
-    {Action, WaitAction, MoveAction, SearchAction} = require './action'
-    {SharedItemCreator} = require './item'
+{Action, WaitAction, MoveAction, SearchAction} = require './action'
+{SharedItemCreator} = require './item'
 
 class Spot
     constructor: (@name, @posX, @posY, actionInfoList = []) ->
@@ -31,4 +30,4 @@ class Spot
                 actions.push action if action?
         actions
 
-exports?.Spot = Spot
+exports.Spot = Spot

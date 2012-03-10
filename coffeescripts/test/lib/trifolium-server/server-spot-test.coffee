@@ -1,6 +1,6 @@
-{Spot} = require '../lib/trifolium/spot'
-{WaitAction, SearchAction} = require '../lib/trifolium/action'
-{Item} = require '../lib/trifolium/item'
+{Spot} = require '../lib/trifolium-server/spot'
+{WaitAction, SearchAction} = require '../lib/trifolium-server/action'
+{Item} = require '../lib/trifolium-server/item'
 
 describe "Spot", ->
     spot = new Spot 'testSpot', 0, 0, [

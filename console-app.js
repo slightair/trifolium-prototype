@@ -1,7 +1,5 @@
 (function() {
-  var Trifolium, io, settings, socket;
-
-  Trifolium = require('./lib/trifolium').Trifolium;
+  var io, settings, socket;
 
   settings = require('./settings').settings;
 

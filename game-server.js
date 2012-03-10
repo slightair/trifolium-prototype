@@ -1,13 +1,13 @@
 (function() {
-  var Notifier, Trifolium, brave, notifier, settings, simulator, _i, _len, _ref;
+  var Notifier, Simulator, brave, notifier, settings, simulator, _i, _len, _ref;
 
-  Notifier = require('./lib/notifier').Notifier;
+  Notifier = require('./lib/trifolium-server/notifier').Notifier;
 
-  Trifolium = require('./lib/trifolium').Trifolium;
+  Simulator = require('./lib/trifolium-server/simulator').Simulator;
 
   settings = require('./settings').settings;
 
-  simulator = new Trifolium(settings);
+  simulator = new Simulator(settings);
 
   notifier = new Notifier;
 

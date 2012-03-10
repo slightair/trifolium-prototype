@@ -42,4 +42,4 @@ class Brave
     removeItem: (item) ->
         @items = (i for i in @items when i != item)
     
-exports?.Brave = Brave
+exports.Brave = Brave

@@ -65,7 +65,7 @@ class SearchAction extends Action
         @after(brave, brave.spot.randomAction())
         {isSucceed: isSucceed, treasure:treasure}
 
-exports?.Action = Action
-exports?.WaitAction = WaitAction
-exports?.MoveAction = MoveAction
-exports?.SearchAction = SearchAction
+exports.Action = Action
+exports.WaitAction = WaitAction
+exports.MoveAction = MoveAction
+exports.SearchAction = SearchAction

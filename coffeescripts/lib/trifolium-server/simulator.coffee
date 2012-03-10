@@ -1,9 +1,8 @@
-if require?
-    {Brave} = require './trifolium/brave'
-    {Spot} = require './trifolium/spot'
-    {Action, WaitAction, MoveAction, SearchAction} = require './trifolium/action'
+{Brave} = require './brave'
+{Spot} = require './spot'
+{Action, WaitAction, MoveAction, SearchAction} = require './action'
 
-class Trifolium
+class Simulator
     constructor : (settings) ->
         {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval} = settings
         @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
@@ -51,4 +50,4 @@ class Trifolium
     braveForName: (name) ->
         (brave for brave in @braveList when brave.name == name)[0]
     
-exports?.Trifolium = Trifolium
+exports.Simulator = Simulator

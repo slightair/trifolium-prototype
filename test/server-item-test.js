@@ -2,7 +2,7 @@ var Item, ItemCreator, itemDict, should, _ref;
 
 should = require('should');
 
-_ref = require('../lib/trifolium/item'), Item = _ref.Item, ItemCreator = _ref.ItemCreator;
+_ref = require('../lib/trifolium-server/item'), Item = _ref.Item, ItemCreator = _ref.ItemCreator;
 
 itemDict = {
   1: {

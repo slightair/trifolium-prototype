@@ -1,8 +1,8 @@
-{Notifier} = require('./lib/notifier')
-{Trifolium} = require('./lib/trifolium')
+{Notifier} = require('./lib/trifolium-server/notifier')
+{Simulator} = require('./lib/trifolium-server/simulator')
 {settings} = require('./settings')
 
-simulator = new Trifolium settings
+simulator = new Simulator settings
 notifier = new Notifier
 
 for brave in simulator.braveList

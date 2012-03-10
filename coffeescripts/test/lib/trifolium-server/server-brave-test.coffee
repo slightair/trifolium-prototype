@@ -1,8 +1,8 @@
 should = require 'should'
-{Brave} = require '../lib/trifolium/brave'
-{Spot} = require '../lib/trifolium/spot'
-{WaitAction} = require '../lib/trifolium/action'
-{Item} = require '../lib/trifolium/item'
+{Brave} = require '../lib/trifolium-server/brave'
+{Spot} = require '../lib/trifolium-server/spot'
+{WaitAction} = require '../lib/trifolium-server/action'
+{Item} = require '../lib/trifolium-server/item'
 
 describe 'Brave', ->
     spot = new Spot 'testSpot', 0, 0, [

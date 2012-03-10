@@ -1,5 +1,4 @@
-if require?
-    itemDict = require('../../settings').itemDict
+itemDict = require('../../settings').itemDict
 
 class Item
     constructor: (@itemId, @name) ->
@@ -14,6 +13,6 @@ class ItemCreator
         else
             null
 
-exports?.Item = Item
-exports?.ItemCreator = ItemCreator
-exports?.SharedItemCreator = new ItemCreator itemDict
+exports.Item = Item
+exports.ItemCreator = ItemCreator
+exports.SharedItemCreator = new ItemCreator itemDict

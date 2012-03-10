@@ -2,13 +2,13 @@ var Action, Brave, MoveAction, SearchAction, SharedItemCreator, Spot, WaitAction
 
 should = require('should');
 
-Brave = require('../lib/trifolium/brave').Brave;
+Brave = require('../lib/trifolium-server/brave').Brave;
 
-Spot = require('../lib/trifolium/spot').Spot;
+Spot = require('../lib/trifolium-server/spot').Spot;
 
-_ref = require('../lib/trifolium/action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
+_ref = require('../lib/trifolium-server/action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
 
-SharedItemCreator = require('../lib/trifolium/item').SharedItemCreator;
+SharedItemCreator = require('../lib/trifolium-server/item').SharedItemCreator;
 
 describe('Action', function() {
   var action;

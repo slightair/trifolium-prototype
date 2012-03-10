@@ -1,4 +1,3 @@
-{Trifolium} = require('./lib/trifolium')
 {settings} = require('./settings')
 io = require('socket.io-client')
 

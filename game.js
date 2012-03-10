@@ -1,493 +1,5 @@
-var Action, Brave, Game, Item, ItemCreator, MoveAction, SearchAction, SharedItemCreator, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
-  __hasProp = Object.prototype.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
-  __slice = Array.prototype.slice,
+var Game, itemDict, settings,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-Action = (function() {
-
-  function Action() {
-    this.name = null;
-    if (this.time == null) this.time = 0;
-  }
-
-  Action.prototype.prepare = function(brave) {};
-
-  Action.prototype["do"] = function(brave) {
-    brave.action = null;
-    brave.actionProcess = 0.0;
-    return {
-      isSucceed: false
-    };
-  };
-
-  Action.prototype.after = function(brave, nextAction) {
-    var _ref;
-    nextAction.prepare(brave);
-    brave.action = nextAction;
-    return brave.destination = (_ref = nextAction.to) != null ? _ref : brave.spot;
-  };
-
-  return Action;
-
-})();
-
-WaitAction = (function(_super) {
-
-  __extends(WaitAction, _super);
-
-  function WaitAction(time) {
-    this.time = time;
-    WaitAction.__super__.constructor.apply(this, arguments);
-    this.name = 'wait';
-  }
-
-  WaitAction.prototype["do"] = function(brave) {
-    WaitAction.__super__["do"].call(this, brave);
-    this.after(brave, brave.spot.randomAction());
-    return {
-      isSucceed: true
-    };
-  };
-
-  return WaitAction;
-
-})(Action);
-
-MoveAction = (function(_super) {
-
-  __extends(MoveAction, _super);
-
-  function MoveAction(from, to) {
-    this.from = from;
-    this.to = to;
-    MoveAction.__super__.constructor.apply(this, arguments);
-    this.name = 'move';
-    this.time = this.from.distance(this.to) * 100;
-  }
-
-  MoveAction.prototype["do"] = function(brave) {
-    MoveAction.__super__["do"].call(this, brave);
-    brave.spot = this.to;
-    this.after(brave, this.to.randomAction());
-    return {
-      isSucceed: true
-    };
-  };
-
-  return MoveAction;
-
-})(Action);
-
-SearchAction = (function(_super) {
-
-  __extends(SearchAction, _super);
-
-  SearchAction.prototype.probabilityMax = 1000;
-
-  function SearchAction(time, treasureDict) {
-    this.time = time;
-    this.treasureDict = treasureDict != null ? treasureDict : {};
-    SearchAction.__super__.constructor.apply(this, arguments);
-    this.name = 'search';
-  }
-
-  SearchAction.prototype["do"] = function(brave) {
-    var i, id, isSucceed, needle, probabilities, probability, total, treasure, treasureIds, treasureInfo, _len, _ref;
-    SearchAction.__super__["do"].call(this, brave);
-    total = 0;
-    _ref = this.treasureDict;
-    for (id in _ref) {
-      treasureInfo = _ref[id];
-      total += treasureInfo.probability;
-    }
-    if (total > this.probabilityMax) {
-      return {
-        isSucceed: false,
-        treasure: null
-      };
-    }
-    treasureIds = ((function() {
-      var _ref2, _results;
-      _ref2 = this.treasureDict;
-      _results = [];
-      for (id in _ref2) {
-        treasureInfo = _ref2[id];
-        _results.push(id);
-      }
-      return _results;
-    }).call(this)).sort(function(a, b) {
-      return 0.5 - Math.random();
-    });
-    probability = 0;
-    probabilities = (function() {
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = treasureIds.length; _i < _len; _i++) {
-        id = treasureIds[_i];
-        _results.push(probability += this.treasureDict[id].probability);
-      }
-      return _results;
-    }).call(this);
-    needle = Math.random() * this.probabilityMax;
-    for (i = 0, _len = treasureIds.length; i < _len; i++) {
-      id = treasureIds[i];
-      if (!(typeof treasure !== "undefined" && treasure !== null) && needle < probabilities[i]) {
-        treasure = this.treasureDict[id].item;
-      }
-    }
-    isSucceed = null;
-    if (treasure && brave.addItem(treasure)) {
-      isSucceed = true;
-    } else {
-      isSucceed = false;
-    }
-    this.after(brave, brave.spot.randomAction());
-    return {
-      isSucceed: isSucceed,
-      treasure: treasure
-    };
-  };
-
-  return SearchAction;
-
-})(Action);
-
-if (typeof exports !== "undefined" && exports !== null) exports.Action = Action;
-
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.WaitAction = WaitAction;
-}
-
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.MoveAction = MoveAction;
-}
-
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.SearchAction = SearchAction;
-}
-
-Brave = (function() {
-
-  function Brave(name, spawnSpot, options) {
-    var _ref, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
-    this.name = name;
-    if (options == null) options = {};
-    this.lv = (_ref = options.lv) != null ? _ref : 1;
-    this.atk = (_ref2 = options.atk) != null ? _ref2 : 1;
-    this.matk = (_ref3 = options.matk) != null ? _ref3 : 1;
-    this.hp = (_ref4 = options.hp) != null ? _ref4 : 10;
-    this.mp = (_ref5 = options.mp) != null ? _ref5 : 10;
-    this.brave = (_ref6 = options.brave) != null ? _ref6 : 50;
-    this.faith = (_ref7 = options.faith) != null ? _ref7 : 50;
-    this.speed = (_ref8 = options.speed) != null ? _ref8 : 3;
-    this.gold = (_ref9 = options.gold) != null ? _ref9 : 300;
-    this.items = (_ref10 = options.items) != null ? _ref10 : [];
-    this.action = null;
-    this.actionProcess = 0.0;
-    this.spot = spawnSpot;
-    this.destination = spawnSpot;
-    this.eventDict = {};
-  }
-
-  Brave.prototype.on = function(event, callback) {
-    this.eventDict[event] = callback;
-    return this;
-  };
-
-  Brave.prototype.emit = function() {
-    var args, event, _ref;
-    event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    return (_ref = this.eventDict[event]) != null ? _ref.apply(this, args) : void 0;
-  };
-
-  Brave.prototype.tick = function() {
-    var prevAction, result;
-    if (this.action != null) {
-      this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
-      if (this.actionProcess >= 1.0) {
-        prevAction = this.action;
-        result = this.action["do"](this);
-        return this.emit('completeAction', this, prevAction, result);
-      }
-    }
-  };
-
-  Brave.prototype.addItem = function(item) {
-    if (this.items.length < 10) {
-      this.items.push(item);
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  Brave.prototype.removeItem = function(item) {
-    var i;
-    return this.items = (function() {
-      var _i, _len, _ref, _results;
-      _ref = this.items;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        i = _ref[_i];
-        if (i !== item) _results.push(i);
-      }
-      return _results;
-    }).call(this);
-  };
-
-  return Brave;
-
-})();
-
-if (typeof exports !== "undefined" && exports !== null) exports.Brave = Brave;
-
-if (typeof require !== "undefined" && require !== null) {
-  itemDict = require('../../settings').itemDict;
-}
-
-Item = (function() {
-
-  function Item(itemId, name) {
-    var date;
-    this.itemId = itemId;
-    this.name = name;
-    date = new Date;
-    this.id = "" + (date.getTime()) + (date.getMilliseconds()) + this.itemId + this.name;
-  }
-
-  return Item;
-
-})();
-
-ItemCreator = (function() {
-
-  function ItemCreator(itemDict) {
-    this.itemDict = itemDict;
-  }
-
-  ItemCreator.prototype.createItem = function(itemId, name) {
-    if (name == null) name = null;
-    if (this.itemDict[itemId] != null) {
-      return new Item(itemId, name != null ? name : this.itemDict[itemId].name);
-    } else {
-      return null;
-    }
-  };
-
-  return ItemCreator;
-
-})();
-
-if (typeof exports !== "undefined" && exports !== null) exports.Item = Item;
-
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.ItemCreator = ItemCreator;
-}
-
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.SharedItemCreator = new ItemCreator(itemDict);
-}
-
-if (typeof require !== "undefined" && require !== null) {
-  _ref = require('./action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
-  SharedItemCreator = require('./item').SharedItemCreator;
-}
-
-Spot = (function() {
-
-  function Spot(name, posX, posY, actionInfoList) {
-    this.name = name;
-    this.posX = posX;
-    this.posY = posY;
-    if (actionInfoList == null) actionInfoList = [];
-    this.actions = this.makeActions(actionInfoList);
-  }
-
-  Spot.prototype.randomAction = function() {
-    var index;
-    index = Math.floor(Math.random() * this.actions.length);
-    return this.actions[index];
-  };
-
-  Spot.prototype.distance = function(aSpot) {
-    return Math.sqrt(Math.pow(this.posX - aSpot.posX, 2) + Math.pow(this.posY - aSpot.posY, 2));
-  };
-
-  Spot.prototype.makeActions = function(actionInfoList) {
-    var action, actionInfo, actions, item, treasureDict, treasureInfo, _i, _j, _len, _len2, _ref2;
-    actions = [];
-    if (actionInfoList != null) {
-      for (_i = 0, _len = actionInfoList.length; _i < _len; _i++) {
-        actionInfo = actionInfoList[_i];
-        action = null;
-        switch (actionInfo.type) {
-          case 'wait':
-            action = new WaitAction(actionInfo.time);
-            break;
-          case 'search':
-            treasureDict = {};
-            _ref2 = actionInfo.treasures;
-            for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-              treasureInfo = _ref2[_j];
-              item = SharedItemCreator.createItem(treasureInfo.itemId, treasureInfo.name);
-              treasureDict[item.id] = {
-                item: item,
-                probability: treasureInfo.probability
-              };
-            }
-            action = new SearchAction(actionInfo.time, treasureDict);
-        }
-        if (action != null) actions.push(action);
-      }
-    }
-    return actions;
-  };
-
-  return Spot;
-
-})();
-
-if (typeof exports !== "undefined" && exports !== null) exports.Spot = Spot;
-
-if (typeof require !== "undefined" && require !== null) {
-  Brave = require('./trifolium/brave').Brave;
-  Spot = require('./trifolium/spot').Spot;
-  _ref2 = require('./trifolium/action'), Action = _ref2.Action, WaitAction = _ref2.WaitAction, MoveAction = _ref2.MoveAction, SearchAction = _ref2.SearchAction;
-}
-
-Trifolium = (function() {
-
-  function Trifolium(settings) {
-    var action, brave, braveNameDictionary, dict, i, moveAction, moveActionList, numBraves, routeInfo, routeInfoList, spawnSpot, spawnSpotName, spot, spot1, spot2, spotInfo, spotInfoList, term, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _len6, _len7, _len8, _m, _n, _o, _p, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
-    spotInfoList = settings.spotInfoList, routeInfoList = settings.routeInfoList, spawnSpotName = settings.spawnSpotName, braveNameDictionary = settings.braveNameDictionary, numBraves = settings.numBraves, this.tickInterval = settings.tickInterval;
-    this.spotList = (function() {
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = spotInfoList.length; _i < _len; _i++) {
-        spotInfo = spotInfoList[_i];
-        _results.push(new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions));
-      }
-      return _results;
-    })();
-    this.routeList = [];
-    moveActionList = [];
-    for (_i = 0, _len = routeInfoList.length; _i < _len; _i++) {
-      routeInfo = routeInfoList[_i];
-      spot1 = this.spotForName(routeInfo[0]);
-      spot2 = this.spotForName(routeInfo[1]);
-      moveActionList.push(new MoveAction(spot1, spot2));
-      moveActionList.push(new MoveAction(spot2, spot1));
-      this.routeList.push([spot1, spot2]);
-    }
-    spawnSpot = this.spotForName(spawnSpotName);
-    _ref3 = this.spotList;
-    for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
-      spot = _ref3[_j];
-      for (_k = 0, _len3 = moveActionList.length; _k < _len3; _k++) {
-        moveAction = moveActionList[_k];
-        if (moveAction.from === spot) spot.actions.push(moveAction);
-      }
-    }
-    _ref4 = [braveNameDictionary.prefixes, braveNameDictionary.terms];
-    for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
-      dict = _ref4[_l];
-      for (_m = 0, _len5 = dict.length; _m < _len5; _m++) {
-        term = dict[_m];
-        ((_ref5 = this.braveNamePrefixes) != null ? _ref5 : this.braveNamePrefixes = []).push(term);
-      }
-    }
-    _ref6 = [braveNameDictionary.suffixes, braveNameDictionary.terms];
-    for (_n = 0, _len6 = _ref6.length; _n < _len6; _n++) {
-      dict = _ref6[_n];
-      for (_o = 0, _len7 = dict.length; _o < _len7; _o++) {
-        term = dict[_o];
-        ((_ref7 = this.braveNameSuffixes) != null ? _ref7 : this.braveNameSuffixes = []).push(term);
-      }
-    }
-    this.braveList = (function() {
-      var _results;
-      _results = [];
-      for (i = 0; 0 <= numBraves ? i < numBraves : i > numBraves; 0 <= numBraves ? i++ : i--) {
-        _results.push(new Brave(this.makeBraveName(braveNameDictionary), spawnSpot, {
-          speed: Math.floor(Math.random() * 50) + 20
-        }));
-      }
-      return _results;
-    }).call(this);
-    _ref8 = this.braveList;
-    for (_p = 0, _len8 = _ref8.length; _p < _len8; _p++) {
-      brave = _ref8[_p];
-      action = brave.spot.randomAction();
-      action.prepare(brave);
-      brave.action = action;
-      brave.destination = (_ref9 = action.to) != null ? _ref9 : brave.spot;
-    }
-  }
-
-  Trifolium.prototype.start = function() {
-    var timer,
-      _this = this;
-    this.count = 0;
-    return timer = setInterval(function() {
-      _this.tick();
-      return _this.count++;
-    }, this.tickInterval);
-  };
-
-  Trifolium.prototype.tick = function() {
-    var brave, _i, _len, _ref3, _results;
-    _ref3 = this.braveList;
-    _results = [];
-    for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-      brave = _ref3[_i];
-      _results.push(brave.tick());
-    }
-    return _results;
-  };
-
-  Trifolium.prototype.makeBraveName = function() {
-    var prefixIndex, suffixIndex;
-    prefixIndex = parseInt(Math.random() * this.braveNamePrefixes.length);
-    suffixIndex = parseInt(Math.random() * this.braveNameSuffixes.length);
-    return "" + this.braveNamePrefixes[prefixIndex] + this.braveNameSuffixes[suffixIndex];
-  };
-
-  Trifolium.prototype.spotForName = function(name) {
-    var spot;
-    return ((function() {
-      var _i, _len, _ref3, _results;
-      _ref3 = this.spotList;
-      _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        spot = _ref3[_i];
-        if (spot.name === name) _results.push(spot);
-      }
-      return _results;
-    }).call(this))[0];
-  };
-
-  Trifolium.prototype.braveForName = function(name) {
-    var brave;
-    return ((function() {
-      var _i, _len, _ref3, _results;
-      _ref3 = this.braveList;
-      _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        brave = _ref3[_i];
-        if (brave.name === name) _results.push(brave);
-      }
-      return _results;
-    }).call(this))[0];
-  };
-
-  return Trifolium;
-
-})();
-
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.Trifolium = Trifolium;
-}
 
 settings = {
   "tickInterval": 30,
@@ -629,7 +141,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 }
 
 $(function() {
-  var game;
+  var SharedItemCreator, game;
   SharedItemCreator = new ItemCreator(itemDict);
   game = new Game(580, 450);
   return game.start();
@@ -767,7 +279,7 @@ Game = (function() {
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
-    var item, paramName, paramNames, _i, _j, _len, _len2, _ref3, _results;
+    var item, paramName, paramNames, _i, _j, _len, _len2, _ref, _results;
     paramNames = ['name', 'lv', 'atk', 'matk', 'hp', 'mp', 'brave', 'faith', 'speed'];
     for (_i = 0, _len = paramNames.length; _i < _len; _i++) {
       paramName = paramNames[_i];
@@ -776,10 +288,10 @@ Game = (function() {
     $("#brave-position-value").text("" + brave.spot.name);
     $("#brave-action-value").text("" + brave.action.name);
     $("#brave-item-table tbody").empty();
-    _ref3 = brave.items;
+    _ref = brave.items;
     _results = [];
-    for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
-      item = _ref3[_j];
+    for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+      item = _ref[_j];
       _results.push($("#brave-item-table tbody").append($("<tr><td></td><td>" + item.name + "</td></tr>")));
     }
     return _results;
@@ -794,21 +306,21 @@ Game = (function() {
   };
 
   Game.prototype.prepareDisplayObjects = function() {
-    var brave, markerSize, route, selectedBraveMarker, spot, _i, _j, _k, _len, _len2, _len3, _ref3, _ref4, _ref5,
+    var brave, markerSize, route, selectedBraveMarker, spot, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3,
       _this = this;
-    _ref3 = this.simulator.routeList;
-    for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-      route = _ref3[_i];
+    _ref = this.simulator.routeList;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      route = _ref[_i];
       this.appendRoute(route);
     }
-    _ref4 = this.simulator.spotList;
-    for (_j = 0, _len2 = _ref4.length; _j < _len2; _j++) {
-      spot = _ref4[_j];
+    _ref2 = this.simulator.spotList;
+    for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+      spot = _ref2[_j];
       this.appendSpot(spot);
     }
-    _ref5 = this.simulator.braveList;
-    for (_k = 0, _len3 = _ref5.length; _k < _len3; _k++) {
-      brave = _ref5[_k];
+    _ref3 = this.simulator.braveList;
+    for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+      brave = _ref3[_k];
       this.appendBrave(brave);
     }
     this.debugMatrix();
@@ -864,20 +376,20 @@ Game = (function() {
   };
 
   Game.prototype.debugMatrix = function() {
-    var centerLineColor, gapX, gapY, gridSize, lineColor, x, y, _ref3, _ref4;
+    var centerLineColor, gapX, gapY, gridSize, lineColor, x, y, _ref, _ref2;
     gridSize = 10 * this.mapScale;
     lineColor = 'rgba(0, 0, 255, 0.1)';
     centerLineColor = 'rgba(0, 0, 255, 0.5)';
     gapX = this.canvas.width % gridSize / 2;
     gapY = this.canvas.height % gridSize / 2;
-    for (y = 0, _ref3 = this.canvas.height / gridSize; 0 <= _ref3 ? y < _ref3 : y > _ref3; 0 <= _ref3 ? y++ : y--) {
+    for (y = 0, _ref = this.canvas.height / gridSize; 0 <= _ref ? y < _ref : y > _ref; 0 <= _ref ? y++ : y--) {
       if (y !== this.canvas.height / 2 / gridSize) {
         this.canvas.append(new Line(0, y * gridSize + gapY, this.canvas.width, y * gridSize + gapY, {
           stroke: lineColor
         }));
       }
     }
-    for (x = 0, _ref4 = this.canvas.width / gridSize; 0 <= _ref4 ? x < _ref4 : x > _ref4; 0 <= _ref4 ? x++ : x--) {
+    for (x = 0, _ref2 = this.canvas.width / gridSize; 0 <= _ref2 ? x < _ref2 : x > _ref2; 0 <= _ref2 ? x++ : x--) {
       if (x !== this.canvas.width / 2 / gridSize) {
         this.canvas.append(new Line(x * gridSize + gapX, 0, x * gridSize + gapX, this.canvas.height, {
           stroke: lineColor

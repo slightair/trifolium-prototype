@@ -3,13 +3,13 @@ var Brave, Item, Spot, WaitAction, should,
 
 should = require('should');
 
-Brave = require('../lib/trifolium/brave').Brave;
+Brave = require('../lib/trifolium-server/brave').Brave;
 
-Spot = require('../lib/trifolium/spot').Spot;
+Spot = require('../lib/trifolium-server/spot').Spot;
 
-WaitAction = require('../lib/trifolium/action').WaitAction;
+WaitAction = require('../lib/trifolium-server/action').WaitAction;
 
-Item = require('../lib/trifolium/item').Item;
+Item = require('../lib/trifolium-server/item').Item;
 
 describe('Brave', function() {
   var brave, spot;
