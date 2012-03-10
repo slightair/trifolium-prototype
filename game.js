@@ -1,33 +1,8 @@
-var Action, Brave, Game, Item, ItemCreator, MoveAction, Notifier, SearchAction, SharedItemCreator, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
+var Action, Brave, Game, Item, ItemCreator, MoveAction, SearchAction, SharedItemCreator, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
   __hasProp = Object.prototype.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
   __slice = Array.prototype.slice,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-Notifier = (function() {
-
-  function Notifier() {
-    var server;
-    server = require('http').createServer(function(req, res) {
-      res.writeHead(200, {
-        'Content-Type': 'text/plain'
-      });
-      return res.end('Trifolium game server is running.\n');
-    });
-    this.io = require('socket.io').listen(server);
-    server.listen(6262);
-    this.io.sockets.on('connection', function(socket) {});
-  }
-
-  Notifier.prototype.notify = function(command, data) {
-    return this.io.sockets.emit(command, data);
-  };
-
-  return Notifier;
-
-})();
-
-exports.Notifier = Notifier;
 
 Action = (function() {
 

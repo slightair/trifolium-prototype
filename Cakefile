@@ -45,13 +45,29 @@ compile_console_app = (callback) ->
 build_console_app = (callback) ->
     compile_lib -> compile_settings -> compile_console_app -> callback?()
 
+compile_server_app = (callback) ->
+    options = [
+        '-c'
+        '-o'
+        '.'
+        'coffeescripts/game-server.coffee'
+    ]
+    coffee = spawn "#{bin_path}/coffee", options
+    coffee.stdout.on 'data', stream_data_handler
+    coffee.stderr.on 'data', stream_data_handler
+    coffee.on 'exit', (status) -> callback?() if status is 0
+
+build_server_app = (callback) ->
+    compile_lib -> compile_settings -> compile_server_app -> callback?()
+
 compile_game = (callback) ->
     options = [
         '-b'
         '-c'
         '-j'
         'game.js'
-        'coffeescripts/lib/'
+        'coffeescripts/lib/trifolium/'
+        'coffeescripts/lib/trifolium.coffee'
         'coffeescripts/settings.coffee'
         'coffeescripts/game.coffee'
     ]
@@ -107,6 +123,9 @@ run_test = (callback) ->
 task 'console', 'make console-app.js', ->
     build_console_app -> 'All done.'
 
+task 'server', 'make game-server.js', ->
+    build_server_app -> 'All done.'
+
 task 'game', 'make game.js for web browser', (options) ->
     build_game -> 'All done.'
 
@@ -114,4 +133,4 @@ task 'test', 'run test', (options) ->
     compile_lib -> compile_settings -> compile_test -> run_test -> 'All done.'
 
 task 'all', 'compile all scripts', ->
-    build_console_app -> build_game -> compile_test -> 'All done.'
+    build_server_app -> build_console_app -> build_game -> compile_test -> 'All done.'
