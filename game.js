@@ -1,7 +1,33 @@
-var Action, Brave, Game, Item, ItemCreator, MoveAction, SearchAction, SharedItemCreator, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
+var Action, Brave, Game, Item, ItemCreator, MoveAction, Notifier, SearchAction, SharedItemCreator, Spot, Trifolium, WaitAction, itemDict, settings, _ref, _ref2,
   __hasProp = Object.prototype.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+  __slice = Array.prototype.slice,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Notifier = (function() {
+
+  function Notifier() {
+    var server;
+    server = require('http').createServer(function(req, res) {
+      res.writeHead(200, {
+        'Content-Type': 'text/plain'
+      });
+      return res.end('Trifolium game server is running.\n');
+    });
+    this.io = require('socket.io').listen(server);
+    server.listen(6262);
+    this.io.sockets.on('connection', function(socket) {});
+  }
+
+  Notifier.prototype.notify = function(command, data) {
+    return this.io.sockets.emit(command, data);
+  };
+
+  return Notifier;
+
+})();
+
+exports.Notifier = Notifier;
 
 Action = (function() {
 
@@ -186,8 +212,19 @@ Brave = (function() {
     this.actionProcess = 0.0;
     this.spot = spawnSpot;
     this.destination = spawnSpot;
-    this.onCompleteAction = null;
+    this.eventDict = {};
   }
+
+  Brave.prototype.on = function(event, callback) {
+    this.eventDict[event] = callback;
+    return this;
+  };
+
+  Brave.prototype.emit = function() {
+    var args, event, _ref;
+    event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    return (_ref = this.eventDict[event]) != null ? _ref.apply(this, args) : void 0;
+  };
 
   Brave.prototype.tick = function() {
     var prevAction, result;
@@ -196,7 +233,7 @@ Brave = (function() {
       if (this.actionProcess >= 1.0) {
         prevAction = this.action;
         result = this.action["do"](this);
-        return typeof this.onCompleteAction === "function" ? this.onCompleteAction(this, prevAction, result) : void 0;
+        return this.emit('completeAction', this, prevAction, result);
       }
     }
   };
@@ -699,7 +736,7 @@ Game = (function() {
     braveObject.append(head);
     braveObject.append(body);
     this.canvas.append(braveObject);
-    return brave.onCompleteAction = function(brave, action, result) {
+    return brave.on('completeAction', function(brave, action, result) {
       var actionEffect, circleRadiusMax, effectTime;
       circleRadiusMax = 40.0;
       effectTime = 800;
@@ -751,7 +788,7 @@ Game = (function() {
         default:
           return _this.log("unknown event - " + action.name);
       }
-    };
+    });
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
