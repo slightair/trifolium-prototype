@@ -1,4 +1,5 @@
-var Brave, Item, Spot, WaitAction, should;
+var Brave, Item, Spot, WaitAction, should,
+  __slice = Array.prototype.slice;
 
 should = require('should');
 
@@ -65,6 +66,41 @@ describe('Brave', function() {
   it('should have gold', function() {
     return brave.gold.should.equal(300);
   });
+  it('should have eventDict', function() {
+    return brave.eventDict.should.be.an["instanceof"](Object);
+  });
+  describe('#on()', function() {
+    return it('should add event', function() {
+      var hogeCallback, x;
+      should.not.exist(brave.eventDict.hoge);
+      hogeCallback = function() {
+        return 'hoge hoge hoge';
+      };
+      x = brave.on('hoge', hogeCallback);
+      x.should.equal(brave);
+      should.exist(brave.eventDict.hoge);
+      brave.eventDict.hoge().should.equal('hoge hoge hoge');
+      x = brave.on('sum', function(x, y) {
+        return x + y;
+      });
+      x.should.equal(brave);
+      return brave.eventDict.sum(2, 3).should.equal(5);
+    });
+  });
+  describe('#emit()', function() {
+    return it('should emit added events', function() {
+      brave.on('multi', function(x, y) {
+        return x * y;
+      });
+      brave.emit('multi', 5, 2).should.equal(10);
+      brave.on('concat', function() {
+        var args;
+        args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+        return args.join('');
+      });
+      return brave.emit('concat', 'ha', 'hi', 'hu', 'he', 'ho').should.equal('hahihuheho');
+    });
+  });
   describe('#tick()', function() {
     beforeEach(function() {
       brave.action = new WaitAction(3000);
@@ -76,12 +112,12 @@ describe('Brave', function() {
       brave.tick();
       return brave.actionProcess.should.be.within(0.001, 0.003);
     });
-    return it('should call @onCompleteAction()', function(done) {
+    return it('should emit \'completeAction\'', function(done) {
       var i;
-      brave.onCompleteAction = function(brave, action, result) {
+      brave.on('completeAction', function(brave, action, result) {
         action.time.should.equal(3000);
         return done();
-      };
+      });
       brave.tick();
       brave.actionProcess.should.be.within(0.000, 0.002);
       brave.tick();
