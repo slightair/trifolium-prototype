@@ -4,41 +4,40 @@ div.navbar
             a.brand(href='#') trifolium
 div.container
     div.row
-        div.row
-            div.span8#main-content
-                div.well
-                    h3= title
-                    div#main-screen
-            div.span4#side-content
-                div.well#brave-info
-                    h3 brave info
-                    div.tabbable
-                        ul.nav.nav-tabs#side-content-tabs
-                            li.active
-                                a(href='#brave-info-status', data-toggle='tab') status
-                            li
-                                a(href='#brave-info-item', data-toggle='tab') item
-                        div.tab-content
-                            div.tab-pane.active#brave-info-status
-                                table.table.table-striped.table-bordered.table-condensed
-                                    thead
+        div.span8#main-content
+            div.well
+                h3= title
+                div#main-screen
+        div.span4#side-content
+            div.well#brave-info
+                h3 brave info
+                div.tabbable
+                    ul.nav.nav-tabs#side-content-tabs
+                        li.active
+                            a(href='#brave-info-status', data-toggle='tab') status
+                        li
+                            a(href='#brave-info-item', data-toggle='tab') item
+                    div.tab-content
+                        div.tab-pane.active#brave-info-status
+                            table.table.table-striped.table-bordered.table-condensed
+                                thead
+                                    tr
+                                        th#parameter-name parameter name
+                                        th#value value
+                                tbody
+                                    each id, name in params
                                         tr
-                                            th#parameter-name parameter name
-                                            th#value value
-                                    tbody
-                                        each id, name in params
-                                            tr
-                                                td #{name}
-                                                td(id="#{id}-value")
-                                        tr
-                                            td actionProcess
-                                            td
-                                                div.progress
-                                                    div(class="bar", id="brave-actionProcess-bar")
-                            div.tab-pane#brave-info-item
-                                table.table.table-striped.table-bordered.table-condensed#brave-item-table
-                                    thead
-                                        tr
-                                            th 
-                                            th name
-                                    tbody
+                                            td #{name}
+                                            td(id="#{id}-value")
+                                    tr
+                                        td actionProcess
+                                        td
+                                            div.progress
+                                                div(class="bar", id="brave-actionProcess-bar")
+                        div.tab-pane#brave-info-item
+                            table.table.table-striped.table-bordered.table-condensed#brave-item-table
+                                thead
+                                    tr
+                                        th 
+                                        th name
+                                tbody

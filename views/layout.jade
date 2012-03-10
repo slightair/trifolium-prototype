@@ -5,8 +5,8 @@ html
         title trifolium - #{title}
         link(rel='stylesheet/less', href='/stylesheets/styles.less')
         script(type='text/javascript', src='javascripts/lib/jquery-1.7.1.min.js')
-        script(type='text/javascript', src='javascripts/lib/bootstrap-tab.js')
         script(type='text/javascript', src='javascripts/lib/less-1.2.1.min.js')
-        script(type='text/javascript', src='javascripts/lib/cake.js')
-        script(type='text/javascript', src='javascripts/game.min.js')
+        each file in scriptfiles
+            script(type='text/javascript', src=file)
     body!= body
+    

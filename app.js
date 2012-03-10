@@ -1,38 +1,35 @@
-(function() {
-  var app, express, port, routes, _ref;
+var app, express, port, routes, _ref;
 
-  express = require("express");
+express = require("express");
 
-  routes = require("./routes");
+routes = require("./routes");
 
-  app = module.exports = express.createServer();
+app = module.exports = express.createServer();
 
-  app.configure(function() {
-    app.set("views", __dirname + "/views");
-    app.set("view engine", "jade");
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    return app.use(express.static(__dirname + "/public"));
-  });
+app.configure(function() {
+  app.set("views", __dirname + "/views");
+  app.set("view engine", "jade");
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  return app.use(express.static(__dirname + "/public"));
+});
 
-  app.configure("development", function() {
-    return app.use(express.errorHandler({
-      dumpExceptions: true,
-      showStack: true
-    }));
-  });
+app.configure("development", function() {
+  return app.use(express.errorHandler({
+    dumpExceptions: true,
+    showStack: true
+  }));
+});
 
-  app.configure("production", function() {
-    return app.use(express.errorHandler());
-  });
+app.configure("production", function() {
+  return app.use(express.errorHandler());
+});
 
-  app.get("/", routes.index);
+app.get("/", routes.index);
 
-  port = (_ref = process.env.PORT) != null ? _ref : 3000;
+port = (_ref = process.env.PORT) != null ? _ref : 3000;
 
-  app.listen(port);
+app.listen(port);
 
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-
-}).call(this);
+console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
