@@ -1,14 +1,16 @@
-var Brave, Item, Spot, WaitAction, should;
+var Brave, Item, Spot, WaitAction, serverLibPath, should;
 
 should = require('should');
 
-Brave = require('../lib/trifolium-server/brave').Brave;
+serverLibPath = '../../../lib/trifolium-server';
 
-Spot = require('../lib/trifolium-server/spot').Spot;
+Brave = require("" + serverLibPath + "/brave").Brave;
 
-WaitAction = require('../lib/trifolium-server/action').WaitAction;
+Spot = require("" + serverLibPath + "/spot").Spot;
 
-Item = require('../lib/trifolium-server/item').Item;
+WaitAction = require("" + serverLibPath + "/action").WaitAction;
+
+Item = require("" + serverLibPath + "/item").Item;
 
 describe('Brave', function() {
   var brave, spot;

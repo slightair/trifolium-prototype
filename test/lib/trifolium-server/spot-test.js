@@ -1,10 +1,12 @@
-var Item, SearchAction, Spot, WaitAction, _ref;
+var Item, SearchAction, Spot, WaitAction, serverLibPath, _ref;
 
-Spot = require('../lib/trifolium-server/spot').Spot;
+serverLibPath = '../../../lib/trifolium-server';
 
-_ref = require('../lib/trifolium-server/action'), WaitAction = _ref.WaitAction, SearchAction = _ref.SearchAction;
+Spot = require("" + serverLibPath + "/spot").Spot;
 
-Item = require('../lib/trifolium-server/item').Item;
+_ref = require("" + serverLibPath + "/action"), WaitAction = _ref.WaitAction, SearchAction = _ref.SearchAction;
+
+Item = require("" + serverLibPath + "/item").Item;
 
 describe("Spot", function() {
   var spot;

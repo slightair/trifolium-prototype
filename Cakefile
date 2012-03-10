@@ -94,7 +94,7 @@ compile_server_test = (callback) ->
         '-b'
         '-c'
         '-o'
-        'test'
+        'test/lib/trifolium-server'
         'coffeescripts/test/lib/trifolium-server/'
     ]
     coffee = spawn "#{bin_path}/coffee", options
@@ -107,7 +107,7 @@ compile_client_test = (callback) ->
         '-b'
         '-c'
         '-o'
-        'test'
+        'test/lib/trifolium-client'
         'coffeescripts/test/lib/trifolium-client/'
     ]
     coffee = spawn "#{bin_path}/coffee", options
@@ -122,6 +122,10 @@ run_test = (callback) ->
         '-R'
         'spec'
         '-c'
+        'test/lib/trifolium-server/action-test.js'
+        'test/lib/trifolium-server/brave-test.js'
+        'test/lib/trifolium-server/item-test.js'
+        'test/lib/trifolium-server/spot-test.js'
     ]
     mocha = spawn "#{bin_path}/mocha", options
     output = ''

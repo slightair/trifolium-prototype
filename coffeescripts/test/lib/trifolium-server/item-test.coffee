@@ -1,5 +1,7 @@
 should = require 'should'
-{Item, ItemCreator} = require '../lib/trifolium-server/item'
+
+serverLibPath = '../../../lib/trifolium-server'
+{Item, ItemCreator} = require "#{serverLibPath}/item"
 
 itemDict = {
     1:

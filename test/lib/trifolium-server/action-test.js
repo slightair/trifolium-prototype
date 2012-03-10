@@ -1,14 +1,16 @@
-var Action, Brave, MoveAction, SearchAction, SharedItemCreator, Spot, WaitAction, should, _ref;
+var Action, Brave, MoveAction, SearchAction, SharedItemCreator, Spot, WaitAction, serverLibPath, should, _ref;
 
 should = require('should');
 
-Brave = require('../lib/trifolium-server/brave').Brave;
+serverLibPath = '../../../lib/trifolium-server';
 
-Spot = require('../lib/trifolium-server/spot').Spot;
+Brave = require("" + serverLibPath + "/brave").Brave;
 
-_ref = require('../lib/trifolium-server/action'), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
+Spot = require("" + serverLibPath + "/spot").Spot;
 
-SharedItemCreator = require('../lib/trifolium-server/item').SharedItemCreator;
+_ref = require("" + serverLibPath + "/action"), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
+
+SharedItemCreator = require("" + serverLibPath + "/item").SharedItemCreator;
 
 describe('Action', function() {
   var action;

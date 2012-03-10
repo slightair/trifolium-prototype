@@ -1,8 +1,10 @@
 should = require 'should'
-{Brave} = require '../lib/trifolium-server/brave'
-{Spot} = require '../lib/trifolium-server/spot'
-{Action, WaitAction, MoveAction, SearchAction} = require '../lib/trifolium-server/action'
-{SharedItemCreator} = require '../lib/trifolium-server/item'
+
+serverLibPath = '../../../lib/trifolium-server'
+{Brave} = require "#{serverLibPath}/brave"
+{Spot} = require "#{serverLibPath}/spot"
+{Action, WaitAction, MoveAction, SearchAction} = require "#{serverLibPath}/action"
+{SharedItemCreator} = require "#{serverLibPath}/item"
 
 describe 'Action', ->
     action = new Action

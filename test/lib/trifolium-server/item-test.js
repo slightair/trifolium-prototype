@@ -1,8 +1,10 @@
-var Item, ItemCreator, itemDict, should, _ref;
+var Item, ItemCreator, itemDict, serverLibPath, should, _ref;
 
 should = require('should');
 
-_ref = require('../lib/trifolium-server/item'), Item = _ref.Item, ItemCreator = _ref.ItemCreator;
+serverLibPath = '../../../lib/trifolium-server';
+
+_ref = require("" + serverLibPath + "/item"), Item = _ref.Item, ItemCreator = _ref.ItemCreator;
 
 itemDict = {
   1: {
