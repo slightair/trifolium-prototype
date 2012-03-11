@@ -12,6 +12,9 @@ describe 'Brave', ->
     ]
     brave = new Brave 'testBrave', spot
     
+    it 'should have id', ->
+        should.exist brave.id
+    
     it 'should have name', ->
         brave.name.should.equal 'testBrave'
     

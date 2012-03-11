@@ -21,6 +21,9 @@ describe('Brave', function() {
     }
   ]);
   brave = new Brave('testBrave', spot);
+  it('should have id', function() {
+    return should.exist(brave.id);
+  });
   it('should have name', function() {
     return brave.name.should.equal('testBrave');
   });

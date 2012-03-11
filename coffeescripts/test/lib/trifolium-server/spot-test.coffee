@@ -1,3 +1,5 @@
+should = require 'should'
+
 serverLibPath = '../../../lib/trifolium-server'
 {Spot} = require "#{serverLibPath}/spot"
 {WaitAction, SearchAction} = require "#{serverLibPath}/action"
@@ -21,6 +23,8 @@ describe "Spot", ->
         ]}
     ]
     
+    it 'should have id', ->
+        should.exist spot.id
     it 'should have name', ->
         spot.name.should.equal 'testSpot'
     it 'should have posX', ->

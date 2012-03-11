@@ -49,7 +49,7 @@ describe('Action', function() {
       return should.not.exist(brave.action);
     });
   });
-  return describe('#after()', function() {
+  describe('#after()', function() {
     var brave, nextAction, spot;
     nextAction = new Action;
     spot = new Spot('testSpot', 0, 0);
@@ -82,6 +82,16 @@ describe('Action', function() {
       return brave.destination.should.equal(toSpot);
     });
   });
+  return describe('#details()', function() {
+    return it('should return action details', function() {
+      var details;
+      details = action.details();
+      should.exist(details);
+      details.should.be.an["instanceof"](Object);
+      should.not.exist(details.name, 'name should not exist');
+      return details.time.should.equal(0);
+    });
+  });
 });
 
 describe('WaitAction', function() {
@@ -99,7 +109,7 @@ describe('WaitAction', function() {
   it('should have time', function() {
     return action.time.should.equal(5000);
   });
-  return describe('#do()', function() {
+  describe('#do()', function() {
     var brave;
     brave = new Brave('testBrave', spot);
     beforeEach(function() {
@@ -120,6 +130,18 @@ describe('WaitAction', function() {
     return it('should have next action', function() {
       action["do"](brave);
       return should.exist(brave.action);
+    });
+  });
+  return describe('#details()', function() {
+    return it('should return action details', function() {
+      var details;
+      details = action.details();
+      should.exist(details);
+      details.should.be.an["instanceof"](Object);
+      should.exist(details.name, 'name should exist');
+      details.name.should.equal('wait');
+      should.exist(details.time, 'time should exist');
+      return details.time.should.equal(5000);
     });
   });
 });
@@ -151,7 +173,7 @@ describe('MoveAction', function() {
   it('should have time', function() {
     return action.time.should.equal(1000);
   });
-  return describe('#do()', function() {
+  describe('#do()', function() {
     var brave;
     brave = new Brave('testBrave', fromSpot);
     beforeEach(function() {
@@ -178,6 +200,22 @@ describe('MoveAction', function() {
       return should.exist(brave.action);
     });
   });
+  return describe('#details()', function() {
+    return it('should return action details', function() {
+      var details;
+      details = action.details();
+      should.exist(details);
+      details.should.be.an["instanceof"](Object);
+      should.exist(details.name, 'name should exist');
+      details.name.should.equal('move');
+      should.exist(details.time, 'time should exist');
+      details.time.should.equal(1000);
+      should.exist(details.from, 'from should exist');
+      details.from.should.equal(fromSpot.id);
+      should.exist(details.to, 'to should exist');
+      return details.to.should.equal(toSpot.id);
+    });
+  });
 });
 
 describe('SearchAction', function() {
@@ -201,7 +239,7 @@ describe('SearchAction', function() {
   it('should have treasureDict', function() {
     return action.treasureDict.should.be.an["instanceof"](Object);
   });
-  return describe('#do()', function() {
+  describe('#do()', function() {
     var brave, goodKinoko, kinoko, tikuwa;
     kinoko = SharedItemCreator.createItem(1);
     goodKinoko = SharedItemCreator.createItem(2);
@@ -286,6 +324,18 @@ describe('SearchAction', function() {
     return it('should have next action', function() {
       action["do"](brave);
       return should.exist(brave.action);
+    });
+  });
+  return describe('#details()', function() {
+    return it('should return action details', function() {
+      var details;
+      details = action.details();
+      should.exist(details);
+      details.should.be.an["instanceof"](Object);
+      should.exist(details.name, 'name should exist');
+      details.name.should.equal('search');
+      should.exist(details.time, 'time should exist');
+      return details.time.should.equal(3000);
     });
   });
 });

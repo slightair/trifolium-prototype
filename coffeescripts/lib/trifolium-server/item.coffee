@@ -1,9 +1,15 @@
+crypto = require 'crypto'
 itemDict = require('../../settings').itemDict
 
 class Item
     constructor: (@itemId, @name) ->
         date = new Date
-        @id = "#{date.getTime()}#{date.getMilliseconds()}#{@itemId}#{@name}" # tentative
+        @id = crypto.createHash('sha1').update("#{@itemId}")
+                                       .update("#{@name}")
+                                       .update('2c77a50b0c670bb6')
+                                       .update("#{date.getTime()}")
+                                       .update("#{date.getMilliseconds()}")
+                                       .digest('hex')
     
 class ItemCreator
     constructor: (@itemDict) ->

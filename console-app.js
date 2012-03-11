@@ -7,8 +7,8 @@
 
   socket = io.connect('http://localhost:6262');
 
-  socket.on('eventlog', function(log) {
-    return console.log(log);
+  socket.on('completeAction', function(details) {
+    return console.log(details);
   });
 
 }).call(this);

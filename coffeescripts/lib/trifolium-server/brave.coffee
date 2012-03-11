@@ -1,7 +1,15 @@
-{EventEmitter} = require('events')
+crypto = require 'crypto'
+{EventEmitter} = require 'events'
 
 class Brave extends EventEmitter
     constructor: (@name, spawnSpot, options = {}) ->
+        date = new Date
+        @id    = crypto.createHash('sha1').update("#{@name}")
+                                          .update("#{spawnSpot.name}")
+                                          .update('b9889216daa1ccab')
+                                          .update("#{date.getTime()}")
+                                          .update("#{date.getMilliseconds()}")
+                                          .digest('hex')
         @lv    = options.lv    ? 1
         @atk   = options.atk   ? 1
         @matk  = options.matk  ? 1

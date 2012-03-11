@@ -14,6 +14,9 @@ class Action
         nextAction.prepare brave
         brave.action = nextAction
         brave.destination = nextAction.to ? brave.spot
+    
+    details: ->
+        time: 0
 
 class WaitAction extends Action
     constructor: (@time) ->
@@ -24,6 +27,9 @@ class WaitAction extends Action
         
         @after(brave, brave.spot.randomAction())
         {isSucceed: true}
+    details: ->
+        time: @time
+        name: @name
 
 class MoveAction extends Action
     constructor: (@from, @to) ->
@@ -36,6 +42,11 @@ class MoveAction extends Action
         
         @after(brave, @to.randomAction())
         {isSucceed: true}
+    details: ->
+        time: @time
+        name: @name
+        from: @from.id
+        to: @to.id
 
 class SearchAction extends Action
     probabilityMax: 1000
@@ -64,6 +75,9 @@ class SearchAction extends Action
         
         @after(brave, brave.spot.randomAction())
         {isSucceed: isSucceed, treasure:treasure}
+    details: ->
+        time: @time
+        name: @name
 
 exports.Action = Action
 exports.WaitAction = WaitAction

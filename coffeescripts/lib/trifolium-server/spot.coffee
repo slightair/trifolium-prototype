@@ -1,8 +1,16 @@
+crypto = require 'crypto'
 {Action, WaitAction, MoveAction, SearchAction} = require './action'
 {SharedItemCreator} = require './item'
 
 class Spot
     constructor: (@name, @posX, @posY, actionInfoList = []) ->
+        date = new Date
+        @id = crypto.createHash('sha1').update("#{@name}")
+                                       .update("#{@posX}-#{@posY}")
+                                       .update('6b1d6cfdb9889216')
+                                       .update("#{date.getTime()}")
+                                       .update("#{date.getMilliseconds()}")
+                                       .digest('hex')
         @actions = @makeActions(actionInfoList)
     randomAction: ->
         index = Math.floor(Math.random() * @actions.length)

@@ -1,4 +1,6 @@
-var Item, SearchAction, Spot, WaitAction, serverLibPath, _ref;
+var Item, SearchAction, Spot, WaitAction, serverLibPath, should, _ref;
+
+should = require('should');
 
 serverLibPath = '../../../lib/trifolium-server';
 
@@ -35,6 +37,9 @@ describe("Spot", function() {
       ]
     }
   ]);
+  it('should have id', function() {
+    return should.exist(spot.id);
+  });
   it('should have name', function() {
     return spot.name.should.equal('testSpot');
   });

@@ -72,6 +72,15 @@ describe 'Action', ->
             
             action.after brave, moveAction
             brave.destination.should.equal toSpot
+    
+    describe '#details()', ->
+        
+        it 'should return action details', ->
+            details = action.details()
+            should.exist details
+            details.should.be.an.instanceof Object
+            should.not.exist details.name, 'name should not exist'
+            details.time.should.equal 0
 
 describe 'WaitAction', ->
     spot = new Spot 'testSpot', 0, 0, [
@@ -107,6 +116,16 @@ describe 'WaitAction', ->
             action.do brave
             should.exist brave.action
         
+    describe '#details()', ->
+        
+        it 'should return action details', ->
+            details = action.details()
+            should.exist details
+            details.should.be.an.instanceof Object
+            should.exist details.name, 'name should exist'
+            details.name.should.equal 'wait'
+            should.exist details.time, 'time should exist'
+            details.time.should.equal 5000
 
 describe 'MoveAction', ->
     fromSpot = new Spot 'from', 10, 10, [
@@ -154,6 +173,21 @@ describe 'MoveAction', ->
         it 'should have next action', ->
             action.do brave
             should.exist brave.action
+    
+    describe '#details()', ->
+        
+        it 'should return action details', ->
+            details = action.details()
+            should.exist details
+            details.should.be.an.instanceof Object
+            should.exist details.name, 'name should exist'
+            details.name.should.equal 'move'
+            should.exist details.time, 'time should exist'
+            details.time.should.equal 1000
+            should.exist details.from, 'from should exist'
+            details.from.should.equal fromSpot.id
+            should.exist details.to, 'to should exist'
+            details.to.should.equal toSpot.id
 
 describe 'SearchAction', ->
     spot = new Spot 'testSpot', 0, 0, [
@@ -245,4 +279,14 @@ describe 'SearchAction', ->
         it 'should have next action', ->
             action.do brave
             should.exist brave.action
+    
+    describe '#details()', ->
         
+        it 'should return action details', ->
+            details = action.details()
+            should.exist details
+            details.should.be.an.instanceof Object
+            should.exist details.name, 'name should exist'
+            details.name.should.equal 'search'
+            should.exist details.time, 'time should exist'
+            details.time.should.equal 3000
