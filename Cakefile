@@ -30,22 +30,7 @@ compile_settings = (callback) ->
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
 
-compile_console_app = (callback) ->
-    options = [
-        '-c'
-        '-o'
-        '.'
-        'coffeescripts/console-app.coffee'
-    ]
-    coffee = spawn "#{bin_path}/coffee", options
-    coffee.stdout.on 'data', stream_data_handler
-    coffee.stderr.on 'data', stream_data_handler
-    coffee.on 'exit', (status) -> callback?() if status is 0
-
-build_console_app = (callback) ->
-    compile_lib -> compile_settings -> compile_console_app -> callback?()
-
-compile_server_app = (callback) ->
+compile_server = (callback) ->
     options = [
         '-c'
         '-o'
@@ -57,37 +42,52 @@ compile_server_app = (callback) ->
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
 
-build_server_app = (callback) ->
-    compile_lib -> compile_settings -> compile_server_app -> callback?()
+build_server = (callback) ->
+    compile_lib -> compile_settings -> compile_server -> callback?()
 
-compile_game = (callback) ->
+compile_client_console = (callback) ->
     options = [
-        '-b'
         '-c'
-        '-j'
-        'game.js'
-        'coffeescripts/lib/trifolium-client/'
-        'coffeescripts/settings.coffee'
-        'coffeescripts/game.coffee'
+        '-o'
+        '.'
+        'coffeescripts/game-client-console.coffee'
     ]
     coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
 
-minify_game = (callback) ->
-    options = [
-            '-o'
-            'public/javascripts/game.min.js'
-            'game.js'
-    ]
-    uglify = spawn "#{bin_path}/uglifyjs", options
-    uglify.stdout.on 'data', stream_data_handler
-    uglify.stderr.on 'data', stream_data_handler
-    uglify.on 'exit', (status) -> callback?() if status is 0
+build_client_console = (callback) ->
+    compile_lib -> compile_settings -> compile_client_console -> callback?()
 
-build_game = (callback) ->
-    compile_game -> minify_game -> callback?()
+# compile_client_browser = (callback) ->
+#     options = [
+#         '-b'
+#         '-c'
+#         '-j'
+#         'game.js'
+#         'coffeescripts/lib/trifolium-client/'
+#         'coffeescripts/settings.coffee'
+#         'coffeescripts/game-client-browser.coffee'
+#     ]
+#     coffee = spawn "#{bin_path}/coffee", options
+#     coffee.stdout.on 'data', stream_data_handler
+#     coffee.stderr.on 'data', stream_data_handler
+#     coffee.on 'exit', (status) -> callback?() if status is 0
+# 
+# minify_client_browser = (callback) ->
+#     options = [
+#             '-o'
+#             'public/javascripts/game.min.js'
+#             'game.js'
+#     ]
+#     uglify = spawn "#{bin_path}/uglifyjs", options
+#     uglify.stdout.on 'data', stream_data_handler
+#     uglify.stderr.on 'data', stream_data_handler
+#     uglify.on 'exit', (status) -> callback?() if status is 0
+# 
+# build_client_browser = (callback) ->
+#     compile_client_browser -> minify_client_browser -> callback?()
 
 compile_server_test = (callback) ->
     options = [
@@ -136,17 +136,17 @@ run_test = (callback) ->
     mocha.stderr.on 'data', data_handler
     mocha.on 'exit', (status) -> callback?() if status is 0
 
-task 'console', 'make console-app.js', ->
-    build_console_app -> 'All done.'
-
 task 'server', 'make game-server.js', ->
-    build_server_app -> 'All done.'
+    build_server -> 'All done.'
 
-task 'game', 'make game.js for web browser', (options) ->
-    build_game -> 'All done.'
+task 'console', 'make game-client-console.js', ->
+    build_client_console -> 'All done.'
+
+# task 'browser', 'make game-client-browser.js', (options) ->
+#     build_client_browser -> 'All done.'
 
 task 'test', 'run test', (options) ->
     compile_lib -> compile_settings -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
 
-task 'all', 'compile all scripts', ->
-    build_server_app -> build_console_app -> build_game -> compile_server_test -> compile_client_test -> 'All done.'
+# task 'all', 'compile all scripts', ->
+#     build_server -> build_client_console -> build_client_browser -> compile_server_test -> compile_client_test -> 'All done.'

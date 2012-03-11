@@ -150,5 +150,5 @@ itemDict = {
         name: '竹の槍'
 }
 
-exports?.settings = settings
-exports?.itemDict = itemDict
+exports.settings = settings
+exports.itemDict = itemDict
