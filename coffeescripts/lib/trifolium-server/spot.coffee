@@ -37,5 +37,11 @@ class Spot
                         
                 actions.push action if action?
         actions
+    
+    details: ->
+        id: @id
+        name: @name
+        posX: @posX
+        posY: @posY
 
 exports.Spot = Spot

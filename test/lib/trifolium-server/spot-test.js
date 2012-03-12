@@ -120,7 +120,7 @@ describe("Spot", function() {
       return (waitActionCount + searchActionCount).should.equal(20);
     });
   });
-  return describe('#distance()', function() {
+  describe('#distance()', function() {
     return it('should be return distance between another spot', function() {
       var another;
       another = new Spot('another', 100, 0);
@@ -129,6 +129,22 @@ describe("Spot", function() {
       spot.distance(another).should.equal(20);
       another = new Spot('another', 30, 40);
       return spot.distance(another).should.equal(50);
+    });
+  });
+  return describe('#details()', function() {
+    return it('should return action details', function() {
+      var details;
+      details = spot.details();
+      should.exist(details);
+      details.should.be.an["instanceof"](Object);
+      should.exist(details.id, 'id should exist');
+      details.id.should.equal(spot.id);
+      should.exist(details.name, 'name should exist');
+      details.name.should.equal('testSpot');
+      should.exist(details.posX, 'posX should exist');
+      details.posX.should.equal(0);
+      should.exist(details.posY, 'posY should exist');
+      return details.posY.should.equal(0);
     });
   });
 });

@@ -56,3 +56,16 @@ describe 'Item', ->
         should.exist kinoko.id
         should.exist oniku.id
         should.exist unknown.id
+        
+    describe '#details()', ->
+        
+        it 'should return item details', ->
+            details = kinoko.details()
+            should.exist details
+            details.should.be.an.instanceof Object
+            should.exist details.id, 'id should exist'
+            details.id.should.equal kinoko.id
+            should.exist details.itemId, 'itemId should exist'
+            details.itemId.should.equal 1
+            should.exist details.name, 'name should exist'
+            details.name.should.equal 'きのこ'

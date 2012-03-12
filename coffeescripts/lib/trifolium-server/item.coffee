@@ -10,7 +10,11 @@ class Item
                                        .update("#{date.getTime()}")
                                        .update("#{date.getMilliseconds()}")
                                        .digest('hex')
-    
+    details: ->
+       id: @id
+       name: @name
+       itemId: @itemId
+
 class ItemCreator
     constructor: (@itemDict) ->
     createItem: (itemId, name = null) ->

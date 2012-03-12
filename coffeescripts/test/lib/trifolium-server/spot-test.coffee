@@ -87,3 +87,17 @@ describe "Spot", ->
             
             another = new Spot 'another', 30, 40
             spot.distance(another).should.equal 50
+    
+    describe '#details()', ->
+        it 'should return action details', ->
+            details = spot.details()
+            should.exist details
+            details.should.be.an.instanceof Object
+            should.exist details.id, 'id should exist'
+            details.id.should.equal spot.id
+            should.exist details.name, 'name should exist'
+            details.name.should.equal 'testSpot'
+            should.exist details.posX, 'posX should exist'
+            details.posX.should.equal 0
+            should.exist details.posY, 'posY should exist'
+            details.posY.should.equal 0

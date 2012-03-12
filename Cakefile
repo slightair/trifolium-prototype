@@ -17,19 +17,6 @@ compile_lib = (callback) ->
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
 
-compile_settings = (callback) ->
-    options = [
-        '-b'
-        '-c'
-        '-o'
-        '.'
-        'coffeescripts/settings.coffee'
-    ]
-    coffee = spawn "#{bin_path}/coffee", options
-    coffee.stdout.on 'data', stream_data_handler
-    coffee.stderr.on 'data', stream_data_handler
-    coffee.on 'exit', (status) -> callback?() if status is 0
-
 compile_server = (callback) ->
     options = [
         '-c'
@@ -43,7 +30,7 @@ compile_server = (callback) ->
     coffee.on 'exit', (status) -> callback?() if status is 0
 
 build_server = (callback) ->
-    compile_lib -> compile_settings -> compile_server -> callback?()
+    compile_lib -> compile_server -> callback?()
 
 compile_client_console = (callback) ->
     options = [
@@ -58,7 +45,7 @@ compile_client_console = (callback) ->
     coffee.on 'exit', (status) -> callback?() if status is 0
 
 build_client_console = (callback) ->
-    compile_lib -> compile_settings -> compile_client_console -> callback?()
+    compile_lib -> compile_client_console -> callback?()
 
 # compile_client_browser = (callback) ->
 #     options = [
@@ -67,7 +54,6 @@ build_client_console = (callback) ->
 #         '-j'
 #         'game.js'
 #         'coffeescripts/lib/trifolium-client/'
-#         'coffeescripts/settings.coffee'
 #         'coffeescripts/game-client-browser.coffee'
 #     ]
 #     coffee = spawn "#{bin_path}/coffee", options
@@ -146,7 +132,7 @@ task 'console', 'make game-client-console.js', ->
 #     build_client_browser -> 'All done.'
 
 task 'test', 'run test', (options) ->
-    compile_lib -> compile_settings -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
+    compile_lib -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
 
 # task 'all', 'compile all scripts', ->
 #     build_server -> build_client_console -> build_client_browser -> compile_server_test -> compile_client_test -> 'All done.'

@@ -63,9 +63,23 @@ describe('Item', function() {
     oniku.name.should.equal("おにく");
     return unknown.name.should.equal("unknown");
   });
-  return it('should have id', function() {
+  it('should have id', function() {
     should.exist(kinoko.id);
     should.exist(oniku.id);
     return should.exist(unknown.id);
+  });
+  return describe('#details()', function() {
+    return it('should return item details', function() {
+      var details;
+      details = kinoko.details();
+      should.exist(details);
+      details.should.be.an["instanceof"](Object);
+      should.exist(details.id, 'id should exist');
+      details.id.should.equal(kinoko.id);
+      should.exist(details.itemId, 'itemId should exist');
+      details.itemId.should.equal(1);
+      should.exist(details.name, 'name should exist');
+      return details.name.should.equal('きのこ');
+    });
   });
 });
