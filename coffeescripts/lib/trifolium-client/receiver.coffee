@@ -1,6 +1,6 @@
 class Receiver
     constructor: (options) ->
-        @mode = options.mode
+        @mode = options?.mode
         
         switch @mode
             when 'pusher'
