@@ -1,9 +1,12 @@
-{settings} = require('./settings')
-io = require('socket.io-client')
+{Receiver} = require './lib/trifolium-client/receiver'
+{settings} = require './settings'
 
-socket = io.connect 'http://localhost:6262' 
-socket.on 'completeAction', (details) ->
+receiver = new Receiver {mode: 'socket.io', host: "http://localhost:6262"}
+receiver.bind 'completeAction', (details) ->
     console.log details
+
+
+
 
 
 

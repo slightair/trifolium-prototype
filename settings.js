@@ -131,10 +131,6 @@ itemDict = {
   }
 };
 
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.settings = settings;
-}
+exports.settings = settings;
 
-if (typeof exports !== "undefined" && exports !== null) {
-  exports.itemDict = itemDict;
-}
+exports.itemDict = itemDict;

@@ -9,7 +9,10 @@
 
   simulator = new Simulator(settings);
 
-  notifier = new Notifier;
+  notifier = new Notifier({
+    mode: 'socket.io',
+    port: 6262
+  });
 
   _ref = simulator.braveList;
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {

@@ -1,9 +1,9 @@
-{Notifier} = require('./lib/trifolium-server/notifier')
-{Simulator} = require('./lib/trifolium-server/simulator')
-{settings} = require('./settings')
+{Notifier} = require './lib/trifolium-server/notifier'
+{Simulator} = require './lib/trifolium-server/simulator'
+{settings} = require './settings'
 
 simulator = new Simulator settings
-notifier = new Notifier
+notifier = new Notifier {mode: 'socket.io', port: 6262}
 
 for brave in simulator.braveList
     brave.on 'completeAction', (brave, action, result) ->
