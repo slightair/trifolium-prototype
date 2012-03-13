@@ -19,7 +19,8 @@ itemDict = {
 }
 
 describe 'ItemCreator', ->
-    itemCreator = new ItemCreator itemDict
+    itemCreator = new ItemCreator
+    itemCreator.itemDict = itemDict
     
     it 'should have itemDict', ->
         itemCreator.should.be.an.instanceof Object

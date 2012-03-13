@@ -1,6 +1,8 @@
-var Item, SearchAction, Spot, WaitAction, serverLibPath, should, _ref;
+var Item, SearchAction, SharedItemCreator, Spot, WaitAction, config, configFile, fs, serverLibPath, should, _ref, _ref2;
 
 should = require('should');
+
+fs = require('fs');
 
 serverLibPath = '../../../lib/trifolium-server';
 
@@ -8,7 +10,13 @@ Spot = require("" + serverLibPath + "/spot").Spot;
 
 _ref = require("" + serverLibPath + "/action"), WaitAction = _ref.WaitAction, SearchAction = _ref.SearchAction;
 
-Item = require("" + serverLibPath + "/item").Item;
+_ref2 = require("" + serverLibPath + "/item"), Item = _ref2.Item, SharedItemCreator = _ref2.SharedItemCreator;
+
+configFile = './config.json';
+
+config = JSON.parse(fs.readFileSync(configFile));
+
+SharedItemCreator.itemDict = config.itemDict;
 
 describe("Spot", function() {
   var spot;
@@ -53,11 +61,11 @@ describe("Spot", function() {
     var action, searchActions, waitActions;
     spot.actions.should.be.an["instanceof"](Array);
     waitActions = (function() {
-      var _i, _len, _ref2, _results;
-      _ref2 = spot.actions;
+      var _i, _len, _ref3, _results;
+      _ref3 = spot.actions;
       _results = [];
-      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-        action = _ref2[_i];
+      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+        action = _ref3[_i];
         if (action.name === 'wait') _results.push(action);
       }
       return _results;
@@ -65,11 +73,11 @@ describe("Spot", function() {
     waitActions.should.not.empty;
     waitActions[0].should.be.an["instanceof"](WaitAction);
     searchActions = (function() {
-      var _i, _len, _ref2, _results;
-      _ref2 = spot.actions;
+      var _i, _len, _ref3, _results;
+      _ref3 = spot.actions;
       _results = [];
-      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-        action = _ref2[_i];
+      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+        action = _ref3[_i];
         if (action.name === 'search') _results.push(action);
       }
       return _results;
@@ -79,10 +87,10 @@ describe("Spot", function() {
   });
   describe('#randomAction()', function() {
     return it('should be return a random action', function() {
-      var action, i, id, item, searchActionCount, treasureInfo, waitActionCount, _ref2;
+      var action, i, id, item, searchActionCount, treasureInfo, waitActionCount, _ref3;
       waitActionCount = 0;
       searchActionCount = 0;
-      for (i = 1; i <= 20; i++) {
+      for (i = 1; i <= 50; i++) {
         action = spot.randomAction();
         switch (action.name) {
           case 'wait':
@@ -93,9 +101,9 @@ describe("Spot", function() {
           case 'search':
             action.should.be.an["instanceof"](SearchAction);
             action.treasureDict.should.be.an["instanceof"](Object);
-            _ref2 = action.treasureDict;
-            for (id in _ref2) {
-              treasureInfo = _ref2[id];
+            _ref3 = action.treasureDict;
+            for (id in _ref3) {
+              treasureInfo = _ref3[id];
               item = treasureInfo.item;
               item.should.be.an["instanceof"](Item);
               switch (item.itemId) {
@@ -115,9 +123,9 @@ describe("Spot", function() {
             action.name.should.not.be.an["instanceof"](Action, 'unknown action');
         }
       }
-      waitActionCount.should.above(1, 'waitActionCount');
-      searchActionCount.should.above(1, 'searchActionCount');
-      return (waitActionCount + searchActionCount).should.equal(20);
+      waitActionCount.should.above(0, 'waitActionCount');
+      searchActionCount.should.above(0, 'searchActionCount');
+      return (waitActionCount + searchActionCount).should.equal(50);
     });
   });
   describe('#distance()', function() {

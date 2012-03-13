@@ -1,6 +1,8 @@
-var Action, Brave, MoveAction, SearchAction, SharedItemCreator, Spot, WaitAction, serverLibPath, should, _ref;
+var Action, Brave, MoveAction, SearchAction, SharedItemCreator, Spot, WaitAction, config, configFile, fs, serverLibPath, should, _ref;
 
 should = require('should');
+
+fs = require('fs');
 
 serverLibPath = '../../../lib/trifolium-server';
 
@@ -11,6 +13,12 @@ Spot = require("" + serverLibPath + "/spot").Spot;
 _ref = require("" + serverLibPath + "/action"), Action = _ref.Action, WaitAction = _ref.WaitAction, MoveAction = _ref.MoveAction, SearchAction = _ref.SearchAction;
 
 SharedItemCreator = require("" + serverLibPath + "/item").SharedItemCreator;
+
+configFile = './config.json';
+
+config = JSON.parse(fs.readFileSync(configFile));
+
+SharedItemCreator.itemDict = config.itemDict;
 
 describe('Action', function() {
   var action;

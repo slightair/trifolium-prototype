@@ -1,10 +1,15 @@
 should = require 'should'
+fs = require 'fs'
 
 serverLibPath = '../../../lib/trifolium-server'
 {Brave} = require "#{serverLibPath}/brave"
 {Spot} = require "#{serverLibPath}/spot"
 {Action, WaitAction, MoveAction, SearchAction} = require "#{serverLibPath}/action"
 {SharedItemCreator} = require "#{serverLibPath}/item"
+
+configFile = './config.json'
+config = JSON.parse(fs.readFileSync(configFile))
+SharedItemCreator.itemDict = config.itemDict
 
 describe 'Action', ->
     action = new Action

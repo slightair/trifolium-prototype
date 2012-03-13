@@ -1,5 +1,4 @@
 crypto = require 'crypto'
-itemDict = require('../../settings').itemDict
 
 class Item
     constructor: (@itemId, @name) ->
@@ -16,7 +15,8 @@ class Item
        itemId: @itemId
 
 class ItemCreator
-    constructor: (@itemDict) ->
+    constructor: ->
+        @itemDict = {}
     createItem: (itemId, name = null) ->
         if @itemDict[itemId]?
             new Item itemId, name ? @itemDict[itemId].name
@@ -25,4 +25,4 @@ class ItemCreator
 
 exports.Item = Item
 exports.ItemCreator = ItemCreator
-exports.SharedItemCreator = new ItemCreator itemDict
+exports.SharedItemCreator = new ItemCreator

@@ -29,7 +29,8 @@ itemDict = {
 
 describe('ItemCreator', function() {
   var itemCreator;
-  itemCreator = new ItemCreator(itemDict);
+  itemCreator = new ItemCreator;
+  itemCreator.itemDict = itemDict;
   it('should have itemDict', function() {
     return itemCreator.should.be.an["instanceof"](Object);
   });

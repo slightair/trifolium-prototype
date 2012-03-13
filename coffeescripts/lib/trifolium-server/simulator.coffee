@@ -3,8 +3,8 @@
 {Action, WaitAction, MoveAction, SearchAction} = require './action'
 
 class Simulator
-    constructor : (settings) ->
-        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval} = settings
+    constructor : (config) ->
+        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval} = config
         @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
         
         @routeList = []

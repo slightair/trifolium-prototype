@@ -1,9 +1,14 @@
 should = require 'should'
+fs = require 'fs'
 
 serverLibPath = '../../../lib/trifolium-server'
 {Spot} = require "#{serverLibPath}/spot"
 {WaitAction, SearchAction} = require "#{serverLibPath}/action"
-{Item} = require "#{serverLibPath}/item"
+{Item, SharedItemCreator} = require "#{serverLibPath}/item"
+
+configFile = './config.json'
+config = JSON.parse(fs.readFileSync(configFile))
+SharedItemCreator.itemDict = config.itemDict
 
 describe "Spot", ->
     spot = new Spot 'testSpot', 0, 0, [
@@ -47,7 +52,7 @@ describe "Spot", ->
             waitActionCount = 0
             searchActionCount = 0
             
-            for i in [1..20]
+            for i in [1..50]
                 action = spot.randomAction()
                 
                 switch action.name
@@ -73,9 +78,9 @@ describe "Spot", ->
                     else
                         action.name.should.not.be.an.instanceof Action, 'unknown action'
             
-            waitActionCount.should.above 1, 'waitActionCount'
-            searchActionCount.should.above 1, 'searchActionCount'
-            (waitActionCount + searchActionCount).should.equal 20
+            waitActionCount.should.above 0, 'waitActionCount'
+            searchActionCount.should.above 0, 'searchActionCount'
+            (waitActionCount + searchActionCount).should.equal 50
     
     describe '#distance()', ->
         it 'should be return distance between another spot', ->
