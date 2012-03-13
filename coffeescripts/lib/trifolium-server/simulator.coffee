@@ -1,9 +1,10 @@
+{EventEmitter} = require 'events'
 {Brave} = require './brave'
 {Spot} = require './spot'
 {Action, WaitAction, MoveAction, SearchAction} = require './action'
 {SharedItemCreator} = require './item'
 
-class Simulator
+class Simulator extends EventEmitter
     constructor : (config) ->
         {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval, itemDict} = config
         SharedItemCreator.itemDict = itemDict
@@ -31,6 +32,8 @@ class Simulator
             action.prepare brave
             brave.action = action
             brave.destination = action.to ? brave.spot
+            brave.on 'completeAction', (brave, prevAction, result) =>
+                @emit 'braveCompleteAction', brave, prevAction, result
     start: ->
         @count = 0
         timer = setInterval( =>

@@ -1,5 +1,5 @@
 (function() {
-  var Notifier, Simulator, brave, config, configFilePath, fs, notifier, simulator, _i, _len, _ref;
+  var Notifier, Simulator, config, configFilePath, fs, notifier, simulator;
 
   fs = require('fs');
 
@@ -18,18 +18,14 @@
     port: 6262
   });
 
-  _ref = simulator.braveList;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    brave = _ref[_i];
-    brave.on('completeAction', function(brave, action, result) {
-      return notifier.notify('completeAction', {
-        brave: brave.id,
-        completeAction: action.details(),
-        result: result,
-        nextAction: brave.action.details()
-      });
+  simulator.on('braveCompleteAction', function(brave, action, result) {
+    return notifier.notify('completeAction', {
+      brave: brave.id,
+      completeAction: action.details(),
+      result: result,
+      nextAction: brave.action.details()
     });
-  }
+  });
 
   simulator.start();
 
