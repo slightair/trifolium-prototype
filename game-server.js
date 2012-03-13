@@ -1,13 +1,17 @@
 (function() {
-  var Notifier, Simulator, brave, notifier, settings, simulator, _i, _len, _ref;
+  var Notifier, Simulator, brave, config, configFilePath, fs, notifier, simulator, _i, _len, _ref;
+
+  fs = require('fs');
 
   Notifier = require('./lib/trifolium-server/notifier').Notifier;
 
   Simulator = require('./lib/trifolium-server/simulator').Simulator;
 
-  settings = require('./settings').settings;
+  configFilePath = './config.json';
 
-  simulator = new Simulator(settings);
+  config = JSON.parse(fs.readFileSync(configFilePath));
+
+  simulator = new Simulator(config);
 
   notifier = new Notifier({
     mode: 'socket.io',

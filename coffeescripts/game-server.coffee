@@ -1,8 +1,11 @@
+fs = require 'fs'
 {Notifier} = require './lib/trifolium-server/notifier'
 {Simulator} = require './lib/trifolium-server/simulator'
-{settings} = require './settings'
 
-simulator = new Simulator settings
+configFilePath = './config.json'
+config = JSON.parse(fs.readFileSync(configFilePath))
+
+simulator = new Simulator config
 notifier = new Notifier {mode: 'socket.io', port: 6262}
 
 for brave in simulator.braveList

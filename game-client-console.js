@@ -1,9 +1,7 @@
 (function() {
-  var Receiver, receiver, settings;
+  var Receiver, receiver;
 
   Receiver = require('./lib/trifolium-client/receiver').Receiver;
-
-  settings = require('./settings').settings;
 
   receiver = new Receiver({
     mode: 'socket.io',

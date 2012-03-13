@@ -1,10 +1,13 @@
 {Brave} = require './brave'
 {Spot} = require './spot'
 {Action, WaitAction, MoveAction, SearchAction} = require './action'
+{SharedItemCreator} = require './item'
 
 class Simulator
     constructor : (config) ->
-        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval} = config
+        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval, itemDict} = config
+        SharedItemCreator.itemDict = itemDict
+        
         @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
         
         @routeList = []
