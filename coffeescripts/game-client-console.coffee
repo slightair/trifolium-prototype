@@ -1,8 +1,7 @@
-{Receiver} = require './lib/trifolium-client/receiver'
+{Trifolium} = require './lib/trifolium-client/trifolium'
 
-receiver = new Receiver {mode: 'socket.io', host: "http://localhost:6262"}
-receiver.bind 'completeAction', (details) ->
-    console.log details
+trifolium = new Trifolium config
+
 
 
 

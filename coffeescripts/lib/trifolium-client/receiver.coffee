@@ -12,7 +12,13 @@ class Receiver
                 console.log 'receiver do nothing.'
         
     bind: (command, callback) ->
-        @socket?.on command, callback
+        switch @mode
+            when 'pusher'
+                1
+            when 'socket.io'
+                @socket?.on command, callback
+            else
+                console.log "bind #{command}"
         @
 
 exports?.Receiver = Receiver

@@ -35,8 +35,9 @@ build_server = (callback) ->
 compile_client_console = (callback) ->
     options = [
         '-c'
-        '-o'
-        '.'
+        '-j'
+        'game-client-console.js'
+        'coffeescripts/etc/client-config.coffee'
         'coffeescripts/game-client-console.coffee'
     ]
     coffee = spawn "#{bin_path}/coffee", options

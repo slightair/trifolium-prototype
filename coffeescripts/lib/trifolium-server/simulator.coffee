@@ -56,4 +56,9 @@ class Simulator extends EventEmitter
     braveForName: (name) ->
         (brave for brave in @braveList when brave.name == name)[0]
     
+    details: ->
+        braveList: (brave.details() for brave in @braveList)
+        spotList: (spot.details() for spot in @spotList)
+        routeList: ([route[0].id, route[1].id] for route in @routeList)
+        
 exports.Simulator = Simulator

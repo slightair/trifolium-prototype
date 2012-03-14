@@ -44,4 +44,22 @@ class Brave extends EventEmitter
     removeItem: (item) ->
         @items = (i for i in @items when i != item)
     
+    details: ->
+        id: @id
+        name: @name
+        lv: @lv
+        atk: @atk
+        matk: @matk
+        hp: @hp
+        mp: @mp
+        brave: @brave
+        faith: @faith
+        speed: @speed
+        gold: @gold
+        items: (item.details() for item in @items)
+        action: if @action then @action.details() else null
+        actionProcess: @actionProcess
+        spot: @spot?.id
+        destination: @destination?.id
+    
 exports.Brave = Brave

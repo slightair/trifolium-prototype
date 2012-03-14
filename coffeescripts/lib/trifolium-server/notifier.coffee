@@ -1,4 +1,6 @@
-class Notifier
+{EventEmitter} = require 'events'
+
+class Notifier extends EventEmitter
     constructor: (options) ->
         @mode = options?.mode
         
@@ -12,9 +14,9 @@ class Notifier
                     res.end 'Trifolium game server is running.\n'
                 @socketIo = require('socket.io').listen server
                 server.listen options.port
-                @socketIo.sockets.on 'connection', (socket) ->
-                    # initialize
-                
+                @socketIo.sockets.on 'connection', (socket) =>
+                    @emit 'connection', {notify: (command, data) -> socket.emit command, data}
+            
             else
                 console.log 'notifier do nothing.'
     

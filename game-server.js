@@ -18,13 +18,8 @@
     port: 6262
   });
 
-  simulator.on('braveCompleteAction', function(brave, action, result) {
-    return notifier.notify('completeAction', {
-      brave: brave.id,
-      completeAction: action.details(),
-      result: result,
-      nextAction: brave.action.details()
-    });
+  notifier.on('connection', function(connection) {
+    return connection.notify('restoreGameStatus', simulator.details());
   });
 
   simulator.start();

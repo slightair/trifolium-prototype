@@ -1,15 +1,15 @@
 (function() {
-  var Receiver, receiver;
+  var Trifolium, config, trifolium;
 
-  Receiver = require('./lib/trifolium-client/receiver').Receiver;
+  config = {
+    websocketOptions: {
+      mode: 'socket.io',
+      host: 'http://localhost:6262'
+    }
+  };
 
-  receiver = new Receiver({
-    mode: 'socket.io',
-    host: "http://localhost:6262"
-  });
+  Trifolium = require('./lib/trifolium-client/trifolium').Trifolium;
 
-  receiver.bind('completeAction', function(details) {
-    return console.log(details);
-  });
+  trifolium = new Trifolium(config);
 
 }).call(this);
