@@ -11,11 +11,11 @@ notifier = new Notifier {mode: 'socket.io', port: 6262}
 notifier.on 'connection', (connection) ->
     connection.notify 'restoreGameStatus', simulator.details()
 
-# simulator.on 'braveCompleteAction', (brave, action, result) ->
-#     notifier.notify 'braveCompleteAction',
-#         brave: brave.id
-#         completeAction: action.details()
-#         result: result
-#         nextAction: brave.action.details()
+simulator.on 'braveCompleteAction', (brave, action, result) ->
+    notifier.notify 'braveCompleteAction',
+        brave: brave.id
+        completeAction: action.details()
+        result: result
+        nextAction: brave.action.details()
 
 simulator.start()

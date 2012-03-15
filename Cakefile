@@ -113,6 +113,10 @@ run_test = (callback) ->
         'test/lib/trifolium-server/brave-test.js'
         'test/lib/trifolium-server/item-test.js'
         'test/lib/trifolium-server/spot-test.js'
+        'test/lib/trifolium-client/actionInfo-test.js'
+        'test/lib/trifolium-client/braveInfo-test.js'
+        'test/lib/trifolium-client/itemInfo-test.js'
+        'test/lib/trifolium-client/spotInfo-test.js'
     ]
     mocha = spawn "#{bin_path}/mocha", options
     output = ''

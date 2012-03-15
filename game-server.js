@@ -22,6 +22,15 @@
     return connection.notify('restoreGameStatus', simulator.details());
   });
 
+  simulator.on('braveCompleteAction', function(brave, action, result) {
+    return notifier.notify('braveCompleteAction', {
+      brave: brave.id,
+      completeAction: action.details(),
+      result: result,
+      nextAction: brave.action.details()
+    });
+  });
+
   simulator.start();
 
 }).call(this);
