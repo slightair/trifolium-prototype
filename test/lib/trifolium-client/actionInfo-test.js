@@ -23,8 +23,7 @@ describe('ActionInfo', function() {
     });
     return it('should have optionalInfoDict', function() {
       should.exist(actionInfo.optionalInfoDict);
-      actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
-      return actionInfo.optionalInfoDict.should.empty;
+      return actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
     });
   });
   describe('MoveActionInfo', function() {
@@ -41,7 +40,7 @@ describe('ActionInfo', function() {
     });
     it('should have time', function() {
       should.exist(actionInfo.time);
-      return actionInfo.time.should.equal(3000);
+      return actionInfo.time.should.equal(7211.102550927979);
     });
     return it('should have optionalInfoDict', function() {
       should.exist(actionInfo.optionalInfoDict);
@@ -64,12 +63,11 @@ describe('ActionInfo', function() {
     });
     it('should have time', function() {
       should.exist(actionInfo.time);
-      return actionInfo.time.should.equal(3000);
+      return actionInfo.time.should.equal(5000);
     });
     return it('should have optionalInfoDict', function() {
       should.exist(actionInfo.optionalInfoDict);
-      actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
-      return actionInfo.optionalInfoDict.should.empty;
+      return actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
     });
   });
 });

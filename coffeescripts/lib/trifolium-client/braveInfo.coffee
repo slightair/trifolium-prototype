@@ -2,15 +2,15 @@ class BraveInfo
     constructor: (details) ->
         @id    = details.id    ? 'unknown'
         @name  = details.name  ? 'unknown'
-        @lv    = details.lv    ? 1
-        @atk   = details.atk   ? 1
-        @matk  = details.matk  ? 1
-        @hp    = details.hp    ? 10
-        @mp    = details.mp    ? 10
-        @brave = details.brave ? 50
-        @faith = details.faith ? 50
-        @speed = details.speed ? 3
-        @gold  = details.gold  ? 300
+        @lv    = details.lv    ? 0
+        @atk   = details.atk   ? 0
+        @matk  = details.matk  ? 0
+        @hp    = details.hp    ? 0
+        @mp    = details.mp    ? 0
+        @brave = details.brave ? 0
+        @faith = details.faith ? 0
+        @speed = details.speed ? 0
+        @gold  = details.gold  ? 0
         @items = details.items ? []
         @action = details.action ? null
         @actionProcess = details.actionProcess ? 0.0

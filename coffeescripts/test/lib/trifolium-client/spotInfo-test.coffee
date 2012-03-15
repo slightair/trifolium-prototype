@@ -8,7 +8,7 @@ describe 'SpotInfo', ->
     
     it 'should have id', ->
         should.exist spotInfo.id
-        spotInfo.id.should.equal '28733e5e7c135e41a8c734f15283b6a186335846'
+        spotInfo.id.should.equal 'a5ca237533a06b6dd7d55daa84cd539bb11dcd5d'
     
     it 'should have name', ->
         should.exist spotInfo.name

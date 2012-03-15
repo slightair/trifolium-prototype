@@ -20,7 +20,6 @@ describe 'ActionInfo', ->
         it 'should have optionalInfoDict', ->
             should.exist actionInfo.optionalInfoDict
             actionInfo.optionalInfoDict.should.be.an.instanceof Object
-            actionInfo.optionalInfoDict.should.empty
         
     describe 'MoveActionInfo', ->
         actionInfo = new ActionInfo
@@ -35,7 +34,7 @@ describe 'ActionInfo', ->
         
         it 'should have time', ->
             should.exist actionInfo.time
-            actionInfo.time.should.equal 3000
+            actionInfo.time.should.equal 7211.102550927979
         
         it 'should have optionalInfoDict', ->
             should.exist actionInfo.optionalInfoDict
@@ -58,9 +57,8 @@ describe 'ActionInfo', ->
         
         it 'should have time', ->
             should.exist actionInfo.time
-            actionInfo.time.should.equal 3000
+            actionInfo.time.should.equal 5000
         
         it 'should have optionalInfoDict', ->
             should.exist actionInfo.optionalInfoDict
             actionInfo.optionalInfoDict.should.be.an.instanceof Object
-            actionInfo.optionalInfoDict.should.empty

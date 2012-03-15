@@ -16,11 +16,11 @@ describe('SpotInfo', function() {
   });
   it('should have id', function() {
     should.exist(spotInfo.id);
-    return spotInfo.id.should.equal('28733e5e7c135e41a8c734f15283b6a186335846');
+    return spotInfo.id.should.equal('a5ca237533a06b6dd7d55daa84cd539bb11dcd5d');
   });
   it('should have name', function() {
     should.exist(spotInfo.name);
-    return spotInfo.name.should.equal('いいきのこ');
+    return spotInfo.name.should.equal('なめこの洞窟');
   });
   it('should have posX', function() {
     should.exist(spotInfo.posX);
