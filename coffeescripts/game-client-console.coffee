@@ -1,7 +1,7 @@
 {Trifolium} = require './lib/trifolium-client/trifolium'
 
 trifolium = new Trifolium config
-
+trifolium.start()
 
 
 

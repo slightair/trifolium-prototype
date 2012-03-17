@@ -16,5 +16,9 @@ class BraveInfo
         @actionProcess = details.actionProcess ? 0.0
         @spot = details.spot ? null
         @destination = details.destination ? null
+    
+    tick: ->
+        if @action? && @actionProcess < 1.0
+            @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
 
 exports?.BraveInfo = BraveInfo

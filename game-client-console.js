@@ -12,4 +12,6 @@
 
   trifolium = new Trifolium(config);
 
+  trifolium.start();
+
 }).call(this);
