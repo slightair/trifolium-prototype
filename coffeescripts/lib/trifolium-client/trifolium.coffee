@@ -12,10 +12,12 @@ class Trifolium
         @spotList = []
         @routeList = []
         @braveList = []
+        @eventDict = {}
         
         # register events
         receiver.bind 'restoreGameStatus', @receiveRestoreGameStatus
         receiver.bind 'braveCompleteAction', @receiveBraveCompleteAction
+    
     start: ->
         timer = setInterval( =>
             @tick()
@@ -31,6 +33,13 @@ class Trifolium
     braveForName: (name) -> (brave for brave in @braveList when brave.name == name)[0]
     
     braveForId: (id) -> (brave for brave in @braveList when brave.id == id)[0]
+    
+    on: (event, callback) ->
+        @eventDict[event] = callback
+        @
+    
+    emit: (event, args...) ->
+        @eventDict[event]?.apply @, args
     
     restoreGameStatus: (details) ->
         coordinateBraveDetails = (d) =>
@@ -50,6 +59,9 @@ class Trifolium
         @restoreGameStatus details
     
     receiveBraveCompleteAction: (details) =>
-        console.log details
+        brave = @braveForId details.brave
+        prevAction = brave.action
+        brave.setNextAction(new ActionInfo details.nextAction)
+        @emit 'braveCompleteAction', brave, prevAction, details.result
 
 exports?.Trifolium = Trifolium

@@ -21,9 +21,9 @@ describe('ActionInfo', function() {
       should.exist(actionInfo.time);
       return actionInfo.time.should.equal(3000);
     });
-    return it('should have optionalInfoDict', function() {
-      should.exist(actionInfo.optionalInfoDict);
-      return actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
+    return it('should have optionalInfo', function() {
+      should.exist(actionInfo.optionalInfo);
+      return actionInfo.optionalInfo.should.be.an["instanceof"](Object);
     });
   });
   describe('MoveActionInfo', function() {
@@ -42,13 +42,13 @@ describe('ActionInfo', function() {
       should.exist(actionInfo.time);
       return actionInfo.time.should.equal(7211.102550927979);
     });
-    return it('should have optionalInfoDict', function() {
-      should.exist(actionInfo.optionalInfoDict);
-      actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
-      should.exist(actionInfo.optionalInfoDict.from);
-      actionInfo.optionalInfoDict.from.should.equal('26a93c17ec27e9918b25f9a3b4169a603f474174');
-      should.exist(actionInfo.optionalInfoDict.to);
-      return actionInfo.optionalInfoDict.to.should.equal('de0cde838525b7e8f7ef586b2ed62a816a295760');
+    return it('should have optionalInfo', function() {
+      should.exist(actionInfo.optionalInfo);
+      actionInfo.optionalInfo.should.be.an["instanceof"](Object);
+      should.exist(actionInfo.optionalInfo.from);
+      actionInfo.optionalInfo.from.should.equal('26a93c17ec27e9918b25f9a3b4169a603f474174');
+      should.exist(actionInfo.optionalInfo.to);
+      return actionInfo.optionalInfo.to.should.equal('de0cde838525b7e8f7ef586b2ed62a816a295760');
     });
   });
   return describe('SearchActionInfo', function() {
@@ -65,9 +65,9 @@ describe('ActionInfo', function() {
       should.exist(actionInfo.time);
       return actionInfo.time.should.equal(5000);
     });
-    return it('should have optionalInfoDict', function() {
-      should.exist(actionInfo.optionalInfoDict);
-      return actionInfo.optionalInfoDict.should.be.an["instanceof"](Object);
+    return it('should have optionalInfo', function() {
+      should.exist(actionInfo.optionalInfo);
+      return actionInfo.optionalInfo.should.be.an["instanceof"](Object);
     });
   });
 });

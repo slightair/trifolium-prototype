@@ -20,5 +20,9 @@ class BraveInfo
     tick: ->
         if @action? && @actionProcess < 1.0
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
+    
+    setNextAction: (action) ->
+        @action = action
+        @actionProcess = 0.0
 
 exports?.BraveInfo = BraveInfo

@@ -17,9 +17,9 @@ describe 'ActionInfo', ->
             should.exist actionInfo.time
             actionInfo.time.should.equal 3000
         
-        it 'should have optionalInfoDict', ->
-            should.exist actionInfo.optionalInfoDict
-            actionInfo.optionalInfoDict.should.be.an.instanceof Object
+        it 'should have optionalInfo', ->
+            should.exist actionInfo.optionalInfo
+            actionInfo.optionalInfo.should.be.an.instanceof Object
         
     describe 'MoveActionInfo', ->
         actionInfo = new ActionInfo
@@ -36,15 +36,15 @@ describe 'ActionInfo', ->
             should.exist actionInfo.time
             actionInfo.time.should.equal 7211.102550927979
         
-        it 'should have optionalInfoDict', ->
-            should.exist actionInfo.optionalInfoDict
-            actionInfo.optionalInfoDict.should.be.an.instanceof Object
+        it 'should have optionalInfo', ->
+            should.exist actionInfo.optionalInfo
+            actionInfo.optionalInfo.should.be.an.instanceof Object
             
-            should.exist actionInfo.optionalInfoDict.from
-            actionInfo.optionalInfoDict.from.should.equal '26a93c17ec27e9918b25f9a3b4169a603f474174'
+            should.exist actionInfo.optionalInfo.from
+            actionInfo.optionalInfo.from.should.equal '26a93c17ec27e9918b25f9a3b4169a603f474174'
             
-            should.exist actionInfo.optionalInfoDict.to
-            actionInfo.optionalInfoDict.to.should.equal 'de0cde838525b7e8f7ef586b2ed62a816a295760'
+            should.exist actionInfo.optionalInfo.to
+            actionInfo.optionalInfo.to.should.equal 'de0cde838525b7e8f7ef586b2ed62a816a295760'
         
     describe 'SearchActionInfo', ->
         actionInfo = new ActionInfo
@@ -59,6 +59,6 @@ describe 'ActionInfo', ->
             should.exist actionInfo.time
             actionInfo.time.should.equal 5000
         
-        it 'should have optionalInfoDict', ->
-            should.exist actionInfo.optionalInfoDict
-            actionInfo.optionalInfoDict.should.be.an.instanceof Object
+        it 'should have optionalInfo', ->
+            should.exist actionInfo.optionalInfo
+            actionInfo.optionalInfo.should.be.an.instanceof Object
