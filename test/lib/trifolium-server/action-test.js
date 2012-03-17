@@ -162,7 +162,7 @@ describe('MoveAction', function() {
       time: 3000
     }
   ]);
-  toSpot = new Spot('to', 10, 20, [
+  toSpot = new Spot('to', 20, 20, [
     {
       type: 'wait',
       time: 5000
@@ -179,7 +179,7 @@ describe('MoveAction', function() {
     return action.to.name.should.equal('to');
   });
   it('should have time', function() {
-    return action.time.should.equal(1000);
+    return action.time.should.equal(1415);
   });
   describe('#do()', function() {
     var brave;
@@ -217,7 +217,7 @@ describe('MoveAction', function() {
       should.exist(details.name, 'name should exist');
       details.name.should.equal('move');
       should.exist(details.time, 'time should exist');
-      details.time.should.equal(1000);
+      details.time.should.equal(1415);
       should.exist(details.from, 'from should exist');
       details.from.should.equal(fromSpot.id);
       should.exist(details.to, 'to should exist');

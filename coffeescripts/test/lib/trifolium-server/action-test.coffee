@@ -136,7 +136,7 @@ describe 'MoveAction', ->
     fromSpot = new Spot 'from', 10, 10, [
         {type: 'wait', time: 3000}
     ]
-    toSpot = new Spot 'to', 10, 20, [
+    toSpot = new Spot 'to', 20, 20, [
         {type: 'wait', time: 5000}
     ]
     action = new MoveAction fromSpot, toSpot
@@ -151,7 +151,7 @@ describe 'MoveAction', ->
         action.to.name.should.equal 'to'
     
     it 'should have time', ->
-        action.time.should.equal 1000
+        action.time.should.equal 1415
     
     describe '#do()', ->
         brave = new Brave 'testBrave', fromSpot
@@ -188,7 +188,7 @@ describe 'MoveAction', ->
             should.exist details.name, 'name should exist'
             details.name.should.equal 'move'
             should.exist details.time, 'time should exist'
-            details.time.should.equal 1000
+            details.time.should.equal 1415
             should.exist details.from, 'from should exist'
             details.from.should.equal fromSpot.id
             should.exist details.to, 'to should exist'

@@ -35,7 +35,7 @@ class MoveAction extends Action
     constructor: (@from, @to) ->
         super
         @name = 'move'
-        @time = @from.distance(@to) * 100
+        @time = Math.ceil(@from.distance(@to) * 100)
     do: (brave) ->
         super brave
         brave.spot = @to
