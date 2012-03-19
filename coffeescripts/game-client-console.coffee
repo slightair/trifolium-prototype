@@ -12,7 +12,7 @@ trifolium.on 'braveCompleteAction', (brave, action, result) ->
             if result.isSucceed
                 console.log "勇者#{brave.name} は #{result.treasure.name} を手に入れた!"
             else
-                if action.treasure
+                if result.treasure
                     console.log "勇者#{brave.name} は #{result.treasure.name} を見つけたが、これ以上アイテムを持てないのであきらめた…"
                 else
                     console.log "勇者#{brave.name} はアイテムを見つけられなかった…"

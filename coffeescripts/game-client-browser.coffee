@@ -114,7 +114,7 @@ class Game
                 if result.isSucceed
                     @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を手に入れた!"
                 else
-                    if action.treasure
+                    if result.treasure
                         @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を見つけたが、これ以上アイテムを持てないのであきらめた…"
                     else
                         @log "勇者#{@logBraveName(brave.name)} はアイテムを見つけられなかった…"
