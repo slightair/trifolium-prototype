@@ -111,9 +111,48 @@ describe('BraveInfo', function() {
     braveInfo.spot.should.be.an["instanceof"](SpotInfo);
     return braveInfo.spot.id.should.equal('83ba0e93ae676c7d2c0589baaff223d41aed064c');
   });
-  return it('should have destination', function() {
+  it('should have destination', function() {
     should.exist(braveInfo.destination);
     braveInfo.destination.should.be.an["instanceof"](SpotInfo);
     return braveInfo.destination.id.should.equal('de0cde838525b7e8f7ef586b2ed62a816a295760');
+  });
+  describe('#addItem()', function() {
+    var info;
+    info = new BraveInfo({});
+    return it('should add item', function() {
+      var item;
+      item = 'dummy item';
+      info.items.should.be.empty;
+      info.addItem(item);
+      info.items.should.not.be.empty;
+      return info.items.should.include(item);
+    });
+  });
+  describe('#updateActionProcess()', function() {
+    var info;
+    info = new BraveInfo({
+      speed: 50,
+      actionProcess: 0.0,
+      action: new ActionInfo({
+        time: 10000,
+        name: 'wait'
+      })
+    });
+    return it('should update actionProcess', function() {
+      info.actionProcess.should.equal(0.0);
+      info.updateActionProcess(30);
+      return info.actionProcess.should.equal(0.15);
+    });
+  });
+  return describe('#updateAction()', function() {
+    var info;
+    info = new BraveInfo({
+      actionProcess: 0.5
+    });
+    return it('should update actionProcess', function() {
+      info.actionProcess.should.equal(0.5);
+      info.updateAction('dummy action');
+      return info.actionProcess.should.equal(0.0);
+    });
   });
 });

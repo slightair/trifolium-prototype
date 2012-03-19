@@ -23,11 +23,11 @@ describe 'BraveInfo', ->
             new ItemInfo {id: '28733e5e7c135e41a8c734f15283b6a186335846', name: 'いいきのこ', itemId: 2}
         ]
         action: new ActionInfo
-            time: 7211.102550927979,
-            name: 'move',
-            from: '26a93c17ec27e9918b25f9a3b4169a603f474174',
+            time: 7211.102550927979
+            name: 'move'
+            from: '26a93c17ec27e9918b25f9a3b4169a603f474174'
             to: 'de0cde838525b7e8f7ef586b2ed62a816a295760'
-        actionProcess: 0.4997848767989314,
+        actionProcess: 0.4997848767989314
         spot: new SpotInfo
             id: '83ba0e93ae676c7d2c0589baaff223d41aed064c'
         destination: new SpotInfo
@@ -101,3 +101,37 @@ describe 'BraveInfo', ->
         should.exist braveInfo.destination
         braveInfo.destination.should.be.an.instanceof SpotInfo
         braveInfo.destination.id.should.equal 'de0cde838525b7e8f7ef586b2ed62a816a295760'
+    
+    describe '#addItem()', ->
+        info = new BraveInfo {}
+        
+        it 'should add item', ->
+            item = 'dummy item'
+            info.items.should.be.empty
+            info.addItem item
+            info.items.should.not.be.empty
+            info.items.should.include item
+            
+    describe '#updateActionProcess()', ->
+        info = new BraveInfo
+            speed: 50
+            actionProcess: 0.0
+            action: new ActionInfo
+                time: 10000
+                name: 'wait'
+        
+        it 'should update actionProcess', ->
+            info.actionProcess.should.equal 0.0
+            info.updateActionProcess 30
+            info.actionProcess.should.equal 0.15
+            
+    describe '#updateAction()', ->
+        info = new BraveInfo
+            actionProcess: 0.5
+        
+        it 'should update actionProcess', ->
+            info.actionProcess.should.equal 0.5
+            info.updateAction 'dummy action'
+            info.actionProcess.should.equal 0.0
+
+        
