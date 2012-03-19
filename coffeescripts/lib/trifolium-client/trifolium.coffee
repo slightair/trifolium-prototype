@@ -61,7 +61,7 @@ class Trifolium
         
         if details.completeAction.name == 'search'
             if details.result.isSucceed && details.result.treasure
-                brave.addItem new Item details.result.treasure
+                brave.addItem new ItemInfo details.result.treasure
         
         brave.updateAction nextAction
         @emit 'braveCompleteAction', brave, prevAction, details.result

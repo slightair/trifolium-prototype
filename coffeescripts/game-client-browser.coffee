@@ -46,7 +46,7 @@ class Game
         braveObject.addFrameListener (t, dt) =>
             braveObject.x = @bravePosX brave
             braveObject.y = @bravePosY brave
-            gameTimeInterval = @trifolium.tickInterval / 1000.0 * @canvas.fps
+            gameTimeInterval = dt / @trifolium.tickInterval
             brave.updateActionProcess gameTimeInterval
             
             if brave == @selectedBrave

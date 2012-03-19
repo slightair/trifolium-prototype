@@ -36,6 +36,6 @@
     }
   });
 
-  trifolium.start();
+  setInterval(function() {}, 10000000);
 
 }).call(this);

@@ -19,4 +19,5 @@ trifolium.on 'braveCompleteAction', (brave, action, result) ->
         else
             console.log 'eventlog', "unknown event - #{action.name}"
 
-trifolium.start()
+setInterval( ->,
+10000000)
