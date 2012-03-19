@@ -17,6 +17,9 @@ class BraveInfo
         @spot = details.spot ? null
         @destination = details.destination ? null
     
+    addItem: (item) ->
+        @items.push item
+    
     updateActionProcess: (gameTimeInterval) ->
         if @action? && @actionProcess < 1.0
             @actionProcess += if @action.time > 0 then (@speed * gameTimeInterval) / @action.time else 1.0

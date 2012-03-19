@@ -59,6 +59,10 @@ class Trifolium
         brave.spot = if details.completeAction.name == 'move' then @spotForId details.completeAction.to else brave.spot
         brave.destination = if details.nextAction.name == 'move' then @spotForId details.nextAction.to else brave.spot
         
+        if details.completeAction.name == 'search'
+            if details.result.isSucceed && details.result.treasure
+                brave.addItem new Item details.result.treasure
+        
         brave.updateAction nextAction
         @emit 'braveCompleteAction', brave, prevAction, details.result
 
