@@ -28,7 +28,8 @@ class Brave extends EventEmitter
     tick: ->
         if @action?
             @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
-            if @actionProcess >= 1.0
+            @actionProcess = 1.0 if @actionProcess > 1.0
+            if @actionProcess == 1.0
                 prevAction = @action
                 result = @action.do @
                 

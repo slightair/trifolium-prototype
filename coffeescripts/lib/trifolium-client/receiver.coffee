@@ -6,8 +6,11 @@ class Receiver
             when 'pusher'
                 1
             when 'socket.io'
-                io = require('socket.io-client') if require?
-                @socket = io.connect options.host
+                if require?
+                    socket_io = require('socket.io-client')
+                    @socket = socket_io.connect options.host
+                else
+                    @socket = io.connect options.host
             else
                 console.log 'receiver do nothing.'
         

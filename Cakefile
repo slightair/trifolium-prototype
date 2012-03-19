@@ -48,20 +48,22 @@ compile_client_console = (callback) ->
 build_client_console = (callback) ->
     compile_lib -> compile_client_console -> callback?()
 
-# compile_client_browser = (callback) ->
-#     options = [
-#         '-b'
-#         '-c'
-#         '-j'
-#         'game.js'
-#         'coffeescripts/lib/trifolium-client/'
-#         'coffeescripts/game-client-browser.coffee'
-#     ]
-#     coffee = spawn "#{bin_path}/coffee", options
-#     coffee.stdout.on 'data', stream_data_handler
-#     coffee.stderr.on 'data', stream_data_handler
-#     coffee.on 'exit', (status) -> callback?() if status is 0
-# 
+compile_client_browser = (callback) ->
+    options = [
+        '-b'
+        '-c'
+        '-j'
+        # './tmp/game.js'
+        'public/javascripts/game.min.js'
+        'coffeescripts/etc/client-config.coffee'
+        'coffeescripts/lib/trifolium-client/'
+        'coffeescripts/game-client-browser.coffee'
+    ]
+    coffee = spawn "#{bin_path}/coffee", options
+    coffee.stdout.on 'data', stream_data_handler
+    coffee.stderr.on 'data', stream_data_handler
+    coffee.on 'exit', (status) -> callback?() if status is 0
+
 # minify_client_browser = (callback) ->
 #     options = [
 #             '-o'
@@ -73,8 +75,9 @@ build_client_console = (callback) ->
 #     uglify.stderr.on 'data', stream_data_handler
 #     uglify.on 'exit', (status) -> callback?() if status is 0
 # 
-# build_client_browser = (callback) ->
-#     compile_client_browser -> minify_client_browser -> callback?()
+build_client_browser = (callback) ->
+    # compile_client_browser -> minify_client_browser -> callback?()
+    compile_client_browser -> callback?()
 
 compile_server_test = (callback) ->
     options = [
@@ -133,11 +136,11 @@ task 'server', 'make game-server.js', ->
 task 'console', 'make game-client-console.js', ->
     build_client_console -> 'All done.'
 
-# task 'browser', 'make game-client-browser.js', (options) ->
-#     build_client_browser -> 'All done.'
+task 'browser', 'make game-client-browser.js', ->
+    build_client_browser -> 'All done.'
 
-task 'test', 'run test', (options) ->
+task 'test', 'run test', ->
     compile_lib -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
 
-# task 'all', 'compile all scripts', ->
-#     build_server -> build_client_console -> build_client_browser -> compile_server_test -> compile_client_test -> 'All done.'
+task 'all', 'compile all scripts', ->
+    build_server -> build_client_console -> build_client_browser -> compile_server_test -> compile_client_test -> 'All done.'

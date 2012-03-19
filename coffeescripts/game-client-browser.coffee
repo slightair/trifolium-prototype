@@ -1,16 +1,20 @@
 $ ->
-    SharedItemCreator = new ItemCreator itemDict
     game = new Game(580, 450)
-    game.start()
 
 class Game
     constructor: (@width, @height)->
-        @simulator = new Trifolium settings
+        @trifolium = new Trifolium config
         @canvas = new Canvas $("#main-screen").get(0), @width, @height
         @infoLayer = new CanvasNode
         @mapScale = 2.0
         @selectedBrave = null
+        @braveObjects = []
         @logMax = 6
+        
+        @trifolium.on 'restoreGameStatus', =>
+            @start()
+        @trifolium.on 'braveCompleteAction', (brave, action, result) =>
+            @braveCompleteAction(brave, action, result)
     
     appendRoute: (route) ->
         routeColor = 'rgba(0, 255, 0, 0.2)'
@@ -23,7 +27,7 @@ class Game
         @canvas.append routeObject
     appendSpot: (spot) ->
         spotObject = new Circle(10 * @mapScale, {
-                    id: spot.name
+                    id: spot.id
                     x: @canvas.width / 2 + spot.posX * @mapScale
                     y: @canvas.height / 2 + spot.posY * @mapScale
                     stroke: 'rgba(0, 0, 255, 1.0)'
@@ -31,9 +35,10 @@ class Game
                     endAngle: Math.PI * 2
         })
         @canvas.append spotObject
+    
     appendBrave: (brave) ->
         braveObject = new CanvasNode
-                    id: brave.name
+                    id: brave.id
                     x: @bravePosX brave
                     y: @bravePosY brave
                     addedActionEffect: false
@@ -64,51 +69,53 @@ class Game
         braveObject.append body
         
         @canvas.append braveObject
-        
-        brave.on 'completeAction', (brave, action, result) =>
-            circleRadiusMax = 40.0
-            effectTime = 800
-            actionEffect = new Circle 1 * @mapScale,
-                        x: 0
-                        y: 0
-                        stroke: "rgba(33, 66, 255, 0.8)"
-                        strokeWidth: @mapScale
-                        fill: "rgba(33, 66, 255, 0.5)"
-                        endAngle: Math.PI * 2
-                        opacity: 1.0
-            actionEffect.addFrameListener (t, dt) =>
-                actionEffect.removeSelf if dt > effectTime
-                actionEffect.radius += dt / effectTime * circleRadiusMax
-                actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax
-                if actionEffect.radius > circleRadiusMax
-                    actionEffect.removeSelf()
-                    braveObject.addedActionEffect = false
-            unless braveObject.addedActionEffect
-                braveObject.append actionEffect
-                braveObject.addedActionEffect = true
+        @braveObjects.push braveObject
+    
+    braveCompleteAction: (brave, action, result) ->
+        braveObject = @braveObjectForId brave.id
+        circleRadiusMax = 40.0
+        effectTime = 800
+        actionEffect = new Circle 1 * @mapScale,
+            x: 0
+            y: 0
+            stroke: "rgba(33, 66, 255, 0.8)"
+            strokeWidth: @mapScale
+            fill: "rgba(33, 66, 255, 0.5)"
+            endAngle: Math.PI * 2
+            opacity: 1.0
+        actionEffect.addFrameListener (t, dt) =>
+            actionEffect.removeSelf if dt > effectTime
+            actionEffect.radius += dt / effectTime * circleRadiusMax
+            actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax
+            if actionEffect.radius > circleRadiusMax
+                actionEffect.removeSelf()
+                braveObject.addedActionEffect = false
+        unless braveObject.addedActionEffect
+            braveObject.append actionEffect
+            braveObject.addedActionEffect = true
             
-            if brave == @selectedBrave
-                $("#brave-position-value").text("#{brave.spot.name}")
-                $("#brave-action-value").text("#{brave.action.name}")
-                if action.name == 'search' && result.isSucceed && result.treasure
-                    $("#brave-item-table tbody").append($("<tr><td></td><td>#{result.treasure.name}</td></tr>"))
+        if brave == @selectedBrave
+            $("#brave-position-value").text("#{brave.spot.name}")
+            $("#brave-action-value").text("#{brave.action.name}")
+            if action.name == 'search' && result.isSucceed && result.treasure
+                $("#brave-item-table tbody").append($("<tr><td></td><td>#{result.treasure.name}</td></tr>"))
             
-            switch action.name
-                when 'move'
-                    @log "勇者#{@logBraveName(brave.name)} が #{@logSpotName(action.to.name)} に到着しました"
-                when 'wait'
-                    @log "勇者#{@logBraveName(brave.name)} はぼーっとしていた"
-                when 'search'
-                    if result.isSucceed
-                        @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を手に入れた!"
-                    else
-                        if action.treasure
-                            @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を見つけたが、これ以上アイテムを持てないのであきらめた…"
-                        else
-                            @log "勇者#{@logBraveName(brave.name)} はアイテムを見つけられなかった…"
+        switch action.name
+            when 'move'
+                arrivalSpot = @trifolium.spotForId action.optionalInfo.to
+                @log "勇者#{@logBraveName(brave.name)} が #{@logSpotName(arrivalSpot.name)} に到着しました"
+            when 'wait'
+                @log "勇者#{@logBraveName(brave.name)} はぼーっとしていた"
+            when 'search'
+                if result.isSucceed
+                    @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を手に入れた!"
                 else
-                    @log "unknown event - #{action.name}"
-                    
+                    if action.treasure
+                        @log "勇者#{@logBraveName(brave.name)} は #{@logItemName(result.treasure.name)} を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                    else
+                        @log "勇者#{@logBraveName(brave.name)} はアイテムを見つけられなかった…"
+            else
+                @log "unknown event - #{action.name}"
     
     displayBraveInfo: (brave) ->
         paramNames = [
@@ -134,11 +141,13 @@ class Game
     bravePosY: (brave) ->
         @canvas.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * @mapScale
     
+    braveObjectForId: (id) ->
+        (braveObject for braveObject in @braveObjects when braveObject.id == id)[0]
+    
     prepareDisplayObjects: ->
-        @appendRoute route for route in @simulator.routeList
-        @appendSpot spot for spot in @simulator.spotList
-        @appendBrave brave for brave in @simulator.braveList
-        @debugMatrix()
+        @appendRoute route for route in @trifolium.routeList
+        @appendSpot spot for spot in @trifolium.spotList
+        @appendBrave brave for brave in @trifolium.braveList
         
         markerSize = 16 * @mapScale
         selectedBraveMarker = new Rectangle markerSize, markerSize,
@@ -164,7 +173,7 @@ class Game
     
     start: ->
         @prepareDisplayObjects()
-        @simulator.start()
+        @trifolium.start()
     
     log: (text) ->
         if @logMax <= $("div#log").children().length
@@ -175,15 +184,3 @@ class Game
     logBraveName: (name) -> "<span class='log-brave-name'>#{name}</span>"
     logSpotName: (name) -> "<span class='log-spot-name'>#{name}</span>"
     logItemName: (name) -> "<span class='log-item-name'>#{name}</span>"
-    
-    debugMatrix: =>
-        gridSize = 10 * @mapScale
-        lineColor = 'rgba(0, 0, 255, 0.1)'
-        centerLineColor = 'rgba(0, 0, 255, 0.5)'
-        gapX = @canvas.width % gridSize / 2
-        gapY = @canvas.height % gridSize / 2
-        
-        @canvas.append new Line(0, y * gridSize + gapY, @canvas.width, y * gridSize + gapY, {stroke: lineColor}) for y in [0...(@canvas.height / gridSize)] when y != @canvas.height / 2 / gridSize
-        @canvas.append new Line(x * gridSize + gapX, 0, x * gridSize + gapX, @canvas.height, {stroke: lineColor}) for x in [0...(@canvas.width / gridSize)] when x != @canvas.width / 2 / gridSize
-        @canvas.append new Line(0, @canvas.height / 2, @canvas.width, @canvas.height / 2, {stroke: centerLineColor})
-        @canvas.append new Line(@canvas.width / 2, 0, @canvas.width / 2, @canvas.height, {stroke: centerLineColor})

@@ -56,8 +56,7 @@ BraveInfo = (function() {
 
   BraveInfo.prototype.tick = function() {
     if ((this.action != null) && this.actionProcess < 1.0) {
-      this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
-      if (this.actionProcess > 1.0) return this.actionProcess = 1.0;
+      return this.actionProcess += this.action.time > 0 ? this.speed / this.action.time : 1.0;
     }
   };
 
@@ -94,7 +93,7 @@ if (typeof exports !== "undefined" && exports !== null) {
 Receiver = (function() {
 
   function Receiver(options) {
-    var socket_io;
+    var io;
     this.mode = options != null ? options.mode : void 0;
     switch (this.mode) {
       case 'pusher':
@@ -102,11 +101,9 @@ Receiver = (function() {
         break;
       case 'socket.io':
         if (typeof require !== "undefined" && require !== null) {
-          socket_io = require('socket.io-client');
-          this.socket = socket_io.connect(options.host);
-        } else {
-          this.socket = io.connect(options.host);
+          io = require('socket.io-client');
         }
+        this.socket = io.connect(options.host);
         break;
       default:
         console.log('receiver do nothing.');
@@ -283,7 +280,7 @@ Trifolium = (function() {
       d.destination = _this.spotForId(d.destination);
       return d;
     };
-    this.tickInterval = details.tickInterval;
+    this.tickInterval = details.tickInterval < 100 ? 100 : details.tickInterval;
     this.spotList = (function() {
       var _i, _len, _ref, _results;
       _ref = details.spotList;
@@ -317,18 +314,14 @@ Trifolium = (function() {
   };
 
   Trifolium.prototype.receiveRestoreGameStatus = function(details) {
-    this.restoreGameStatus(details);
-    return this.emit('restoreGameStatus');
+    return this.restoreGameStatus(details);
   };
 
   Trifolium.prototype.receiveBraveCompleteAction = function(details) {
-    var brave, nextAction, prevAction;
+    var brave, prevAction;
     brave = this.braveForId(details.brave);
     prevAction = brave.action;
-    nextAction = new ActionInfo(details.nextAction);
-    brave.spot = details.completeAction.name === 'move' ? this.spotForId(details.completeAction.to) : brave.spot;
-    brave.destination = details.nextAction.name === 'move' ? this.spotForId(details.nextAction.to) : brave.spot;
-    brave.setNextAction(nextAction);
+    brave.setNextAction(new ActionInfo(details.nextAction));
     return this.emit('braveCompleteAction', brave, prevAction, details.result);
   };
 
@@ -341,29 +334,24 @@ if (typeof exports !== "undefined" && exports !== null) {
 }
 
 $(function() {
-  var game;
-  return game = new Game(580, 450);
+  var SharedItemCreator, game;
+  SharedItemCreator = new ItemCreator(itemDict);
+  game = new Game(580, 450);
+  return game.start();
 });
 
 Game = (function() {
 
   function Game(width, height) {
-    var _this = this;
     this.width = width;
     this.height = height;
-    this.trifolium = new Trifolium(config);
+    this.debugMatrix = __bind(this.debugMatrix, this);
+    this.simulator = new Trifolium(settings);
     this.canvas = new Canvas($("#main-screen").get(0), this.width, this.height);
     this.infoLayer = new CanvasNode;
     this.mapScale = 2.0;
     this.selectedBrave = null;
-    this.braveObjects = [];
     this.logMax = 6;
-    this.trifolium.on('restoreGameStatus', function() {
-      return _this.start();
-    });
-    this.trifolium.on('braveCompleteAction', function(brave, action, result) {
-      return _this.braveCompleteAction(brave, action, result);
-    });
   }
 
   Game.prototype.appendRoute = function(route) {
@@ -380,7 +368,7 @@ Game = (function() {
   Game.prototype.appendSpot = function(spot) {
     var spotObject;
     spotObject = new Circle(10 * this.mapScale, {
-      id: spot.id,
+      id: spot.name,
       x: this.canvas.width / 2 + spot.posX * this.mapScale,
       y: this.canvas.height / 2 + spot.posY * this.mapScale,
       stroke: 'rgba(0, 0, 255, 1.0)',
@@ -394,7 +382,7 @@ Game = (function() {
     var body, braveObject, color, head,
       _this = this;
     braveObject = new CanvasNode({
-      id: brave.id,
+      id: brave.name,
       x: this.bravePosX(brave),
       y: this.bravePosY(brave),
       addedActionEffect: false
@@ -428,64 +416,59 @@ Game = (function() {
     braveObject.append(head);
     braveObject.append(body);
     this.canvas.append(braveObject);
-    return this.braveObjects.push(braveObject);
-  };
-
-  Game.prototype.braveCompleteAction = function(brave, action, result) {
-    var actionEffect, arrivalSpot, braveObject, circleRadiusMax, effectTime,
-      _this = this;
-    braveObject = this.braveObjectForId(brave.id);
-    circleRadiusMax = 40.0;
-    effectTime = 800;
-    actionEffect = new Circle(1 * this.mapScale, {
-      x: 0,
-      y: 0,
-      stroke: "rgba(33, 66, 255, 0.8)",
-      strokeWidth: this.mapScale,
-      fill: "rgba(33, 66, 255, 0.5)",
-      endAngle: Math.PI * 2,
-      opacity: 1.0
-    });
-    actionEffect.addFrameListener(function(t, dt) {
-      if (dt > effectTime) actionEffect.removeSelf;
-      actionEffect.radius += dt / effectTime * circleRadiusMax;
-      actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax;
-      if (actionEffect.radius > circleRadiusMax) {
-        actionEffect.removeSelf();
-        return braveObject.addedActionEffect = false;
-      }
-    });
-    if (!braveObject.addedActionEffect) {
-      braveObject.append(actionEffect);
-      braveObject.addedActionEffect = true;
-    }
-    if (brave === this.selectedBrave) {
-      $("#brave-position-value").text("" + brave.spot.name);
-      $("#brave-action-value").text("" + brave.action.name);
-      if (action.name === 'search' && result.isSucceed && result.treasure) {
-        $("#brave-item-table tbody").append($("<tr><td></td><td>" + result.treasure.name + "</td></tr>"));
-      }
-    }
-    switch (action.name) {
-      case 'move':
-        arrivalSpot = this.trifolium.spotForId(action.optionalInfo.to);
-        return this.log("勇者" + (this.logBraveName(brave.name)) + " が " + (this.logSpotName(arrivalSpot.name)) + " に到着しました");
-      case 'wait':
-        return this.log("勇者" + (this.logBraveName(brave.name)) + " はぼーっとしていた");
-      case 'search':
-        if (result.isSucceed) {
-          return this.log("勇者" + (this.logBraveName(brave.name)) + " は " + (this.logItemName(result.treasure.name)) + " を手に入れた!");
-        } else {
-          if (action.treasure) {
-            return this.log("勇者" + (this.logBraveName(brave.name)) + " は " + (this.logItemName(result.treasure.name)) + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
-          } else {
-            return this.log("勇者" + (this.logBraveName(brave.name)) + " はアイテムを見つけられなかった…");
-          }
+    return brave.on('completeAction', function(brave, action, result) {
+      var actionEffect, circleRadiusMax, effectTime;
+      circleRadiusMax = 40.0;
+      effectTime = 800;
+      actionEffect = new Circle(1 * _this.mapScale, {
+        x: 0,
+        y: 0,
+        stroke: "rgba(33, 66, 255, 0.8)",
+        strokeWidth: _this.mapScale,
+        fill: "rgba(33, 66, 255, 0.5)",
+        endAngle: Math.PI * 2,
+        opacity: 1.0
+      });
+      actionEffect.addFrameListener(function(t, dt) {
+        if (dt > effectTime) actionEffect.removeSelf;
+        actionEffect.radius += dt / effectTime * circleRadiusMax;
+        actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax;
+        if (actionEffect.radius > circleRadiusMax) {
+          actionEffect.removeSelf();
+          return braveObject.addedActionEffect = false;
         }
-        break;
-      default:
-        return this.log("unknown event - " + action.name);
-    }
+      });
+      if (!braveObject.addedActionEffect) {
+        braveObject.append(actionEffect);
+        braveObject.addedActionEffect = true;
+      }
+      if (brave === _this.selectedBrave) {
+        $("#brave-position-value").text("" + brave.spot.name);
+        $("#brave-action-value").text("" + brave.action.name);
+        if (action.name === 'search' && result.isSucceed && result.treasure) {
+          $("#brave-item-table tbody").append($("<tr><td></td><td>" + result.treasure.name + "</td></tr>"));
+        }
+      }
+      switch (action.name) {
+        case 'move':
+          return _this.log("勇者" + (_this.logBraveName(brave.name)) + " が " + (_this.logSpotName(action.to.name)) + " に到着しました");
+        case 'wait':
+          return _this.log("勇者" + (_this.logBraveName(brave.name)) + " はぼーっとしていた");
+        case 'search':
+          if (result.isSucceed) {
+            return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(result.treasure.name)) + " を手に入れた!");
+          } else {
+            if (action.treasure) {
+              return _this.log("勇者" + (_this.logBraveName(brave.name)) + " は " + (_this.logItemName(result.treasure.name)) + " を見つけたが、これ以上アイテムを持てないのであきらめた…");
+            } else {
+              return _this.log("勇者" + (_this.logBraveName(brave.name)) + " はアイテムを見つけられなかった…");
+            }
+          }
+          break;
+        default:
+          return _this.log("unknown event - " + action.name);
+      }
+    });
   };
 
   Game.prototype.displayBraveInfo = function(brave) {
@@ -515,38 +498,25 @@ Game = (function() {
     return this.canvas.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * this.mapScale;
   };
 
-  Game.prototype.braveObjectForId = function(id) {
-    var braveObject;
-    return ((function() {
-      var _i, _len, _ref, _results;
-      _ref = this.braveObjects;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        braveObject = _ref[_i];
-        if (braveObject.id === id) _results.push(braveObject);
-      }
-      return _results;
-    }).call(this))[0];
-  };
-
   Game.prototype.prepareDisplayObjects = function() {
     var brave, markerSize, route, selectedBraveMarker, spot, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3,
       _this = this;
-    _ref = this.trifolium.routeList;
+    _ref = this.simulator.routeList;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       route = _ref[_i];
       this.appendRoute(route);
     }
-    _ref2 = this.trifolium.spotList;
+    _ref2 = this.simulator.spotList;
     for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
       spot = _ref2[_j];
       this.appendSpot(spot);
     }
-    _ref3 = this.trifolium.braveList;
+    _ref3 = this.simulator.braveList;
     for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
       brave = _ref3[_k];
       this.appendBrave(brave);
     }
+    this.debugMatrix();
     markerSize = 16 * this.mapScale;
     selectedBraveMarker = new Rectangle(markerSize, markerSize, {
       rx: 4,
@@ -576,7 +546,7 @@ Game = (function() {
 
   Game.prototype.start = function() {
     this.prepareDisplayObjects();
-    return this.trifolium.start();
+    return this.simulator.start();
   };
 
   Game.prototype.log = function(text) {
@@ -596,6 +566,35 @@ Game = (function() {
 
   Game.prototype.logItemName = function(name) {
     return "<span class='log-item-name'>" + name + "</span>";
+  };
+
+  Game.prototype.debugMatrix = function() {
+    var centerLineColor, gapX, gapY, gridSize, lineColor, x, y, _ref, _ref2;
+    gridSize = 10 * this.mapScale;
+    lineColor = 'rgba(0, 0, 255, 0.1)';
+    centerLineColor = 'rgba(0, 0, 255, 0.5)';
+    gapX = this.canvas.width % gridSize / 2;
+    gapY = this.canvas.height % gridSize / 2;
+    for (y = 0, _ref = this.canvas.height / gridSize; 0 <= _ref ? y < _ref : y > _ref; 0 <= _ref ? y++ : y--) {
+      if (y !== this.canvas.height / 2 / gridSize) {
+        this.canvas.append(new Line(0, y * gridSize + gapY, this.canvas.width, y * gridSize + gapY, {
+          stroke: lineColor
+        }));
+      }
+    }
+    for (x = 0, _ref2 = this.canvas.width / gridSize; 0 <= _ref2 ? x < _ref2 : x > _ref2; 0 <= _ref2 ? x++ : x--) {
+      if (x !== this.canvas.width / 2 / gridSize) {
+        this.canvas.append(new Line(x * gridSize + gapX, 0, x * gridSize + gapX, this.canvas.height, {
+          stroke: lineColor
+        }));
+      }
+    }
+    this.canvas.append(new Line(0, this.canvas.height / 2, this.canvas.width, this.canvas.height / 2, {
+      stroke: centerLineColor
+    }));
+    return this.canvas.append(new Line(this.canvas.width / 2, 0, this.canvas.width / 2, this.canvas.height, {
+      stroke: centerLineColor
+    }));
   };
 
   return Game;

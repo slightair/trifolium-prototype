@@ -49,7 +49,8 @@ class Trifolium
             d.destination = @spotForId d.destination
             d
         
-        @tickInterval = if details.tickInterval < 100 then 100 else details.tickInterval
+        # @tickInterval = if details.tickInterval < 100 then 100 else details.tickInterval
+        @tickInterval = details.tickInterval
         @spotList = (new SpotInfo spotDetails for spotDetails in details.spotList)
         @braveList = (new BraveInfo coordinateBraveDetails braveDetails for braveDetails in details.braveList)
         @routeList = ([@spotForId(routeInfo[0]), @spotForId(routeInfo[1])] for routeInfo in details.routeList)
@@ -57,11 +58,17 @@ class Trifolium
     #event callbacks
     receiveRestoreGameStatus: (details) =>
         @restoreGameStatus details
+        @emit 'restoreGameStatus'
     
     receiveBraveCompleteAction: (details) =>
         brave = @braveForId details.brave
         prevAction = brave.action
-        brave.setNextAction(new ActionInfo details.nextAction)
+        nextAction = new ActionInfo details.nextAction
+        
+        brave.spot = if details.completeAction.name == 'move' then @spotForId details.completeAction.to else brave.spot
+        brave.destination = if details.nextAction.name == 'move' then @spotForId details.nextAction.to else brave.spot
+        
+        brave.setNextAction nextAction
         @emit 'braveCompleteAction', brave, prevAction, details.result
 
 exports?.Trifolium = Trifolium
