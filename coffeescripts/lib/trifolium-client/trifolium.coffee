@@ -18,14 +18,6 @@ class Trifolium
         receiver.bind 'restoreGameStatus', @receiveRestoreGameStatus
         receiver.bind 'braveCompleteAction', @receiveBraveCompleteAction
     
-    start: ->
-        timer = setInterval( =>
-            @tick()
-        , @tickInterval)
-        
-    tick: ->
-        brave.tick() for brave in @braveList
-    
     spotForName: (name) -> (spot for spot in @spotList when spot.name == name)[0]
     
     spotForId: (id) -> (spot for spot in @spotList when spot.id == id)[0]
@@ -49,7 +41,6 @@ class Trifolium
             d.destination = @spotForId d.destination
             d
         
-        # @tickInterval = if details.tickInterval < 100 then 100 else details.tickInterval
         @tickInterval = details.tickInterval
         @spotList = (new SpotInfo spotDetails for spotDetails in details.spotList)
         @braveList = (new BraveInfo coordinateBraveDetails braveDetails for braveDetails in details.braveList)
@@ -68,7 +59,7 @@ class Trifolium
         brave.spot = if details.completeAction.name == 'move' then @spotForId details.completeAction.to else brave.spot
         brave.destination = if details.nextAction.name == 'move' then @spotForId details.nextAction.to else brave.spot
         
-        brave.setNextAction nextAction
+        brave.updateAction nextAction
         @emit 'braveCompleteAction', brave, prevAction, details.result
 
 exports?.Trifolium = Trifolium

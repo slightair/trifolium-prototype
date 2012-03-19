@@ -17,12 +17,12 @@ class BraveInfo
         @spot = details.spot ? null
         @destination = details.destination ? null
     
-    tick: ->
+    updateActionProcess: (gameTimeInterval) ->
         if @action? && @actionProcess < 1.0
-            @actionProcess += if @action.time > 0 then @speed / @action.time else 1.0
+            @actionProcess += if @action.time > 0 then (@speed * gameTimeInterval) / @action.time else 1.0
             @actionProcess = 1.0 if @actionProcess > 1.0
     
-    setNextAction: (action) ->
+    updateAction: (action) ->
         @action = action
         @actionProcess = 0.0
 

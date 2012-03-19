@@ -12,7 +12,7 @@ class Game
         @logMax = 6
         
         @trifolium.on 'restoreGameStatus', =>
-            @start()
+            @prepareDisplayObjects()
         @trifolium.on 'braveCompleteAction', (brave, action, result) =>
             @braveCompleteAction(brave, action, result)
     
@@ -25,6 +25,7 @@ class Game
             @canvas.height / 2 + route[1].posY * @mapScale,
             {stroke: routeColor, strokeWidth: 10 * @mapScale, lineCap: 'round'})
         @canvas.append routeObject
+    
     appendSpot: (spot) ->
         spotObject = new Circle(10 * @mapScale, {
                     id: spot.id
@@ -45,6 +46,9 @@ class Game
         braveObject.addFrameListener (t, dt) =>
             braveObject.x = @bravePosX brave
             braveObject.y = @bravePosY brave
+            gameTimeInterval = @trifolium.tickInterval / 1000.0 * @canvas.fps
+            brave.updateActionProcess gameTimeInterval
+            
             if brave == @selectedBrave
                 actionProcessPercentage = (brave.actionProcess * 100).toFixed(1)
                 $("#brave-actionProcess-bar").text("#{actionProcessPercentage}%")
@@ -170,10 +174,6 @@ class Game
             y: @height
         
         @canvas.append @infoLayer
-    
-    start: ->
-        @prepareDisplayObjects()
-        @trifolium.start()
     
     log: (text) ->
         if @logMax <= $("div#log").children().length
