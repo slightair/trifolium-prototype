@@ -17,7 +17,7 @@ class Game
             @braveCompleteAction(brave, action, result)
     
     appendRoute: (route) ->
-        routeColor = 'rgba(0, 255, 0, 0.2)'
+        routeColor = '#a8ff60'
         routeObject = new Line(
             @canvas.width / 2 + route[0].posX * @mapScale,
             @canvas.height / 2 + route[0].posY * @mapScale,
@@ -31,7 +31,7 @@ class Game
                     id: spot.id
                     x: @canvas.width / 2 + spot.posX * @mapScale
                     y: @canvas.height / 2 + spot.posY * @mapScale
-                    stroke: 'rgba(0, 0, 255, 1.0)'
+                    stroke: '#0000ff'
                     strokeWidth: @mapScale
                     endAngle: Math.PI * 2
         })
@@ -58,7 +58,7 @@ class Game
             @displayBraveInfo brave
         )
         
-        color = "hsla(#{parseInt(Math.random() * 360)}, 70%, 50%, 1.0)"
+        color = "hsl(#{parseInt(Math.random() * 360)}, 70%, 50%)"
         head = new Circle 2 * @mapScale,
                     x: 0
                     y: -2 * @mapScale
@@ -82,9 +82,9 @@ class Game
         actionEffect = new Circle 1 * @mapScale,
             x: 0
             y: 0
-            stroke: "rgba(33, 66, 255, 0.8)"
+            stroke: '#c6c5fe'
             strokeWidth: @mapScale
-            fill: "rgba(33, 66, 255, 0.5)"
+            fill: '#dfdffe'
             endAngle: Math.PI * 2
             opacity: 1.0
         actionEffect.addFrameListener (t, dt) =>
@@ -159,8 +159,8 @@ class Game
             ry: 4
             x: -markerSize
             y: -markerSize
-            fill: "rgba(255, 128, 0, 0.3)"
-            stroke: "rgba(255, 128, 0, 0.5)"
+            fill: '#ffb6b0'
+            stroke: '#ff6c60'
             strokeWidth: @mapScale
             endAngle: Math.PI * 2
         selectedBraveMarker.addFrameListener (t, dt) =>
