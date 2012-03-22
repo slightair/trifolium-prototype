@@ -77,27 +77,8 @@ class Game
     
     braveCompleteAction: (brave, action, result) ->
         braveObject = @braveObjectForId brave.id
-        circleRadiusMax = 40.0
-        effectTime = 800
-        actionEffect = new Circle 1 * @mapScale,
-            x: 0
-            y: 0
-            stroke: '#c6c5fe'
-            strokeWidth: @mapScale
-            fill: '#dfdffe'
-            endAngle: Math.PI * 2
-            opacity: 1.0
-        actionEffect.addFrameListener (t, dt) =>
-            actionEffect.removeSelf if dt > effectTime
-            actionEffect.radius += dt / effectTime * circleRadiusMax
-            actionEffect.opacity = (circleRadiusMax - actionEffect.radius) / circleRadiusMax
-            if actionEffect.radius > circleRadiusMax
-                actionEffect.removeSelf()
-                braveObject.addedActionEffect = false
-        unless braveObject.addedActionEffect
-            braveObject.append actionEffect
-            braveObject.addedActionEffect = true
-            
+        braveObject.append @actionEffect()
+        
         if brave == @selectedBrave
             $("#brave-position-value").text("#{brave.spot.name}")
             $("#brave-action-value").text("#{brave.action.name}")
@@ -121,6 +102,28 @@ class Game
             else
                 @log "unknown event - #{action.name}"
     
+    actionEffect: ->
+        maxScale = 20.0
+        effectTime = 800
+        
+        effect = new Circle 1 * @mapScale,
+            x: 0
+            y: 0
+            fill: '#ffffb6'
+            endAngle: Math.PI * 2
+            opacity: 1.0
+        
+        effect.addFrameListener (t, dt) ->
+            @startTime ?= t
+            process = (t - @startTime) / effectTime
+            @scale = maxScale * process
+            @opacity = 1 - process
+        
+        effect.after effectTime, ->
+            @removeSelf()
+        
+        effect
+        
     displayBraveInfo: (brave) ->
         paramNames = [
             'name'
