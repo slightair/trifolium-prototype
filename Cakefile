@@ -53,8 +53,7 @@ compile_client_browser = (callback) ->
         '-b'
         '-c'
         '-j'
-        # './tmp/game.js'
-        'public/javascripts/game.min.js'
+        './tmp/game.js'
         'coffeescripts/etc/client-config.coffee'
         'coffeescripts/lib/trifolium-client/'
         'coffeescripts/game-client-browser.coffee'
@@ -64,20 +63,19 @@ compile_client_browser = (callback) ->
     coffee.stderr.on 'data', stream_data_handler
     coffee.on 'exit', (status) -> callback?() if status is 0
 
-# minify_client_browser = (callback) ->
-#     options = [
-#             '-o'
-#             'public/javascripts/game.min.js'
-#             'game.js'
-#     ]
-#     uglify = spawn "#{bin_path}/uglifyjs", options
-#     uglify.stdout.on 'data', stream_data_handler
-#     uglify.stderr.on 'data', stream_data_handler
-#     uglify.on 'exit', (status) -> callback?() if status is 0
-# 
+minify_client_browser = (callback) ->
+    options = [
+            '-o'
+            'public/javascripts/game.min.js'
+            'tmp/game.js'
+    ]
+    uglify = spawn "#{bin_path}/uglifyjs", options
+    uglify.stdout.on 'data', stream_data_handler
+    uglify.stderr.on 'data', stream_data_handler
+    uglify.on 'exit', (status) -> callback?() if status is 0
+
 build_client_browser = (callback) ->
-    # compile_client_browser -> minify_client_browser -> callback?()
-    compile_client_browser -> callback?()
+    compile_client_browser -> minify_client_browser -> callback?()
 
 compile_server_test = (callback) ->
     options = [
