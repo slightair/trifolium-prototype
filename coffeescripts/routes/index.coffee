@@ -10,7 +10,7 @@ exports.index = (req, res) ->
         ]
         params:
             Name: 'brave-name'
-            Position: 'brave-position'
+            Location: 'brave-location'
             Lv: 'brave-lv'
             Attack: 'brave-atk'
             MagicAttack: 'brave-matk'

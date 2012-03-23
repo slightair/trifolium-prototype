@@ -7,7 +7,7 @@ exports.index = function(req, res) {
     scriptfiles: ['javascripts/lib/bootstrap-tab.js', 'javascripts/lib/cake.js', 'javascripts/game.min.js', "" + settings.gameServerHost + "/socket.io/socket.io.js"],
     params: {
       Name: 'brave-name',
-      Position: 'brave-position',
+      Location: 'brave-location',
       Lv: 'brave-lv',
       Attack: 'brave-atk',
       MagicAttack: 'brave-matk',

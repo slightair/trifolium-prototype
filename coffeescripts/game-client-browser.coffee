@@ -6,6 +6,8 @@ class Game
         @trifolium = new Trifolium trifoliumConfig
         @canvas = new Canvas $("#main-screen").get(0), @width, @height
         @infoLayer = new CanvasNode
+        @braveLayer = new CanvasNode
+        @mapLayer = new CanvasNode
         @mapScale = 2.0
         @selectedBrave = null
         @braveObjects = []
@@ -19,23 +21,23 @@ class Game
     appendRoute: (route) ->
         routeColor = '#a8ff60'
         routeObject = new Line(
-            @canvas.width / 2 + route[0].posX * @mapScale,
-            @canvas.height / 2 + route[0].posY * @mapScale,
-            @canvas.width / 2 + route[1].posX * @mapScale,
-            @canvas.height / 2 + route[1].posY * @mapScale,
+            @width / 2 + route[0].posX * @mapScale,
+            @height / 2 + route[0].posY * @mapScale,
+            @width / 2 + route[1].posX * @mapScale,
+            @height / 2 + route[1].posY * @mapScale,
             {stroke: routeColor, strokeWidth: 10 * @mapScale, lineCap: 'round'})
-        @canvas.append routeObject
+        @mapLayer.append routeObject
     
     appendSpot: (spot) ->
         spotObject = new Circle(10 * @mapScale, {
                     id: spot.id
-                    x: @canvas.width / 2 + spot.posX * @mapScale
-                    y: @canvas.height / 2 + spot.posY * @mapScale
+                    x: @width / 2 + spot.posX * @mapScale
+                    y: @height / 2 + spot.posY * @mapScale
                     stroke: '#0000ff'
                     strokeWidth: @mapScale
                     endAngle: Math.PI * 2
         })
-        @canvas.append spotObject
+        @mapLayer.append spotObject
     
     appendBrave: (brave) ->
         braveObject = new CanvasNode
@@ -72,7 +74,7 @@ class Game
         braveObject.append head
         braveObject.append body
         
-        @canvas.append braveObject
+        @braveLayer.append braveObject
         @braveObjects.push braveObject
     
     braveCompleteAction: (brave, action, result) ->
@@ -80,7 +82,7 @@ class Game
         braveObject.append @actionEffect()
         
         if brave == @selectedBrave
-            $("#brave-position-value").text("#{brave.spot.name}")
+            $("#brave-location-value").text("#{brave.spot.name}")
             $("#brave-action-value").text("#{brave.action.name}")
             if action.name == 'search' && result.isSucceed && result.treasure
                 $("#brave-item-table tbody").append($("<tr><td></td><td>#{result.treasure.name}</td></tr>"))
@@ -137,16 +139,16 @@ class Game
             'speed'
         ]
         $("#brave-#{paramName}-value").text(brave[paramName]) for paramName in paramNames
-        $("#brave-position-value").text("#{brave.spot.name}")
+        $("#brave-location-value").text("#{brave.spot.name}")
         $("#brave-action-value").text("#{brave.action.name}")
         $("#brave-item-table tbody").empty()
         $("#brave-item-table tbody").append($("<tr><td></td><td>#{item.name}</td></tr>")) for item in brave.items
     
     bravePosX: (brave) ->
-        @canvas.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * @mapScale
+        @width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * @mapScale
     
     bravePosY: (brave) ->
-        @canvas.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * @mapScale
+        @height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * @mapScale
     
     braveObjectForId: (id) ->
         (braveObject for braveObject in @braveObjects when braveObject.id == id)[0]
@@ -162,7 +164,6 @@ class Game
             ry: 4
             x: -markerSize
             y: -markerSize
-            fill: '#ffb6b0'
             stroke: '#ff6c60'
             strokeWidth: @mapScale
             endAngle: Math.PI * 2
@@ -170,13 +171,12 @@ class Game
             if @selectedBrave
                 selectedBraveMarker.x = @bravePosX(@selectedBrave) - markerSize / 2
                 selectedBraveMarker.y = @bravePosY(@selectedBrave) - markerSize / 2
-        @canvas.append selectedBraveMarker
         
         @infoLayer.append new ElementNode E('div', id: 'log'),
             valign: "bottom"
             y: @height
         
-        @canvas.append @infoLayer
+        @canvas.append @mapLayer, selectedBraveMarker, @braveLayer, @infoLayer
     
     log: (text) ->
         if @logMax <= $("div#log").children().length

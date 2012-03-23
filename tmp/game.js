@@ -337,6 +337,8 @@ Game = (function() {
     this.trifolium = new Trifolium(trifoliumConfig);
     this.canvas = new Canvas($("#main-screen").get(0), this.width, this.height);
     this.infoLayer = new CanvasNode;
+    this.braveLayer = new CanvasNode;
+    this.mapLayer = new CanvasNode;
     this.mapScale = 2.0;
     this.selectedBrave = null;
     this.braveObjects = [];
@@ -352,25 +354,25 @@ Game = (function() {
   Game.prototype.appendRoute = function(route) {
     var routeColor, routeObject;
     routeColor = '#a8ff60';
-    routeObject = new Line(this.canvas.width / 2 + route[0].posX * this.mapScale, this.canvas.height / 2 + route[0].posY * this.mapScale, this.canvas.width / 2 + route[1].posX * this.mapScale, this.canvas.height / 2 + route[1].posY * this.mapScale, {
+    routeObject = new Line(this.width / 2 + route[0].posX * this.mapScale, this.height / 2 + route[0].posY * this.mapScale, this.width / 2 + route[1].posX * this.mapScale, this.height / 2 + route[1].posY * this.mapScale, {
       stroke: routeColor,
       strokeWidth: 10 * this.mapScale,
       lineCap: 'round'
     });
-    return this.canvas.append(routeObject);
+    return this.mapLayer.append(routeObject);
   };
 
   Game.prototype.appendSpot = function(spot) {
     var spotObject;
     spotObject = new Circle(10 * this.mapScale, {
       id: spot.id,
-      x: this.canvas.width / 2 + spot.posX * this.mapScale,
-      y: this.canvas.height / 2 + spot.posY * this.mapScale,
+      x: this.width / 2 + spot.posX * this.mapScale,
+      y: this.height / 2 + spot.posY * this.mapScale,
       stroke: '#0000ff',
       strokeWidth: this.mapScale,
       endAngle: Math.PI * 2
     });
-    return this.canvas.append(spotObject);
+    return this.mapLayer.append(spotObject);
   };
 
   Game.prototype.appendBrave = function(brave) {
@@ -412,7 +414,7 @@ Game = (function() {
     });
     braveObject.append(head);
     braveObject.append(body);
-    this.canvas.append(braveObject);
+    this.braveLayer.append(braveObject);
     return this.braveObjects.push(braveObject);
   };
 
@@ -421,7 +423,7 @@ Game = (function() {
     braveObject = this.braveObjectForId(brave.id);
     braveObject.append(this.actionEffect());
     if (brave === this.selectedBrave) {
-      $("#brave-position-value").text("" + brave.spot.name);
+      $("#brave-location-value").text("" + brave.spot.name);
       $("#brave-action-value").text("" + brave.action.name);
       if (action.name === 'search' && result.isSucceed && result.treasure) {
         $("#brave-item-table tbody").append($("<tr><td></td><td>" + result.treasure.name + "</td></tr>"));
@@ -480,7 +482,7 @@ Game = (function() {
       paramName = paramNames[_i];
       $("#brave-" + paramName + "-value").text(brave[paramName]);
     }
-    $("#brave-position-value").text("" + brave.spot.name);
+    $("#brave-location-value").text("" + brave.spot.name);
     $("#brave-action-value").text("" + brave.action.name);
     $("#brave-item-table tbody").empty();
     _ref = brave.items;
@@ -493,11 +495,11 @@ Game = (function() {
   };
 
   Game.prototype.bravePosX = function(brave) {
-    return this.canvas.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * this.mapScale;
+    return this.width / 2 + (brave.spot.posX + (brave.destination.posX - brave.spot.posX) * brave.actionProcess) * this.mapScale;
   };
 
   Game.prototype.bravePosY = function(brave) {
-    return this.canvas.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * this.mapScale;
+    return this.height / 2 + (brave.spot.posY + (brave.destination.posY - brave.spot.posY) * brave.actionProcess) * this.mapScale;
   };
 
   Game.prototype.braveObjectForId = function(id) {
@@ -538,7 +540,6 @@ Game = (function() {
       ry: 4,
       x: -markerSize,
       y: -markerSize,
-      fill: '#ffb6b0',
       stroke: '#ff6c60',
       strokeWidth: this.mapScale,
       endAngle: Math.PI * 2
@@ -549,14 +550,13 @@ Game = (function() {
         return selectedBraveMarker.y = _this.bravePosY(_this.selectedBrave) - markerSize / 2;
       }
     });
-    this.canvas.append(selectedBraveMarker);
     this.infoLayer.append(new ElementNode(E('div', {
       id: 'log'
     }), {
       valign: "bottom",
       y: this.height
     }));
-    return this.canvas.append(this.infoLayer);
+    return this.canvas.append(this.mapLayer, selectedBraveMarker, this.braveLayer, this.infoLayer);
   };
 
   Game.prototype.log = function(text) {
