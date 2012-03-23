@@ -4,6 +4,35 @@ util = require 'util'
 bin_path = './node_modules/.bin'
 stream_data_handler = (data) -> util.print data.toString()
 
+compile_app = (callback) ->
+    options = [
+        '-b'
+        '-c'
+        '-o'
+        '.'
+        'coffeescripts/app.coffee'
+    ]
+    coffee = spawn "#{bin_path}/coffee", options
+    coffee.stdout.on 'data', stream_data_handler
+    coffee.stderr.on 'data', stream_data_handler
+    coffee.on 'exit', (status) -> callback?() if status is 0
+
+compile_route = (callback) ->
+    options = [
+        '-b'
+        '-c'
+        '-o'
+        'routes'
+        'coffeescripts/routes/index.coffee'
+    ]
+    coffee = spawn "#{bin_path}/coffee", options
+    coffee.stdout.on 'data', stream_data_handler
+    coffee.stderr.on 'data', stream_data_handler
+    coffee.on 'exit', (status) -> callback?() if status is 0
+
+build_express = (callback) ->
+    compile_app -> compile_route -> callback?()
+
 compile_lib = (callback) ->
     options = [
         '-b'
@@ -35,9 +64,8 @@ build_server = (callback) ->
 compile_client_console = (callback) ->
     options = [
         '-c'
-        '-j'
-        'game-client-console.js'
-        'coffeescripts/etc/client-config.coffee'
+        '-o'
+        '.'
         'coffeescripts/game-client-console.coffee'
     ]
     coffee = spawn "#{bin_path}/coffee", options
@@ -54,7 +82,6 @@ compile_client_browser = (callback) ->
         '-c'
         '-j'
         './tmp/game.js'
-        'coffeescripts/etc/client-config.coffee'
         'coffeescripts/lib/trifolium-client/'
         'coffeescripts/game-client-browser.coffee'
     ]
@@ -128,6 +155,9 @@ run_test = (callback) ->
     mocha.stderr.on 'data', data_handler
     mocha.on 'exit', (status) -> callback?() if status is 0
 
+task 'express', 'make express files', ->
+    build_express -> 'All done.'
+
 task 'server', 'make game-server.js', ->
     build_server -> 'All done.'
 
@@ -141,4 +171,4 @@ task 'test', 'run test', ->
     compile_lib -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
 
 task 'all', 'compile all scripts', ->
-    build_server -> build_client_console -> build_client_browser -> compile_server_test -> compile_client_test -> 'All done.'
+    build_server -> build_client_console -> build_client_browser -> build_express -> compile_server_test -> compile_client_test -> 'All done.'
