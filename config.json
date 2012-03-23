@@ -4,7 +4,7 @@
         "port": 6262
     },
     "simulator": {
-        "tickInterval": 30,
+        "tickInterval": 1000,
         "spawnSpotName": "ちくわ城",
         "spotInfoList": [
             {"name": "こんぶシティー",    "posX":   20, "posY":  -60, "actions": [
@@ -57,7 +57,7 @@
             ["なめこの洞窟", "たまねぎ寺院"],
             ["かまぼこの迷宮", "ちくわ城"]
         ],
-        "numBraves": 12,
+        "numBraves": 8,
         "braveNameDictionary": {
             "terms": [
                 "ポチ",
