@@ -102,7 +102,9 @@ Receiver = (function() {
           socket_io = require('socket.io-client');
           this.socket = socket_io.connect(options.host);
         } else {
-          this.socket = io.connect(options.host);
+          this.socket = io.connect(options.host, {
+            transports: ['xhr-polling']
+          });
         }
         break;
       default:

@@ -10,7 +10,7 @@ class Receiver
                     socket_io = require('socket.io-client')
                     @socket = socket_io.connect options.host
                 else
-                    @socket = io.connect options.host
+                    @socket = io.connect options.host, {transports: ['xhr-polling']}
             else
                 console.log 'receiver do nothing.'
         
