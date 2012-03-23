@@ -3,7 +3,7 @@ $ ->
 
 class Game
     constructor: (@width, @height)->
-        @trifolium = new Trifolium config
+        @trifolium = new Trifolium trifoliumConfig
         @canvas = new Canvas $("#main-screen").get(0), @width, @height
         @infoLayer = new CanvasNode
         @mapScale = 2.0

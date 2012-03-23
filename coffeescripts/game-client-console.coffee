@@ -1,6 +1,10 @@
 {Trifolium} = require './lib/trifolium-client/trifolium'
 
-trifolium = new Trifolium config
+trifolium = new Trifolium
+    websocket:
+        mode: 'socket.io'
+        host: 'http://localhost:6262'
+
 trifolium.on 'braveCompleteAction', (brave, action, result) ->
     switch action.name
         when 'move'

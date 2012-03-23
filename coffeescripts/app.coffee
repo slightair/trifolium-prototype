@@ -9,6 +9,7 @@ app.configure ->
     app.use express.methodOverride()
     app.use app.router
     app.use express.static(__dirname + "/public")
+    app.set 'gameServerHost', 'http://127.0.0.1:6262'
 
 app.configure "development", ->
     app.use express.errorHandler(

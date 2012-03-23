@@ -5,8 +5,8 @@ fs = require 'fs'
 configFilePath = './config.json'
 config = JSON.parse(fs.readFileSync(configFilePath))
 
-simulator = new Simulator config
-notifier = new Notifier {mode: 'socket.io', port: 6262}
+simulator = new Simulator config.simulator
+notifier = new Notifier config.notifier
 
 notifier.on 'connection', (connection) ->
     connection.notify 'restoreGameStatus', simulator.details()

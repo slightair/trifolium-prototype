@@ -12,7 +12,8 @@ app.configure(function() {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  return app.use(express.static(__dirname + "/public"));
+  app.use(express.static(__dirname + "/public"));
+  return app.set('gameServerHost', 'http://127.0.0.1:6262');
 });
 
 app.configure("development", function() {

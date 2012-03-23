@@ -7,7 +7,7 @@ if require?
 
 class Trifolium
     constructor: (config) ->
-        receiver = new Receiver config.websocketOptions
+        receiver = new Receiver config.websocket
         
         @spotList = []
         @routeList = []

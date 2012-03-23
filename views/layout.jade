@@ -8,5 +8,6 @@ html
         script(type='text/javascript', src='javascripts/lib/less-1.2.1.min.js')
         each file in scriptfiles
             script(type='text/javascript', src=file)
+        script!= script
     body!= body
     

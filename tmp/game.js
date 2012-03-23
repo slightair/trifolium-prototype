@@ -1,13 +1,6 @@
-var ActionInfo, BraveInfo, Game, ItemInfo, Receiver, SpotInfo, Trifolium, config,
+var ActionInfo, BraveInfo, Game, ItemInfo, Receiver, SpotInfo, Trifolium,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __slice = Array.prototype.slice;
-
-config = {
-  websocketOptions: {
-    mode: 'socket.io',
-    host: 'http://localhost:6262'
-  }
-};
 
 ActionInfo = (function() {
 
@@ -172,7 +165,7 @@ Trifolium = (function() {
     this.receiveBraveCompleteAction = __bind(this.receiveBraveCompleteAction, this);
     this.receiveRestoreGameStatus = __bind(this.receiveRestoreGameStatus, this);
     var receiver;
-    receiver = new Receiver(config.websocketOptions);
+    receiver = new Receiver(config.websocket);
     this.spotList = [];
     this.routeList = [];
     this.braveList = [];
@@ -341,7 +334,7 @@ Game = (function() {
     var _this = this;
     this.width = width;
     this.height = height;
-    this.trifolium = new Trifolium(config);
+    this.trifolium = new Trifolium(trifoliumConfig);
     this.canvas = new Canvas($("#main-screen").get(0), this.width, this.height);
     this.infoLayer = new CanvasNode;
     this.mapScale = 2.0;

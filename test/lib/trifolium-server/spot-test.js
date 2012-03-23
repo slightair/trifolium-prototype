@@ -16,7 +16,7 @@ configFile = './config.json';
 
 config = JSON.parse(fs.readFileSync(configFile));
 
-SharedItemCreator.itemDict = config.itemDict;
+SharedItemCreator.itemDict = config.simulator.itemDict;
 
 describe("Spot", function() {
   var spot;

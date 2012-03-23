@@ -11,12 +11,9 @@
 
   config = JSON.parse(fs.readFileSync(configFilePath));
 
-  simulator = new Simulator(config);
+  simulator = new Simulator(config.simulator);
 
-  notifier = new Notifier({
-    mode: 'socket.io',
-    port: 6262
-  });
+  notifier = new Notifier(config.notifier);
 
   notifier.on('connection', function(connection) {
     return connection.notify('restoreGameStatus', simulator.details());

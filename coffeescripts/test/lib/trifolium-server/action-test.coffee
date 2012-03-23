@@ -9,7 +9,7 @@ serverLibPath = '../../../lib/trifolium-server'
 
 configFile = './config.json'
 config = JSON.parse(fs.readFileSync(configFile))
-SharedItemCreator.itemDict = config.itemDict
+SharedItemCreator.itemDict = config.simulator.itemDict
 
 describe 'Action', ->
     action = new Action

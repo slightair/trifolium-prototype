@@ -1,11 +1,12 @@
 exports.index = (req, res) ->
+    settings = req.app.settings
     res.render "index",
         title: "World"
         scriptfiles: [
             'javascripts/lib/bootstrap-tab.js'
             'javascripts/lib/cake.js'
             'javascripts/game.min.js'
-            'http://localhost:6262/socket.io/socket.io.js'
+            "#{settings.gameServerHost}/socket.io/socket.io.js"
         ]
         params:
             Name: 'brave-name'
@@ -19,3 +20,4 @@ exports.index = (req, res) ->
             Faith: 'brave-faith'
             Speed: 'brave-speed'
             Action: 'brave-action'
+        script: "var trifoliumConfig={websocket:{mode:'socket.io',host:'#{settings.gameServerHost}'}}"
