@@ -13,6 +13,7 @@ config = JSON.parse(fs.readFileSync(configFilePath));
 app = module.exports = express.createServer();
 
 app.configure(function() {
+  var _ref;
   app.set("views", __dirname + "/views");
   app.set("view engine", "jade");
   app.use(express.bodyParser());
@@ -20,7 +21,7 @@ app.configure(function() {
   app.use(app.router);
   app.use(express.static(__dirname + "/public"));
   app.set('pusherTokenKey', config.notifier.pusherTokenKey);
-  return app.set('gameServerHost', 'http://localhost:6262');
+  return app.set('gameServerHost', (_ref = process.env.GAME_SERVER_HOST) != null ? _ref : "http://localhost:6262");
 });
 
 app.configure("development", function() {
