@@ -12,5 +12,6 @@
     , "coffee-script": ">= 1.2.0"
     , "socket.io": ">= 0.9.0"
     , "socket.io-client": ">= 0.9.0"
+    , "node-pusher": ">= 0.0.2"
   }
 }

@@ -4,7 +4,7 @@ exports.index = function(req, res) {
   settings = req.app.settings;
   return res.render("index", {
     title: "World",
-    scriptfiles: ['javascripts/lib/bootstrap-tab.js', 'javascripts/lib/cake.js', 'javascripts/game.min.js', "" + settings.gameServerHost + "/socket.io/socket.io.js"],
+    scriptfiles: ['javascripts/lib/bootstrap-tab.js', 'javascripts/lib/cake.js', 'javascripts/game.min.js', 'http://js.pusher.com/1.11/pusher.min.js'],
     params: {
       Name: 'brave-name',
       Location: 'brave-location',
@@ -18,6 +18,6 @@ exports.index = function(req, res) {
       Speed: 'brave-speed',
       Action: 'brave-action'
     },
-    script: "var trifoliumConfig={websocket:{mode:'socket.io',host:'" + settings.gameServerHost + "'}}"
+    script: "var trifoliumConfig={websocket:{mode:'pusher',pusherTokenKey:'" + settings.pusherTokenKey + "'}}"
   });
 };

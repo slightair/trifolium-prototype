@@ -6,7 +6,7 @@ exports.index = (req, res) ->
             'javascripts/lib/bootstrap-tab.js'
             'javascripts/lib/cake.js'
             'javascripts/game.min.js'
-            "#{settings.gameServerHost}/socket.io/socket.io.js"
+            'http://js.pusher.com/1.11/pusher.min.js'
         ]
         params:
             Name: 'brave-name'
@@ -20,4 +20,4 @@ exports.index = (req, res) ->
             Faith: 'brave-faith'
             Speed: 'brave-speed'
             Action: 'brave-action'
-        script: "var trifoliumConfig={websocket:{mode:'socket.io',host:'#{settings.gameServerHost}'}}"
+        script: "var trifoliumConfig={websocket:{mode:'pusher',pusherTokenKey:'#{settings.pusherTokenKey}'}}"

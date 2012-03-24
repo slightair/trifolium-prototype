@@ -1,5 +1,10 @@
-express = require("express")
-routes = require("./routes")
+fs = require 'fs'
+express = require 'express'
+routes = require './routes'
+
+configFilePath = './config.json'
+config = JSON.parse(fs.readFileSync(configFilePath))
+
 app = module.exports = express.createServer()
 
 app.configure ->
@@ -9,7 +14,7 @@ app.configure ->
     app.use express.methodOverride()
     app.use app.router
     app.use express.static(__dirname + "/public")
-    app.set 'gameServerHost', 'http://127.0.0.1:6262'
+    app.set 'pusherTokenKey', config.notifier.pusherTokenKey
 
 app.configure "development", ->
     app.use express.errorHandler(

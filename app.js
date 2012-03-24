@@ -1,8 +1,14 @@
-var app, express, port, routes, _ref;
+var app, config, configFilePath, express, fs, port, routes, _ref;
 
-express = require("express");
+fs = require('fs');
 
-routes = require("./routes");
+express = require('express');
+
+routes = require('./routes');
+
+configFilePath = './config.json';
+
+config = JSON.parse(fs.readFileSync(configFilePath));
 
 app = module.exports = express.createServer();
 
@@ -13,7 +19,7 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + "/public"));
-  return app.set('gameServerHost', 'http://127.0.0.1:6262');
+  return app.set('pusherTokenKey', config.notifier.pusherTokenKey);
 });
 
 app.configure("development", function() {

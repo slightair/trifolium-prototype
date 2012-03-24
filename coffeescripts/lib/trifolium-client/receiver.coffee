@@ -4,7 +4,8 @@ class Receiver
         
         switch @mode
             when 'pusher'
-                1
+                pusher = new Pusher(options.pusherTokenKey)
+                @channel = pusher.subscribe 'trifolium'
             when 'socket.io'
                 if require?
                     socket_io = require('socket.io-client')
@@ -17,7 +18,7 @@ class Receiver
     bind: (command, callback) ->
         switch @mode
             when 'pusher'
-                1
+                @channel?.bind command, callback
             when 'socket.io'
                 @socket?.on command, callback
             else

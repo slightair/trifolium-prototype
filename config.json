@@ -1,7 +1,9 @@
 {
     "notifier": {
-        "mode": "socket.io",
-        "port": 6262
+        "mode": "pusher",
+        "pusherAppId": "",
+        "pusherTokenKey": "",
+        "pusherTokenSecret": ""
     },
     "simulator": {
         "tickInterval": 1000,
