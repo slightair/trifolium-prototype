@@ -369,7 +369,7 @@ Game = (function() {
   };
 
   Game.prototype.appendBrave = function(brave) {
-    var body, braveObject, color, head,
+    var body, braveObject, color, head, hue,
       _this = this;
     braveObject = new CanvasNode({
       id: brave.id,
@@ -393,7 +393,8 @@ Game = (function() {
       _this.selectedBrave = brave;
       return _this.displayBraveInfo(brave);
     });
-    color = "hsl(" + (parseInt(Math.random() * 360)) + ", 70%, 50%)";
+    hue = parseInt(parseInt(brave.id.substr(0, 2), 16) / 255 * 360);
+    color = "hsl(" + hue + ", 70%, 50%)";
     head = new Circle(2 * this.mapScale, {
       x: 0,
       y: -2 * this.mapScale,

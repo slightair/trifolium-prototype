@@ -61,7 +61,8 @@ class Game
             @displayBraveInfo brave
         )
         
-        color = "hsl(#{parseInt(Math.random() * 360)}, 70%, 50%)"
+        hue = parseInt(parseInt(brave.id.substr(0, 2), 16) / 255 * 360)
+        color = "hsl(#{hue}, 70%, 50%)"
         head = new Circle 2 * @mapScale,
                     x: 0
                     y: -2 * @mapScale
