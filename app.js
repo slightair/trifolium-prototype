@@ -19,7 +19,8 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + "/public"));
-  return app.set('pusherTokenKey', config.notifier.pusherTokenKey);
+  app.set('pusherTokenKey', config.notifier.pusherTokenKey);
+  return app.set('gameServerHost', 'http://localhost:6262');
 });
 
 app.configure("development", function() {

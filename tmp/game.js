@@ -164,14 +164,12 @@ Trifolium = (function() {
 
   function Trifolium(config) {
     this.receiveBraveCompleteAction = __bind(this.receiveBraveCompleteAction, this);
-    this.receiveRestoreGameStatus = __bind(this.receiveRestoreGameStatus, this);
     var receiver;
     receiver = new Receiver(config.websocket);
     this.spotList = [];
     this.routeList = [];
     this.braveList = [];
     this.eventDict = {};
-    receiver.bind('restoreGameStatus', this.receiveRestoreGameStatus);
     receiver.bind('braveCompleteAction', this.receiveBraveCompleteAction);
   }
 
@@ -295,11 +293,6 @@ Trifolium = (function() {
     }).call(this);
   };
 
-  Trifolium.prototype.receiveRestoreGameStatus = function(details) {
-    this.restoreGameStatus(details);
-    return this.emit('restoreGameStatus');
-  };
-
   Trifolium.prototype.receiveBraveCompleteAction = function(details) {
     var brave, nextAction, prevAction;
     brave = this.braveForId(details.brave);
@@ -326,16 +319,18 @@ if (typeof exports !== "undefined" && exports !== null) {
 
 $(function() {
   var game;
-  return game = new Game(580, 450);
+  game = new Game(gameConfig);
+  return game.start();
 });
 
 Game = (function() {
 
-  function Game(width, height) {
+  function Game(config) {
     var _this = this;
-    this.width = width;
-    this.height = height;
-    this.trifolium = new Trifolium(trifoliumConfig);
+    this.config = config;
+    this.width = this.config.width;
+    this.height = this.config.height;
+    this.trifolium = new Trifolium(this.config.trifolium);
     this.canvas = new Canvas($("#main-screen").get(0), this.width, this.height);
     this.infoLayer = new CanvasNode;
     this.braveLayer = new CanvasNode;
@@ -344,9 +339,6 @@ Game = (function() {
     this.selectedBrave = null;
     this.braveObjects = [];
     this.logMax = 6;
-    this.trifolium.on('restoreGameStatus', function() {
-      return _this.prepareDisplayObjects();
-    });
     this.trifolium.on('braveCompleteAction', function(brave, action, result) {
       return _this.braveCompleteAction(brave, action, result);
     });
@@ -515,6 +507,22 @@ Game = (function() {
       }
       return _results;
     }).call(this))[0];
+  };
+
+  Game.prototype.start = function() {
+    var _this = this;
+    return $.ajax({
+      cache: false,
+      dataType: 'json',
+      url: "" + this.config.gameServerHost + "/world/status",
+      success: function(data, dataType) {
+        _this.trifolium.restoreGameStatus(data);
+        return _this.prepareDisplayObjects();
+      },
+      error: function(xhr, status, exception) {
+        return $('#main-screen').prepend('<div class="alert alert-error"><strong>Error!</strong> ワールド情報の取得に失敗しました。</div>');
+      }
+    });
   };
 
   Game.prototype.prepareDisplayObjects = function() {

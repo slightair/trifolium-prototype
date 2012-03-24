@@ -1,9 +1,12 @@
 $ ->
-    game = new Game(580, 450)
+    game = new Game gameConfig
+    game.start()
 
 class Game
-    constructor: (@width, @height)->
-        @trifolium = new Trifolium trifoliumConfig
+    constructor: (@config)->
+        @width = @config.width
+        @height = @config.height
+        @trifolium = new Trifolium @config.trifolium
         @canvas = new Canvas $("#main-screen").get(0), @width, @height
         @infoLayer = new CanvasNode
         @braveLayer = new CanvasNode
@@ -13,8 +16,6 @@ class Game
         @braveObjects = []
         @logMax = 6
         
-        @trifolium.on 'restoreGameStatus', =>
-            @prepareDisplayObjects()
         @trifolium.on 'braveCompleteAction', (brave, action, result) =>
             @braveCompleteAction(brave, action, result)
     
@@ -152,6 +153,18 @@ class Game
     
     braveObjectForId: (id) ->
         (braveObject for braveObject in @braveObjects when braveObject.id == id)[0]
+    
+    start: ->
+        $.ajax
+            cache: false
+            dataType: 'json'
+            url: "#{@config.gameServerHost}/world/status"
+            success: (data, dataType) =>
+                @trifolium.restoreGameStatus data
+                @prepareDisplayObjects()
+            
+            error: (xhr, status, exception) ->
+                $('#main-screen').prepend('<div class="alert alert-error"><strong>Error!</strong> ワールド情報の取得に失敗しました。</div>')
     
     prepareDisplayObjects: ->
         @appendRoute route for route in @trifolium.routeList

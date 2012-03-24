@@ -15,6 +15,7 @@ app.configure ->
     app.use app.router
     app.use express.static(__dirname + "/public")
     app.set 'pusherTokenKey', config.notifier.pusherTokenKey
+    app.set 'gameServerHost', 'http://localhost:6262'
 
 app.configure "development", ->
     app.use express.errorHandler(

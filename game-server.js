@@ -1,7 +1,9 @@
 (function() {
-  var Notifier, Simulator, config, configFilePath, fs, notifier, simulator;
+  var Notifier, Simulator, config, configFilePath, fs, notifier, port, server, simulator, url, _ref;
 
   fs = require('fs');
+
+  url = require('url');
 
   Notifier = require('./lib/trifolium-server/notifier').Notifier;
 
@@ -13,11 +15,26 @@
 
   simulator = new Simulator(config.simulator);
 
-  notifier = new Notifier(config.notifier);
+  notifier = new Notifier(server, config.notifier);
 
-  notifier.on('connection', function(connection) {
-    return connection.notify('restoreGameStatus', simulator.details());
+  server = require('http').createServer(function(req, res) {
+    if (url.parse(req.url).pathname === '/world/status' && req.method === 'GET') {
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*'
+      });
+      return res.end(JSON.stringify(simulator.details()));
+    } else {
+      res.writeHead(200, {
+        'Content-Type': 'text/plain'
+      });
+      return res.end('Trifolium game server is running.\n');
+    }
   });
+
+  port = (_ref = process.env.PORT) != null ? _ref : 6262;
+
+  server.listen(port);
 
   simulator.on('braveCompleteAction', function(brave, action, result) {
     return notifier.notify('braveCompleteAction', {

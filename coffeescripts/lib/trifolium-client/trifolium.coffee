@@ -15,7 +15,6 @@ class Trifolium
         @eventDict = {}
         
         # register events
-        receiver.bind 'restoreGameStatus', @receiveRestoreGameStatus
         receiver.bind 'braveCompleteAction', @receiveBraveCompleteAction
     
     spotForName: (name) -> (spot for spot in @spotList when spot.name == name)[0]
@@ -47,10 +46,6 @@ class Trifolium
         @routeList = ([@spotForId(routeInfo[0]), @spotForId(routeInfo[1])] for routeInfo in details.routeList)
     
     #event callbacks
-    receiveRestoreGameStatus: (details) =>
-        @restoreGameStatus details
-        @emit 'restoreGameStatus'
-    
     receiveBraveCompleteAction: (details) =>
         brave = @braveForId details.brave
         prevAction = brave.action

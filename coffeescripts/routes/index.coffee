@@ -20,4 +20,4 @@ exports.index = (req, res) ->
             Faith: 'brave-faith'
             Speed: 'brave-speed'
             Action: 'brave-action'
-        script: "var trifoliumConfig={websocket:{mode:'pusher',pusherTokenKey:'#{settings.pusherTokenKey}'}}"
+        script: "var gameConfig={width:580,height:450,trifolium:{websocket:{mode:'pusher',pusherTokenKey:'#{settings.pusherTokenKey}'}},gameServerHost:'#{settings.gameServerHost}'};"
