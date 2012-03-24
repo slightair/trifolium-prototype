@@ -19,6 +19,7 @@ server = require('http').createServer (req, res) ->
         res.end 'Trifolium game server is running.\n'
 port = process.env.PORT ? 6262
 server.listen port
+console.log "game server port: #{port}"
 
 simulator = new Simulator config.simulator
 notifier = new Notifier server, config.notifier
