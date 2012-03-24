@@ -1,2 +1,2 @@
 web: node app.js
-game-server: node game-server.js
+gameserver: node game-server.js
