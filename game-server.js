@@ -32,8 +32,6 @@
 
   server.listen(port);
 
-  console.log("game server port: " + port);
-
   simulator = new Simulator(config.simulator);
 
   notifier = new Notifier(server, config.notifier);
