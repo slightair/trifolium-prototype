@@ -6,9 +6,6 @@ url = require 'url'
 configFilePath = './config.json'
 config = JSON.parse(fs.readFileSync(configFilePath))
 
-simulator = new Simulator config.simulator
-notifier = new Notifier server, config.notifier
-
 # http server
 server = require('http').createServer (req, res) ->
     if url.parse(req.url).pathname == '/world/status' && req.method == 'GET'
@@ -22,6 +19,9 @@ server = require('http').createServer (req, res) ->
         res.end 'Trifolium game server is running.\n'
 port = process.env.PORT ? 6262
 server.listen port
+
+simulator = new Simulator config.simulator
+notifier = new Notifier server, config.notifier
 
 # event callbacks
 simulator.on 'braveCompleteAction', (brave, action, result) ->

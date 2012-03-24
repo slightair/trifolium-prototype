@@ -20,7 +20,7 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + "/public"));
-  app.set('pusherTokenKey', config.notifier.pusherTokenKey);
+  app.set('notifierConfig', config.notifier);
   return app.set('gameServerHost', (_ref = process.env.GAME_SERVER_HOST) != null ? _ref : "http://localhost:6262");
 });
 

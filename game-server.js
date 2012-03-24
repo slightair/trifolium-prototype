@@ -13,10 +13,6 @@
 
   config = JSON.parse(fs.readFileSync(configFilePath));
 
-  simulator = new Simulator(config.simulator);
-
-  notifier = new Notifier(server, config.notifier);
-
   server = require('http').createServer(function(req, res) {
     if (url.parse(req.url).pathname === '/world/status' && req.method === 'GET') {
       res.writeHead(200, {
@@ -35,6 +31,10 @@
   port = (_ref = process.env.PORT) != null ? _ref : 6262;
 
   server.listen(port);
+
+  simulator = new Simulator(config.simulator);
+
+  notifier = new Notifier(server, config.notifier);
 
   simulator.on('braveCompleteAction', function(brave, action, result) {
     return notifier.notify('braveCompleteAction', {

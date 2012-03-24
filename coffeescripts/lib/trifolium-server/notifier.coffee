@@ -14,6 +14,9 @@ class Notifier extends EventEmitter
             
             when 'socket.io'
                 @socketIo = require('socket.io').listen @server
+                @socketIo.configure ->
+                    @set 'transports', ['xhr-polling']
+                    @set 'polling duration', 10
                 @socketIo.sockets.on 'connection', (socket) =>
                     @emit 'connection', {notify: (command, data) -> socket.emit command, data}
             

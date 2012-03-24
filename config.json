@@ -1,6 +1,6 @@
 {
     "notifier": {
-        "mode": "pusher",
+        "mode": "socket.io",
         "pusherAppId": "",
         "pusherTokenKey": "",
         "pusherTokenSecret": ""
