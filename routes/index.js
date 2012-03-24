@@ -4,7 +4,7 @@ exports.index = function(req, res) {
   settings = req.app.settings;
   return res.render("index", {
     title: "World",
-    scriptfiles: ['javascripts/lib/bootstrap-tab.js', 'javascripts/lib/cake.js', 'javascripts/game.min.js', 'http://js.pusher.com/1.11/pusher.min.js'],
+    scriptfiles: ['javascripts/lib/bootstrap-tab.js', 'javascripts/lib/cake.js', 'javascripts/lib/pusher.min.js', 'javascripts/game.min.js'],
     params: {
       Name: 'brave-name',
       Location: 'brave-location',

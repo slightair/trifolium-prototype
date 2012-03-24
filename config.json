@@ -6,7 +6,7 @@
         "pusherTokenSecret": ""
     },
     "simulator": {
-        "tickInterval": 1000,
+        "tickInterval": 500,
         "spawnSpotName": "ちくわ城",
         "spotInfoList": [
             {"name": "こんぶシティー",    "posX":   20, "posY":  -60, "actions": [

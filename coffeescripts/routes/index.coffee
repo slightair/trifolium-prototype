@@ -5,8 +5,8 @@ exports.index = (req, res) ->
         scriptfiles: [
             'javascripts/lib/bootstrap-tab.js'
             'javascripts/lib/cake.js'
+            'javascripts/lib/pusher.min.js'
             'javascripts/game.min.js'
-            'http://js.pusher.com/1.11/pusher.min.js'
         ]
         params:
             Name: 'brave-name'
