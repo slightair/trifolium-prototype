@@ -1,4 +1,4 @@
-var Brave, Item, Spot, WaitAction, serverLibPath, should;
+var Brave, Item, serverLibPath, should;
 
 should = require('should');
 
@@ -6,23 +6,13 @@ serverLibPath = '../../../lib/trifolium-server';
 
 Brave = require("" + serverLibPath + "/brave").Brave;
 
-Spot = require("" + serverLibPath + "/spot").Spot;
-
-WaitAction = require("" + serverLibPath + "/action").WaitAction;
-
 Item = require("" + serverLibPath + "/item").Item;
 
 describe('Brave', function() {
-  var brave, spot;
-  spot = new Spot('testSpot', 0, 0, [
-    {
-      type: 'wait',
-      time: 5000
-    }
-  ]);
-  brave = new Brave('testBrave', spot);
+  var brave;
+  brave = null;
   beforeEach(function() {
-    return brave.items = [];
+    return brave = new Brave('testBrave');
   });
   it('should have id', function() {
     return should.exist(brave.id);
@@ -54,53 +44,12 @@ describe('Brave', function() {
   it('should have speed', function() {
     return brave.speed.should.equal(3);
   });
-  it('should have action', function() {
-    return should.not.exist(brave.action);
-  });
-  it('should have actionProecss', function() {
-    return brave.actionProcess.should.equal(0.0);
-  });
-  it('should have spot', function() {
-    return brave.spot.should.equal(spot);
-  });
-  it('should have destination', function() {
-    return brave.destination.should.equal(spot);
-  });
   it('should have items', function() {
     brave.items.should.be.an["instanceof"](Array);
     return brave.items.should.be.empty;
   });
   it('should have gold', function() {
     return brave.gold.should.equal(300);
-  });
-  describe('#tick()', function() {
-    beforeEach(function() {
-      brave.action = new WaitAction(3000);
-      return brave.actionProcess = 0.0;
-    });
-    it('should be added actionProcess', function() {
-      brave.tick();
-      brave.actionProcess.should.be.within(0.000, 0.002);
-      brave.tick();
-      return brave.actionProcess.should.be.within(0.001, 0.003);
-    });
-    return it('should emit \'completeAction\'', function(done) {
-      var i;
-      brave.on('completeAction', function(brave, action, result) {
-        action.time.should.equal(3000);
-        return done();
-      });
-      brave.tick();
-      brave.actionProcess.should.be.within(0.000, 0.002);
-      brave.tick();
-      brave.actionProcess.should.be.within(0.001, 0.003);
-      for (i = 3; i < 999; i++) {
-        brave.tick();
-      }
-      brave.tick();
-      brave.actionProcess.should.be.within(0.998, 1.000);
-      return brave.tick();
-    });
   });
   describe('#addItem()', function() {
     beforeEach(function() {
@@ -151,12 +100,10 @@ describe('Brave', function() {
     });
   });
   return describe('#details()', function() {
-    var action, item;
+    var item;
     item = new Item;
-    action = new WaitAction(1000);
     beforeEach(function() {
-      brave.items = [item];
-      return brave.action = action;
+      return brave.items = [item];
     });
     return it('should return brave details', function() {
       var details;
@@ -188,15 +135,7 @@ describe('Brave', function() {
       should.exist(details.items, 'items should exist');
       details.items.should.be.an["instanceof"](Array);
       details.items[0].should.be.an["instanceof"](Object);
-      details.items[0].id.should.equal(item.id);
-      details.action.name.should.equal('wait');
-      details.action.time.should.equal(1000);
-      should.exist(details.actionProcess, 'actionProcess should exist');
-      details.actionProcess.should.equal(0.0);
-      should.exist(details.spot, 'spot should exist');
-      details.spot.should.equal(spot.id);
-      should.exist(details.destination, 'destination should exist');
-      return details.destination.should.equal(spot.id);
+      return details.items[0].id.should.equal(item.id);
     });
   });
 });

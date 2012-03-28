@@ -61,21 +61,6 @@ compile_server = (callback) ->
 build_server = (callback) ->
     compile_lib -> compile_server -> callback?()
 
-compile_client_console = (callback) ->
-    options = [
-        '-c'
-        '-o'
-        '.'
-        'coffeescripts/game-client-console.coffee'
-    ]
-    coffee = spawn "#{bin_path}/coffee", options
-    coffee.stdout.on 'data', stream_data_handler
-    coffee.stderr.on 'data', stream_data_handler
-    coffee.on 'exit', (status) -> callback?() if status is 0
-
-build_client_console = (callback) ->
-    compile_lib -> compile_client_console -> callback?()
-
 compile_client_browser = (callback) ->
     options = [
         '-b'
@@ -137,14 +122,10 @@ run_test = (callback) ->
         '-R'
         'spec'
         '-c'
-        'test/lib/trifolium-server/action-test.js'
         'test/lib/trifolium-server/brave-test.js'
         'test/lib/trifolium-server/item-test.js'
-        'test/lib/trifolium-server/spot-test.js'
-        'test/lib/trifolium-client/actionInfo-test.js'
-        'test/lib/trifolium-client/braveInfo-test.js'
-        'test/lib/trifolium-client/itemInfo-test.js'
-        'test/lib/trifolium-client/spotInfo-test.js'
+        # 'test/lib/trifolium-client/braveInfo-test.js'
+        # 'test/lib/trifolium-client/itemInfo-test.js'
     ]
     mocha = spawn "#{bin_path}/mocha", options
     output = ''
@@ -161,9 +142,6 @@ task 'express', 'make express files', ->
 task 'server', 'make game-server.js', ->
     build_server -> 'All done.'
 
-task 'console', 'make game-client-console.js', ->
-    build_client_console -> 'All done.'
-
 task 'browser', 'make game-client-browser.js', ->
     build_client_browser -> 'All done.'
 
@@ -171,4 +149,4 @@ task 'test', 'run test', ->
     compile_lib -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
 
 task 'all', 'compile all scripts', ->
-    build_server -> build_client_console -> build_client_browser -> build_express -> compile_server_test -> compile_client_test -> 'All done.'
+    build_server -> build_client_browser -> build_express -> compile_server_test -> compile_client_test -> 'All done.'

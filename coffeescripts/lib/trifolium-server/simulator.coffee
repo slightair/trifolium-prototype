@@ -1,7 +1,5 @@
 {EventEmitter} = require 'events'
 {Brave} = require './brave'
-{Spot} = require './spot'
-{Action, WaitAction, MoveAction, SearchAction} = require './action'
 {SharedItemCreator} = require './item'
 
 class Simulator extends EventEmitter
