@@ -124,6 +124,9 @@ run_test = (callback) ->
         '-c'
         'test/lib/trifolium-server/brave-test.js'
         'test/lib/trifolium-server/item-test.js'
+        'test/lib/trifolium-server/dungeon-test.js'
+        'test/lib/trifolium-server/event-test.js'
+        'test/lib/trifolium-server/simulator-test.js'
         # 'test/lib/trifolium-client/braveInfo-test.js'
         # 'test/lib/trifolium-client/itemInfo-test.js'
     ]
@@ -146,7 +149,7 @@ task 'browser', 'make game-client-browser.js', ->
     build_client_browser -> 'All done.'
 
 task 'test', 'run test', ->
-    compile_lib -> compile_server_test -> compile_client_test -> run_test -> 'All done.'
+    compile_lib -> compile_server_test -> run_test -> 'All done.'
 
 task 'all', 'compile all scripts', ->
     build_server -> build_client_browser -> build_express -> compile_server_test -> compile_client_test -> 'All done.'

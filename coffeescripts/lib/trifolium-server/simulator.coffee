@@ -1,63 +1,40 @@
 {EventEmitter} = require 'events'
+kue = require 'kue'
+
 {Brave} = require './brave'
 {SharedItemCreator} = require './item'
+{eventProcess} = require './event'
 
 class Simulator extends EventEmitter
-    constructor : (config) ->
-        {spotInfoList, routeInfoList, spawnSpotName, braveNameDictionary, numBraves, @tickInterval, itemDict} = config
+    constructor : ->
+        @dungeonList = []
+        @braveList = []
+    
+    start: (config) ->
+        {dungeonList, braveNameDictionary, numBraves, itemDict} = config
         SharedItemCreator.itemDict = itemDict
         
-        @spotList = (new Spot(spotInfo.name, spotInfo.posX, spotInfo.posY, spotInfo.actions) for spotInfo in spotInfoList)
-        
-        @routeList = []
-        moveActionList = []
-        for routeInfo in routeInfoList
-            spot1 = @spotForName routeInfo[0]
-            spot2 = @spotForName routeInfo[1]
-            moveActionList.push new MoveAction(spot1, spot2)
-            moveActionList.push new MoveAction(spot2, spot1)
-            @routeList.push [spot1, spot2]
-            
-        spawnSpot = @spotForName spawnSpotName
-        (spot.actions.push moveAction for moveAction in moveActionList when moveAction.from == spot) for spot in @spotList
+        @dungeonList = (new Dungeon dungeonInfo for dungeonInfo in dungeonInfoList)
         
         (@braveNamePrefixes ?= []).push term for term in dict for dict in [braveNameDictionary.prefixes, braveNameDictionary.terms]
         (@braveNameSuffixes ?= []).push term for term in dict for dict in [braveNameDictionary.suffixes, braveNameDictionary.terms]
         
         @braveList = (new Brave(@makeBraveName(braveNameDictionary), spawnSpot, {speed: Math.floor(Math.random() * 50) + 20}) for i in [0...numBraves])
-        for brave in @braveList
-            action = brave.spot.randomAction()
-            action.prepare brave
-            brave.action = action
-            brave.destination = action.to ? brave.spot
-            brave.on 'completeAction', (brave, prevAction, result) =>
-                @emit 'braveCompleteAction', brave, prevAction, result
-    start: ->
-        @count = 0
-        timer = setInterval( =>
-            @tick()
-            @count++
-        , @tickInterval)
         
-    tick: ->
-        brave.tick() for brave in @braveList
+        @jobs = kue.createQueue()
+        @jobs.process 'event', eventProcess
     
+    # 別のところに移動したい
     makeBraveName: ->
         prefixIndex = parseInt(Math.random() * @braveNamePrefixes.length)
         suffixIndex = parseInt(Math.random() * @braveNameSuffixes.length)
         
         "#{@braveNamePrefixes[prefixIndex]}#{@braveNameSuffixes[suffixIndex]}"
     
-    spotForName: (name) ->
-        (spot for spot in @spotList when spot.name == name)[0]
+    dungeonForName: (name) ->
+        (dungeon for dungeon in @dungeonList when dungeon.name == name)[0]
     
     braveForName: (name) ->
         (brave for brave in @braveList when brave.name == name)[0]
     
-    details: ->
-        braveList: (brave.details() for brave in @braveList)
-        spotList: (spot.details() for spot in @spotList)
-        routeList: ([route[0].id, route[1].id] for route in @routeList)
-        tickInterval: @tickInterval
-        
 exports.Simulator = Simulator
