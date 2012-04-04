@@ -1,12 +1,7 @@
 should = require 'should'
-fs = require 'fs'
 
 serverLibPath = '../../../lib/trifolium-server'
 {Dungeon} = require "#{serverLibPath}/dungeon"
-{SearchEvent, SerchEventProcess} = require "#{serverLibPath}/event"
-
-configFile = './config.json'
-config = JSON.parse(fs.readFileSync(configFile))
 
 describe 'Dungeon', ->
     dungeon = null

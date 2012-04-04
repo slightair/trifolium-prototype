@@ -1,18 +1,10 @@
-var Dungeon, SearchEvent, SerchEventProcess, config, configFile, fs, serverLibPath, should, _ref;
+var Dungeon, serverLibPath, should;
 
 should = require('should');
-
-fs = require('fs');
 
 serverLibPath = '../../../lib/trifolium-server';
 
 Dungeon = require("" + serverLibPath + "/dungeon").Dungeon;
-
-_ref = require("" + serverLibPath + "/event"), SearchEvent = _ref.SearchEvent, SerchEventProcess = _ref.SerchEventProcess;
-
-configFile = './config.json';
-
-config = JSON.parse(fs.readFileSync(configFile));
 
 describe('Dungeon', function() {
   var dungeon;
