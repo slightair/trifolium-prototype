@@ -1,9 +1,8 @@
 {
-    "notifier": {
-        "mode": "socket.io",
-        "pusherAppId": "",
-        "pusherTokenKey": "",
-        "pusherTokenSecret": ""
+    "pusher": {
+        "appId": "",
+        "tokenKey": "",
+        "tokenSecret": ""
     },
     "simulator": {
         "dungeonList": [
