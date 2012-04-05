@@ -1,6 +1,7 @@
 should = require 'should'
 
-serverLibPath = '../../../lib/trifolium-server'
+library = if process.env['TRIFOLIUM_COV'] then 'lib-cov' else 'lib'
+serverLibPath = "../../../#{library}/trifolium-server"
 {Brave, BraveCreator} = require "#{serverLibPath}/brave"
 {Item} = require "#{serverLibPath}/item"
 

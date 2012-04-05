@@ -1,8 +1,10 @@
-var Item, ItemCreator, itemDict, serverLibPath, should, _ref;
+var Item, ItemCreator, itemDict, library, serverLibPath, should, _ref;
 
 should = require('should');
 
-serverLibPath = '../../../lib/trifolium-server';
+library = process.env['TRIFOLIUM_COV'] ? 'lib-cov' : 'lib';
+
+serverLibPath = "../../../" + library + "/trifolium-server";
 
 _ref = require("" + serverLibPath + "/item"), Item = _ref.Item, ItemCreator = _ref.ItemCreator;
 

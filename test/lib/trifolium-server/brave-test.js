@@ -1,8 +1,10 @@
-var Brave, BraveCreator, Item, serverLibPath, should, _ref;
+var Brave, BraveCreator, Item, library, serverLibPath, should, _ref;
 
 should = require('should');
 
-serverLibPath = '../../../lib/trifolium-server';
+library = process.env['TRIFOLIUM_COV'] ? 'lib-cov' : 'lib';
+
+serverLibPath = "../../../" + library + "/trifolium-server";
 
 _ref = require("" + serverLibPath + "/brave"), Brave = _ref.Brave, BraveCreator = _ref.BraveCreator;
 

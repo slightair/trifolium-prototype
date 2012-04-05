@@ -1,8 +1,10 @@
-var Dungeon, serverLibPath, should;
+var Dungeon, library, serverLibPath, should;
 
 should = require('should');
 
-serverLibPath = '../../../lib/trifolium-server';
+library = process.env['TRIFOLIUM_COV'] ? 'lib-cov' : 'lib';
+
+serverLibPath = "../../../" + library + "/trifolium-server";
 
 Dungeon = require("" + serverLibPath + "/dungeon").Dungeon;
 

@@ -1,5 +1,6 @@
-{spawn} = require 'child_process'
+{spawn, exec} = require 'child_process'
 util = require 'util'
+fs = require 'fs'
 
 bin_path = './node_modules/.bin'
 stream_data_handler = (data) -> util.print data.toString()
@@ -139,6 +140,45 @@ run_test = (callback) ->
     mocha.stderr.on 'data', data_handler
     mocha.on 'exit', (status) -> callback?() if status is 0
 
+make_coverage = (callback) ->
+    exec "rm -fr ./lib-cov"
+    
+    options = [
+        './lib'
+        './lib-cov'
+    ]
+    jscoverage = spawn "jscoverage", options
+    jscoverage.stdout.on 'data', stream_data_handler
+    jscoverage.stderr.on 'data', stream_data_handler
+    jscoverage.on 'exit', (status) -> callback?() if status is 0
+
+run_coverage = (callback) ->
+    process.env['TRIFOLIUM_COV'] = 1
+    options = [
+        '-R'
+        'html-cov'
+        '-c'
+        'test/lib/trifolium-server/brave-test.js'
+        'test/lib/trifolium-server/item-test.js'
+        'test/lib/trifolium-server/dungeon-test.js'
+        'test/lib/trifolium-server/event-test.js'
+        'test/lib/trifolium-server/simulator-test.js'
+    ]
+    mocha = spawn "#{bin_path}/mocha", options
+    
+    fileStream = fs.createWriteStream 'coverage.html'
+    output = ''
+    data_handler = (data) ->
+        output =+ data if data
+        fileStream.write data
+    mocha.stdout.on 'data', data_handler
+    mocha.stderr.on 'data', data_handler
+    mocha.on 'exit', (status) -> callback?() if status is 0
+
+open_coverage = (callback) ->
+    exec 'open coverage.html'
+    callback?()
+
 task 'express', 'make express files', ->
     build_express -> 'All done.'
 
@@ -150,6 +190,9 @@ task 'browser', 'make game-client-browser.js', ->
 
 task 'test', 'run test', ->
     compile_lib -> compile_server_test -> run_test -> 'All done.'
+
+task 'coverage', 'run coverage', ->
+    compile_lib -> compile_server_test -> make_coverage -> run_coverage -> open_coverage -> 'All done.'
 
 task 'all', 'compile all scripts', ->
     build_server -> build_client_browser -> build_express -> compile_server_test -> compile_client_test -> 'All done.'

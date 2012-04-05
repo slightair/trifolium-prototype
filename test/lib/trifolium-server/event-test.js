@@ -1,10 +1,12 @@
-var Brave, ItemCreator, SearchEvent, SerchEventProcess, config, configFile, fs, serverLibPath, should, _ref;
+var Brave, ItemCreator, SearchEvent, SerchEventProcess, config, configFile, fs, library, serverLibPath, should, _ref;
 
 should = require('should');
 
 fs = require('fs');
 
-serverLibPath = '../../../lib/trifolium-server';
+library = process.env['TRIFOLIUM_COV'] ? 'lib-cov' : 'lib';
+
+serverLibPath = "../../../" + library + "/trifolium-server";
 
 Brave = require("" + serverLibPath + "/brave").Brave;
 
