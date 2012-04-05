@@ -1,7 +1,7 @@
 should = require 'should'
 
 serverLibPath = '../../../lib/trifolium-server'
-{Brave} = require "#{serverLibPath}/brave"
+{Brave, BraveCreator} = require "#{serverLibPath}/brave"
 {Item} = require "#{serverLibPath}/item"
 
 describe 'Brave', ->
@@ -139,3 +139,124 @@ describe 'Brave', ->
             details.items.should.be.an.instanceof Array
             details.items[0].should.be.an.instanceof Object
             details.items[0].id.should.equal item.id
+
+describe 'BraveCreator', ->
+    
+    it 'should have braveNamePrefixes', ->
+        BraveCreator.braveNamePrefixes.should.be.an.instanceof Array
+    
+    it 'should have braveNameSuffixes', ->
+        BraveCreator.braveNameSuffixes.should.be.an.instanceof Array
+    
+    describe '#setBraveNameDict()', ->
+        
+        it 'should set new brave name dictionary after clear old dictionary.', ->
+            BraveCreator.setBraveNameDict {
+                terms: [
+                    '1'
+                    '2'
+                    '3'
+                ]
+                prefixes: [
+                    'A'
+                    'B'
+                    'C'
+                ]
+                suffixes: [
+                    'a'
+                    'b'
+                    'c'
+                ]
+            }
+            
+            BraveCreator.braveNamePrefixes.should.be.include('1').include('2').include('3').include('A').include('B').include('C')
+            BraveCreator.braveNameSuffixes.should.be.include('1').include('2').include('3').include('a').include('b').include('c')
+            
+            BraveCreator.setBraveNameDict {
+                terms: [
+                    '4'
+                    '5'
+                    '6'
+                ]
+                prefixes: [
+                    'D'
+                    'E'
+                    'F'
+                ]
+                suffixes: [
+                    'd'
+                    'e'
+                    'f'
+                ]
+            }
+            
+            BraveCreator.braveNamePrefixes.should.not.be.include('1').include('2').include('3').include('A').include('B').include('C')
+            BraveCreator.braveNameSuffixes.should.not.be.include('1').include('2').include('3').include('a').include('b').include('c')
+            BraveCreator.braveNamePrefixes.should.be.include('4').include('5').include('6').include('D').include('E').include('F')
+            BraveCreator.braveNameSuffixes.should.be.include('4').include('5').include('6').include('d').include('e').include('f')
+    
+    describe '#create()', ->
+        
+        it 'should create brave', ->
+            BraveCreator.setBraveNameDict {
+                terms: [
+                    '1'
+                    '2'
+                    '3'
+                ]
+                prefixes: [
+                    'A'
+                    'B'
+                    'C'
+                ]
+                suffixes: [
+                    'a'
+                    'b'
+                    'c'
+                ]
+            }
+            
+            weakBrave = BraveCreator.create {
+                hp: 1
+                mp: 1
+                speed: 1
+            }
+            weakBrave.hp.should.equal 1
+            weakBrave.mp.should.equal 1
+            weakBrave.speed.should.equal 1
+            weakBrave.name.should.match /[123ABC][123abc]/
+            
+            strongBrave = BraveCreator.create {
+                hp: 1000
+                mp: 1000
+                speed: 100
+            }
+            strongBrave.hp.should.equal 1000
+            strongBrave.mp.should.equal 1000
+            strongBrave.speed.should.equal 100
+            strongBrave.name.should.match /[123ABC][123abc]/
+        
+    describe '#makeBraveName()', ->
+        
+        it 'should return new brave name with braveNameDict.', ->
+            BraveCreator.setBraveNameDict {
+                terms: [
+                    '1'
+                    '2'
+                    '3'
+                ]
+                prefixes: [
+                    'A'
+                    'B'
+                    'C'
+                ]
+                suffixes: [
+                    'a'
+                    'b'
+                    'c'
+                ]
+            }
+            
+            for i in [1..50]
+                name = BraveCreator.makeBraveName()
+                name.should.match /[123ABC][123abc]/

@@ -17,12 +17,13 @@ class Item
 class ItemCreator
     constructor: ->
         @itemDict = {}
-    createItem: (itemId, name = null) ->
+    setItemDict: (itemDict) ->
+        @itemDict = itemDict
+    create: (itemId, name = null) ->
         if @itemDict[itemId]?
             new Item itemId, name ? @itemDict[itemId].name
         else
             null
 
 exports.Item = Item
-exports.ItemCreator = ItemCreator
-exports.SharedItemCreator = new ItemCreator
+exports.ItemCreator = new ItemCreator

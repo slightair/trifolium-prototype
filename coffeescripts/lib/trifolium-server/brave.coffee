@@ -43,5 +43,26 @@ class Brave extends EventEmitter
         speed: @speed
         gold: @gold
         items: (item.details() for item in @items)
-    
+
+class BraveCreator
+    constructor: ->
+        @braveNamePrefixes = []
+        @braveNameSuffixes = []
+    setBraveNameDict: (braveNameDict) ->
+        braveNamePrefixes = []
+        braveNameSuffixes = []
+        braveNamePrefixes.push term for term in dict for dict in [braveNameDict.prefixes, braveNameDict.terms]
+        braveNameSuffixes.push term for term in dict for dict in [braveNameDict.suffixes, braveNameDict.terms]
+        
+        @braveNamePrefixes = braveNamePrefixes
+        @braveNameSuffixes = braveNameSuffixes
+    create: (options = {}) ->
+        new Brave @makeBraveName(), options
+    makeBraveName: ->
+        prefixIndex = parseInt(Math.random() * @braveNamePrefixes.length)
+        suffixIndex = parseInt(Math.random() * @braveNameSuffixes.length)
+        
+        "#{@braveNamePrefixes[prefixIndex]}#{@braveNameSuffixes[suffixIndex]}"
+
 exports.Brave = Brave
+exports.BraveCreator = new BraveCreator

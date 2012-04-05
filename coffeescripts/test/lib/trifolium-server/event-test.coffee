@@ -4,11 +4,11 @@ fs = require 'fs'
 serverLibPath = '../../../lib/trifolium-server'
 {Brave} = require "#{serverLibPath}/brave"
 {SearchEvent, SerchEventProcess} = require "#{serverLibPath}/event"
-{SharedItemCreator} = require "#{serverLibPath}/item"
+{ItemCreator} = require "#{serverLibPath}/item"
 
 configFile = './config.json'
 config = JSON.parse(fs.readFileSync(configFile))
-SharedItemCreator.itemDict = config.simulator.itemDict
+ItemCreator.setItemDict config.simulator.itemDict
 
 describe 'SearchEvent', ->
     event = null
@@ -30,9 +30,9 @@ describe 'SearchEvent', ->
         event.treasureDict.should.be.an.instanceof Object
     
     describe '#process()', ->
-        kinoko = SharedItemCreator.createItem 1
-        goodKinoko = SharedItemCreator.createItem 2
-        tikuwa = SharedItemCreator.createItem 3
+        kinoko = ItemCreator.create 1
+        goodKinoko = ItemCreator.create 2
+        tikuwa = ItemCreator.create 3
         brave = null
         
         beforeEach ->

@@ -21,7 +21,7 @@ describe('Dungeon', function() {
   it('should have floors', function() {
     return dungeon.floors.should.be.an["instanceof"](Array);
   });
-  return describe('#pickEvent', function() {
+  return describe('#pickEvent()', function() {
     beforeEach(function() {
       return dungeon = new Dungeon({
         name: 'testDungeon',

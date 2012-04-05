@@ -19,23 +19,22 @@ itemDict = {
 }
 
 describe 'ItemCreator', ->
-    itemCreator = new ItemCreator
-    itemCreator.itemDict = itemDict
+    ItemCreator.setItemDict itemDict
     
     it 'should have itemDict', ->
-        itemCreator.should.be.an.instanceof Object
+        ItemCreator.itemDict.should.be.an.instanceof Object
     
-    describe '#createItem()', ->
+    describe '#create()', ->
         it 'should create item', ->
-            kinoko = itemCreator.createItem 1
+            kinoko = ItemCreator.create 1
             kinoko.itemId.should.equal 1
             kinoko.name.should.equal 'きのこ'
             
-            strangeKinoko = itemCreator.createItem 1, 'へんなきのこ'
+            strangeKinoko = ItemCreator.create 1, 'へんなきのこ'
             strangeKinoko.itemId.should.equal 1
             strangeKinoko.name.should.equal 'へんなきのこ'
             
-            unknownItem = itemCreator.createItem -1
+            unknownItem = ItemCreator.create -1
             should.not.exist.unknownItem
 
 describe 'Item', ->

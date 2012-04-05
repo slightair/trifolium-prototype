@@ -1,4 +1,4 @@
-var Brave, SearchEvent, SerchEventProcess, SharedItemCreator, config, configFile, fs, serverLibPath, should, _ref;
+var Brave, ItemCreator, SearchEvent, SerchEventProcess, config, configFile, fs, serverLibPath, should, _ref;
 
 should = require('should');
 
@@ -10,13 +10,13 @@ Brave = require("" + serverLibPath + "/brave").Brave;
 
 _ref = require("" + serverLibPath + "/event"), SearchEvent = _ref.SearchEvent, SerchEventProcess = _ref.SerchEventProcess;
 
-SharedItemCreator = require("" + serverLibPath + "/item").SharedItemCreator;
+ItemCreator = require("" + serverLibPath + "/item").ItemCreator;
 
 configFile = './config.json';
 
 config = JSON.parse(fs.readFileSync(configFile));
 
-SharedItemCreator.itemDict = config.simulator.itemDict;
+ItemCreator.setItemDict(config.simulator.itemDict);
 
 describe('SearchEvent', function() {
   var event;
@@ -40,9 +40,9 @@ describe('SearchEvent', function() {
   });
   return describe('#process()', function() {
     var brave, goodKinoko, kinoko, tikuwa;
-    kinoko = SharedItemCreator.createItem(1);
-    goodKinoko = SharedItemCreator.createItem(2);
-    tikuwa = SharedItemCreator.createItem(3);
+    kinoko = ItemCreator.create(1);
+    goodKinoko = ItemCreator.create(2);
+    tikuwa = ItemCreator.create(3);
     brave = null;
     beforeEach(function() {
       return brave = new Brave('testBrave');

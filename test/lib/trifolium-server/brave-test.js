@@ -1,10 +1,10 @@
-var Brave, Item, serverLibPath, should;
+var Brave, BraveCreator, Item, serverLibPath, should, _ref;
 
 should = require('should');
 
 serverLibPath = '../../../lib/trifolium-server';
 
-Brave = require("" + serverLibPath + "/brave").Brave;
+_ref = require("" + serverLibPath + "/brave"), Brave = _ref.Brave, BraveCreator = _ref.BraveCreator;
 
 Item = require("" + serverLibPath + "/item").Item;
 
@@ -136,6 +136,79 @@ describe('Brave', function() {
       details.items.should.be.an["instanceof"](Array);
       details.items[0].should.be.an["instanceof"](Object);
       return details.items[0].id.should.equal(item.id);
+    });
+  });
+});
+
+describe('BraveCreator', function() {
+  it('should have braveNamePrefixes', function() {
+    return BraveCreator.braveNamePrefixes.should.be.an["instanceof"](Array);
+  });
+  it('should have braveNameSuffixes', function() {
+    return BraveCreator.braveNameSuffixes.should.be.an["instanceof"](Array);
+  });
+  describe('#setBraveNameDict()', function() {
+    return it('should set new brave name dictionary after clear old dictionary.', function() {
+      BraveCreator.setBraveNameDict({
+        terms: ['1', '2', '3'],
+        prefixes: ['A', 'B', 'C'],
+        suffixes: ['a', 'b', 'c']
+      });
+      BraveCreator.braveNamePrefixes.should.be.include('1').include('2').include('3').include('A').include('B').include('C');
+      BraveCreator.braveNameSuffixes.should.be.include('1').include('2').include('3').include('a').include('b').include('c');
+      BraveCreator.setBraveNameDict({
+        terms: ['4', '5', '6'],
+        prefixes: ['D', 'E', 'F'],
+        suffixes: ['d', 'e', 'f']
+      });
+      BraveCreator.braveNamePrefixes.should.not.be.include('1').include('2').include('3').include('A').include('B').include('C');
+      BraveCreator.braveNameSuffixes.should.not.be.include('1').include('2').include('3').include('a').include('b').include('c');
+      BraveCreator.braveNamePrefixes.should.be.include('4').include('5').include('6').include('D').include('E').include('F');
+      return BraveCreator.braveNameSuffixes.should.be.include('4').include('5').include('6').include('d').include('e').include('f');
+    });
+  });
+  describe('#create()', function() {
+    return it('should create brave', function() {
+      var strongBrave, weakBrave;
+      BraveCreator.setBraveNameDict({
+        terms: ['1', '2', '3'],
+        prefixes: ['A', 'B', 'C'],
+        suffixes: ['a', 'b', 'c']
+      });
+      weakBrave = BraveCreator.create({
+        hp: 1,
+        mp: 1,
+        speed: 1
+      });
+      weakBrave.hp.should.equal(1);
+      weakBrave.mp.should.equal(1);
+      weakBrave.speed.should.equal(1);
+      weakBrave.name.should.match(/[123ABC][123abc]/);
+      strongBrave = BraveCreator.create({
+        hp: 1000,
+        mp: 1000,
+        speed: 100
+      });
+      strongBrave.hp.should.equal(1000);
+      strongBrave.mp.should.equal(1000);
+      strongBrave.speed.should.equal(100);
+      return strongBrave.name.should.match(/[123ABC][123abc]/);
+    });
+  });
+  return describe('#makeBraveName()', function() {
+    return it('should return new brave name with braveNameDict.', function() {
+      var i, name, _results;
+      BraveCreator.setBraveNameDict({
+        terms: ['1', '2', '3'],
+        prefixes: ['A', 'B', 'C'],
+        suffixes: ['a', 'b', 'c']
+      });
+      _results = [];
+      for (i = 1; i <= 50; i++) {
+        name = BraveCreator.makeBraveName();
+        _results.push(name.should.match(/[123ABC][123abc]/));
+      }
+      return _results;
     });
   });
 });

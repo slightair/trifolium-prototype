@@ -28,22 +28,20 @@ itemDict = {
 };
 
 describe('ItemCreator', function() {
-  var itemCreator;
-  itemCreator = new ItemCreator;
-  itemCreator.itemDict = itemDict;
+  ItemCreator.setItemDict(itemDict);
   it('should have itemDict', function() {
-    return itemCreator.should.be.an["instanceof"](Object);
+    return ItemCreator.itemDict.should.be.an["instanceof"](Object);
   });
-  return describe('#createItem()', function() {
+  return describe('#create()', function() {
     return it('should create item', function() {
       var kinoko, strangeKinoko, unknownItem;
-      kinoko = itemCreator.createItem(1);
+      kinoko = ItemCreator.create(1);
       kinoko.itemId.should.equal(1);
       kinoko.name.should.equal('きのこ');
-      strangeKinoko = itemCreator.createItem(1, 'へんなきのこ');
+      strangeKinoko = ItemCreator.create(1, 'へんなきのこ');
       strangeKinoko.itemId.should.equal(1);
       strangeKinoko.name.should.equal('へんなきのこ');
-      unknownItem = itemCreator.createItem(-1);
+      unknownItem = ItemCreator.create(-1);
       return should.not.exist.unknownItem;
     });
   });

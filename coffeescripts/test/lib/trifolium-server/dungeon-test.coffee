@@ -17,7 +17,7 @@ describe 'Dungeon', ->
     it 'should have floors', ->
         dungeon.floors.should.be.an.instanceof Array
     
-    describe '#pickEvent', ->
+    describe '#pickEvent()', ->
         beforeEach ->
             dungeon = new Dungeon
                 name: 'testDungeon'
