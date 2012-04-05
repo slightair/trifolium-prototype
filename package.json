@@ -11,5 +11,7 @@
     , "uglify-js": ">= 1.2.5"
     , "coffee-script": ">= 1.2.0"
     , "node-pusher": ">= 0.0.2"
+    , "kue": ">= 0.3.4"
+    , "mongoose": ">= 2.5.13"
   }
 }
