@@ -89,7 +89,11 @@ describe('SearchEvent', function() {
       treasureDict = {};
       treasureDict[kinoko.id] = {
         item: kinoko,
-        probability: 500
+        probability: 400
+      };
+      treasureDict[goodKinoko.id] = {
+        item: goodKinoko,
+        probability: 100
       };
       success = 0;
       failure = 0;

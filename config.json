@@ -8,18 +8,23 @@
         "dungeonList": [
             {
                 "name": "なめこの洞窟",
-                "eventList": [
-                    {
-                        "type": "search",
-                        "itemId": 2,
-                        "probability": 100
-                    }
+                "floorList": [
+                    [
+                        {
+                            "type": "search",
+                            "treasureDict": {
+                                "itemId": 2,
+                                "probability": 100
+                            }
+                        }
+                        
+                    ]
                 ]
             },
             {"name": "かまぼこの迷宮"}
         ],
         "numBraves": 8,
-        "braveNameDictionary": {
+        "braveNameDict": {
             "terms": [
                 "ポチ",
                 "タマ",

@@ -66,7 +66,8 @@ describe 'SearchEvent', ->
         
         it 'should return false if brave failed to get item', ->
             treasureDict = {}
-            treasureDict[kinoko.id] = {item: kinoko, probability: 500}
+            treasureDict[kinoko.id] = {item: kinoko, probability: 400}
+            treasureDict[goodKinoko.id] = {item: goodKinoko, probability: 100}
             
             success = 0
             failure = 0

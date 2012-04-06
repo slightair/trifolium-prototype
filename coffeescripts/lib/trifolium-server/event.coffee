@@ -31,7 +31,7 @@ class SearchEvent extends Event
             {isSucceed: false, treasure:treasure}
     save: (result) ->
         #
-eventProcess = (job, done) ->
+EventProcess = (job, done) ->
     event = job.data
     result = event.process()
     event.save(result)
@@ -39,4 +39,4 @@ eventProcess = (job, done) ->
     done()
 
 exports.SearchEvent = SearchEvent
-exports.EventProcess = eventProcess
+exports.EventProcess = EventProcess

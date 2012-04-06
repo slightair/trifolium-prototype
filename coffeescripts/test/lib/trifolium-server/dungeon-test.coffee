@@ -10,19 +10,19 @@ describe 'Dungeon', ->
     beforeEach ->
         dungeon = new Dungeon
             name: 'testDungeon'
-            floors: []
+            floorList: []
     
     it 'should have name', ->
         dungeon.name.should.equal 'testDungeon'
     
-    it 'should have floors', ->
-        dungeon.floors.should.be.an.instanceof Array
+    it 'should have floorList', ->
+        dungeon.floorList.should.be.an.instanceof Array
     
     describe '#pickEvent()', ->
         beforeEach ->
             dungeon = new Dungeon
                 name: 'testDungeon'
-                floors: [
+                floorList: [
                     [1, 2, 3]
                     [4, 5, 6]
                     [7, 8, 9]
