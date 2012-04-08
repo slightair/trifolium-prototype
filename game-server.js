@@ -1,25 +1,20 @@
 (function() {
-  var Simulator, config, configFilePath, fs, simulator;
+  var Simulator, config, configFilePath, fs, kue, simulator;
 
   fs = require('fs');
 
+  kue = require('kue');
+
   Simulator = require('./lib/trifolium-server/simulator').Simulator;
+
+  kue.app.listen(3000);
 
   configFilePath = './config.json';
 
   config = JSON.parse(fs.readFileSync(configFilePath));
 
-  simulator = new Simulator(config.simulator);
+  simulator = new Simulator;
 
-  simulator.on('braveCompleteAction', function(brave, action, result) {
-    return console.log({
-      brave: brave.id,
-      completeAction: action.details(),
-      result: result,
-      nextAction: brave.action.details()
-    });
-  });
-
-  simulator.start();
+  simulator.start(config.simulator);
 
 }).call(this);

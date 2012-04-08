@@ -17,10 +17,12 @@ describe 'Simulator', ->
                     [
                         {
                             type: "search"
-                            treasureDict: {
-                                itemId: 2,
-                                probability: 100
-                            }
+                            treasureList: [
+                                {
+                                    "itemId": 2,
+                                    "probability": 100
+                                }
+                            ]
                         }
                     ]
                 ]

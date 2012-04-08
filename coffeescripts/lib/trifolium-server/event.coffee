@@ -1,42 +1,45 @@
-
+{ItemCreator} = require './item'
 
 class Event
     constructor: (@brave, @time = 0) ->
         @type = 'unknown'
-    process: ->
-        # do nothing.
 
 class SearchEvent extends Event
-    probabilityMax: 1000
-    
-    constructor: (brave, time, @treasureDict = {}) ->
+    constructor: (brave, time, @treasureList = []) ->
         super brave, time
         @type = 'search'
-    process: ->
-        total = 0
-        total += treasureInfo.probability for id, treasureInfo of @treasureDict
-        if total > @probabilityMax
-            return {isSucceed: false, treasure: null}
-        
-        treasureIds = (id for id, treasureInfo of @treasureDict).sort (a, b) -> 0.5 - Math.random()
-        probability = 0
-        probabilities = (probability += @treasureDict[id].probability for id in treasureIds)
-        
-        needle = Math.random() * @probabilityMax
-        treasure = @treasureDict[id].item for id, i in treasureIds when not treasure? and needle < probabilities[i]
-        
-        if treasure && @brave.addItem treasure
-            {isSucceed: true, treasure:treasure}
-        else
-            {isSucceed: false, treasure:treasure}
-    save: (result) ->
-        #
-EventProcess = (job, done) ->
+
+SearchEventProcess = (job, done) ->
+    probabilityMax = 1000
     event = job.data
-    result = event.process()
-    event.save(result)
     
-    done()
+    total = 0
+    total += info.probability for info in event.treasureList
+    
+    if total > probabilityMax
+        result = {isSucceed: false, treasure: null}
+        # save
+        done()
+        return result
+    
+    treasureList = event.treasureList.sort (a, b) -> 0.5 - Math.random()
+    probability = 0
+    probabilities = (probability += info.probability for info in treasureList)
+    
+    needle = Math.random() * probabilityMax
+    treasureInfo = info for info, i in treasureList when not treasureInfo? and needle < probabilities[i]
+    treasure = ItemCreator.create(treasureInfo.itemId, treasureInfo.name) if treasureInfo
+    
+    if treasure && event.brave.addItem treasure
+        result = {isSucceed: true, treasure:treasure}
+        # save
+        done()
+        return result
+    else
+        result = {isSucceed: false, treasure:treasure}
+        # save
+        done()
+        return result
 
 exports.SearchEvent = SearchEvent
-exports.EventProcess = EventProcess
+exports.SearchEventProcess = SearchEventProcess

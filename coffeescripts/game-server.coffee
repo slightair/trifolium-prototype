@@ -1,20 +1,23 @@
 fs = require 'fs'
+kue = require 'kue'
 {Simulator} = require './lib/trifolium-server/simulator'
+
+kue.app.listen 3000
 
 configFilePath = './config.json'
 config = JSON.parse(fs.readFileSync(configFilePath))
 
-simulator = new Simulator config.simulator
+simulator = new Simulator
 
 # event callbacks
-simulator.on 'braveCompleteAction', (brave, action, result) ->
-    console.log
-        brave: brave.id
-        completeAction: action.details()
-        result: result
-        nextAction: brave.action.details()
-
-simulator.start()
+# simulator.on 'braveCompleteAction', (brave, action, result) ->
+#     console.log
+#         brave: brave.id
+#         completeAction: action.details()
+#         result: result
+#         nextAction: brave.action.details()
+# 
+simulator.start config.simulator
 
 # fs = require 'fs'
 # url = require 'url'

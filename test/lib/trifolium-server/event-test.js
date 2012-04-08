@@ -1,8 +1,6 @@
-var Brave, ItemCreator, SearchEvent, SerchEventProcess, config, configFile, fs, library, serverLibPath, should, _ref;
+var Brave, SearchEvent, SearchEventProcess, library, serverLibPath, should, _ref;
 
 should = require('should');
-
-fs = require('fs');
 
 library = process.env['TRIFOLIUM_COV'] ? 'lib-cov' : 'lib';
 
@@ -10,15 +8,7 @@ serverLibPath = "../../../" + library + "/trifolium-server";
 
 Brave = require("" + serverLibPath + "/brave").Brave;
 
-_ref = require("" + serverLibPath + "/event"), SearchEvent = _ref.SearchEvent, SerchEventProcess = _ref.SerchEventProcess;
-
-ItemCreator = require("" + serverLibPath + "/item").ItemCreator;
-
-configFile = './config.json';
-
-config = JSON.parse(fs.readFileSync(configFile));
-
-ItemCreator.setItemDict(config.simulator.itemDict);
+_ref = require("" + serverLibPath + "/event"), SearchEvent = _ref.SearchEvent, SearchEventProcess = _ref.SearchEventProcess;
 
 describe('SearchEvent', function() {
   var event;
@@ -26,7 +16,7 @@ describe('SearchEvent', function() {
   beforeEach(function() {
     var brave;
     brave = new Brave('testBrave');
-    return event = new SearchEvent(brave, 3000, {});
+    return event = new SearchEvent(brave, 3000, []);
   });
   it('should have type', function() {
     return event.type.should.equal('search');
@@ -34,96 +24,111 @@ describe('SearchEvent', function() {
   it('should have time', function() {
     return event.time.should.equal(3000);
   });
-  it('should have probabilityMax', function() {
-    return event.probabilityMax.should.equal(1000);
+  return it('should have treasureList', function() {
+    return event.treasureList.should.be.an["instanceof"](Array);
   });
-  it('should have treasureDict', function() {
-    return event.treasureDict.should.be.an["instanceof"](Object);
+});
+
+describe('SearchEventProcess', function() {
+  var brave;
+  brave = null;
+  beforeEach(function() {
+    return brave = new Brave('testBrave');
   });
-  return describe('#process()', function() {
-    var brave, goodKinoko, kinoko, tikuwa;
-    kinoko = ItemCreator.create(1);
-    goodKinoko = ItemCreator.create(2);
-    tikuwa = ItemCreator.create(3);
-    brave = null;
-    beforeEach(function() {
-      return brave = new Brave('testBrave');
-    });
-    it('should return Object', function() {
-      return event.process().should.be.an["instanceof"](Object);
-    });
-    it('should return false over probabilityMax', function() {
-      var failureEvent, result, treasureDict;
-      treasureDict = {};
-      treasureDict[kinoko.id] = {
-        item: kinoko,
+  it('should call done', function(done) {
+    var job;
+    job = {
+      data: new SearchEvent(brave, 1000)
+    };
+    return SearchEventProcess(job, done);
+  });
+  it('should return false over probabilityMax', function() {
+    var job, result, treasureList;
+    treasureList = [
+      {
+        itemId: '1',
         probability: 500
-      };
-      treasureDict[goodKinoko.id] = {
-        item: goodKinoko,
+      }, {
+        itemId: '2',
         probability: 500
-      };
-      treasureDict[tikuwa.id] = {
-        item: tikuwa,
+      }, {
+        itemId: '3',
         probability: 500
-      };
-      failureEvent = new SearchEvent(brave, 3000, treasureDict);
-      result = failureEvent.process();
-      return result.isSucceed.should.not.be.ok;
-    });
-    it('should add item to brave', function() {
-      var result, successEvent, treasureDict;
-      treasureDict = {};
-      treasureDict[kinoko.id] = {
-        item: kinoko,
-        probability: 1000
-      };
-      successEvent = new SearchEvent(brave, 3000, treasureDict);
-      result = successEvent.process();
-      result.isSucceed.should.be.ok;
-      brave.items.should.include(kinoko);
-      return result.treasure.should.equal(kinoko);
-    });
-    it('should return false if brave failed to get item', function() {
-      var failure, i, randomEvent, result, success, treasureDict;
-      treasureDict = {};
-      treasureDict[kinoko.id] = {
-        item: kinoko,
-        probability: 400
-      };
-      treasureDict[goodKinoko.id] = {
-        item: goodKinoko,
-        probability: 100
-      };
-      success = 0;
-      failure = 0;
-      randomEvent = new SearchEvent(brave, 3000, treasureDict);
-      for (i = 1; i <= 50; i++) {
-        brave.items = [];
-        result = randomEvent.process();
-        if (result.treasure) {
-          result.isSucceed.should.be.ok;
-          success += 1;
-        } else {
-          result.isSucceed.should.not.be.ok;
-          failure += 1;
-        }
       }
-      success.should.above(10);
-      return failure.should.above(10);
+    ];
+    job = {
+      data: new SearchEvent(brave, 3000, treasureList)
+    };
+    result = SearchEventProcess(job, function() {
+      return null;
     });
-    return it('should return false if brave cannot take a getting item', function() {
-      var failureEvent, result, treasureDict;
-      treasureDict = {};
-      treasureDict[kinoko.id] = {
-        item: kinoko,
+    return result.isSucceed.should.not.be.ok;
+  });
+  it('should add item to brave', function() {
+    var job, result, treasureList;
+    treasureList = [
+      {
+        itemId: '1',
         probability: 1000
-      };
-      failureEvent = new SearchEvent(brave, 3000, treasureDict);
-      brave.items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      result = failureEvent.process();
-      result.isSucceed.should.not.be.ok;
-      return result.treasure.should.equal(kinoko);
+      }
+    ];
+    job = {
+      data: new SearchEvent(brave, 3000, treasureList)
+    };
+    result = SearchEventProcess(job, function() {
+      return null;
     });
+    result.isSucceed.should.be.ok;
+    return brave.items.should.include(result.treasure);
+  });
+  it('should return false if brave failed to get item', function() {
+    var failure, i, job, result, success, treasureList;
+    treasureList = [
+      {
+        itemId: '1',
+        probability: 400
+      }, {
+        itemId: '2',
+        probability: 100
+      }
+    ];
+    success = 0;
+    failure = 0;
+    job = {
+      data: new SearchEvent(brave, 3000, treasureList)
+    };
+    for (i = 1; i <= 50; i++) {
+      brave.items = [];
+      result = SearchEventProcess(job, function() {
+        return null;
+      });
+      if (result.treasure) {
+        result.isSucceed.should.be.ok;
+        success += 1;
+      } else {
+        result.isSucceed.should.not.be.ok;
+        failure += 1;
+      }
+    }
+    success.should.above(10);
+    return failure.should.above(10);
+  });
+  return it('should return false if brave cannot take a getting item', function() {
+    var job, result, treasureList;
+    treasureList = [
+      {
+        itemId: '1',
+        probability: 1000
+      }
+    ];
+    job = {
+      data: new SearchEvent(brave, 3000, treasureList)
+    };
+    brave.items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    result = SearchEventProcess(job, function() {
+      return null;
+    });
+    result.isSucceed.should.not.be.ok;
+    return brave.items.should.not.include(result.treasure);
   });
 });

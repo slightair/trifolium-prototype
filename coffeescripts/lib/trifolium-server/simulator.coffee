@@ -1,10 +1,9 @@
 {EventEmitter} = require 'events'
 kue = require 'kue'
-
 {ItemCreator} = require './item'
 {BraveCreator} = require './brave'
 {Dungeon} = require "./dungeon"
-{EventProcess} = require './event'
+{SearchEvent, SearchEventProcess} = require './event'
 
 class Simulator extends EventEmitter
     constructor : ->
@@ -22,7 +21,11 @@ class Simulator extends EventEmitter
         @braveList = (BraveCreator.create {speed: Math.floor(Math.random() * 50) + 20} for i in [0...numBraves])
         
         @jobs = kue.createQueue()
-        @jobs.process 'event', EventProcess
+        @jobs.process 'searchEvent', numBraves, SearchEventProcess
+        @jobs.on 'job complete', (id) ->
+            Job.get id, (err, job) ->
+                return if err
+                job.remove (err) -> throw err if err
     
     dungeonForName: (name) ->
         (dungeon for dungeon in @dungeonList when dungeon.name == name)[0]
