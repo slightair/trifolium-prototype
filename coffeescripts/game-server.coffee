@@ -10,13 +10,9 @@ config = JSON.parse(fs.readFileSync(configFilePath))
 simulator = new Simulator
 
 # event callbacks
-# simulator.on 'braveCompleteAction', (brave, action, result) ->
-#     console.log
-#         brave: brave.id
-#         completeAction: action.details()
-#         result: result
-#         nextAction: brave.action.details()
-# 
+simulator.on 'completeSearchEvent', (brave, event, result) ->
+    console.log brave, event, result
+
 simulator.start config.simulator
 
 # fs = require 'fs'

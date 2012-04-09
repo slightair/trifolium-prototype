@@ -15,6 +15,10 @@
 
   simulator = new Simulator;
 
+  simulator.on('completeSearchEvent', function(brave, event, result) {
+    return console.log(brave, event, result);
+  });
+
   simulator.start(config.simulator);
 
 }).call(this);
