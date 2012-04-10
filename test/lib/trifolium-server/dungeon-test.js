@@ -20,6 +20,9 @@ describe('Dungeon', function() {
   it('should have name', function() {
     return dungeon.name.should.equal('testDungeon');
   });
+  it('should have id', function() {
+    return should.exist(dungeon.id);
+  });
   it('should have floorList', function() {
     return dungeon.floorList.should.be.an["instanceof"](Array);
   });

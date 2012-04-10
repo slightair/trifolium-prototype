@@ -66,11 +66,12 @@ describe('Simulator', function() {
     return simulator.braveList.should.empty;
   });
   it('should have jobs', function() {
-    return should.not.exist(simulator.jobs);
+    return should.exist(simulator.jobs);
   });
   describe('#start()', function() {
     beforeEach(function() {
       simulator = new Simulator;
+      simulator.jobs = null;
       ItemCreator.setItemDict({});
       return BraveCreator.setBraveNameDict({
         terms: [],
@@ -98,55 +99,58 @@ describe('Simulator', function() {
       simulator.dungeonList.length.should.equal(1);
       return simulator.dungeonList[0].name.should.equal("なめこの洞窟");
     });
-    it('should make braveList', function() {
+    return it('should make braveList', function() {
       simulator.braveList.should.empty;
       simulator.start(config);
       simulator.braveList.should.not.empty;
       return simulator.braveList.length.should.equal(10);
     });
-    return it('should make kue jobs', function() {
-      should.not.exist(simulator.jobs);
-      simulator.start(config);
-      return should.exist(simulator.jobs);
-    });
   });
-  describe('#dungeonForName()', function() {
+  describe('#dungeonForId()', function() {
+    var dungeonA, dungeonB, dungeonC, dungeonId;
+    dungeonA = new Dungeon({
+      name: 'hoge'
+    });
+    dungeonB = new Dungeon({
+      name: 'fuga'
+    });
+    dungeonC = new Dungeon({
+      name: 'piyo'
+    });
+    dungeonId = dungeonA.id;
     beforeEach(function() {
-      return simulator.dungeonList = [
-        new Dungeon({
-          name: 'hoge'
-        }), new Dungeon({
-          name: 'fuga'
-        }), new Dungeon({
-          name: 'piyo'
-        })
-      ];
+      return simulator.dungeonList = [dungeonA, dungeonB, dungeonC];
     });
     it('should return null if dungeon not found', function() {
       var dungeon;
-      dungeon = simulator.dungeonForName('foo');
+      dungeon = simulator.dungeonForId('unknownId');
       return should.not.exist(dungeon);
     });
     return it('should return dungeon if dungeon found', function() {
       var dungeon;
-      dungeon = simulator.dungeonForName('hoge');
+      dungeon = simulator.dungeonForId(dungeonId);
       should.exist(dungeon);
       dungeon.should.be.an["instanceof"](Dungeon);
       return dungeon.name.should.equal('hoge');
     });
   });
-  return describe('#braveForName()', function() {
+  return describe('#braveForId()', function() {
+    var braveA, braveB, braveC, braveId;
+    braveA = new Brave('hoge');
+    braveB = new Brave('fuga');
+    braveC = new Brave('piyo');
+    braveId = braveA.id;
     beforeEach(function() {
-      return simulator.braveList = [new Brave('hoge'), new Brave('fuga'), new Brave('piyo')];
+      return simulator.braveList = [braveA, braveB, braveC];
     });
     it('should return null if brave not found', function() {
       var brave;
-      brave = simulator.braveForName('foo');
+      brave = simulator.braveForId('unknownId');
       return should.not.exist(brave);
     });
     return it('should return brave if brave found', function() {
       var brave;
-      brave = simulator.braveForName('hoge');
+      brave = simulator.braveForId(braveId);
       should.exist(brave);
       brave.should.be.an["instanceof"](Brave);
       return brave.name.should.equal('hoge');

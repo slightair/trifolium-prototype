@@ -15,6 +15,9 @@ describe 'Dungeon', ->
     it 'should have name', ->
         dungeon.name.should.equal 'testDungeon'
     
+    it 'should have id', ->
+        should.exist dungeon.id
+    
     it 'should have floorList', ->
         dungeon.floorList.should.be.an.instanceof Array
     

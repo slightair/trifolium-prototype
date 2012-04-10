@@ -1,6 +1,14 @@
+crypto = require 'crypto'
+
 class Dungeon
     constructor: (dungeonInfo) ->
+        date = new Date
         @name = dungeonInfo.name ? "unknown"
+        @id = crypto.createHash('sha1').update("#{@name}")
+                                       .update('bf75e9d57c76d607')
+                                       .update("#{date.getTime()}")
+                                       .update("#{date.getMilliseconds()}")
+                                       .digest('hex')
         @floorList = dungeonInfo.floorList ? []
     
     pickEvent: (f) ->

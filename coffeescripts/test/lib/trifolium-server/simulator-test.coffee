@@ -53,12 +53,13 @@ describe 'Simulator', ->
         simulator.braveList.should.empty
     
     it 'should have jobs', ->
-        should.not.exist simulator.jobs
+        should.exist simulator.jobs
     
     describe '#start()', ->
         
         beforeEach ->
             simulator = new Simulator
+            simulator.jobs = null # for test
             
             ItemCreator.setItemDict {}
             BraveCreator.setBraveNameDict {
@@ -96,49 +97,50 @@ describe 'Simulator', ->
             simulator.start config
             simulator.braveList.should.not.empty
             simulator.braveList.length.should.equal 10
-        
-        it 'should make kue jobs', ->
-            should.not.exist simulator.jobs
-            
-            simulator.start config
-            
-            should.exist simulator.jobs
     
-    describe '#dungeonForName()', ->
+    describe '#dungeonForId()', ->
+        dungeonA = new Dungeon {name: 'hoge'}
+        dungeonB = new Dungeon {name: 'fuga'}
+        dungeonC = new Dungeon {name: 'piyo'}
+        dungeonId = dungeonA.id
         
         beforeEach ->
             simulator.dungeonList = [
-                new Dungeon {name: 'hoge'}
-                new Dungeon {name: 'fuga'}
-                new Dungeon {name: 'piyo'}
+                dungeonA
+                dungeonB
+                dungeonC
             ]
         
         it 'should return null if dungeon not found', ->
-            dungeon = simulator.dungeonForName 'foo'
+            dungeon = simulator.dungeonForId 'unknownId'
             should.not.exist dungeon
         
         it 'should return dungeon if dungeon found', ->
-            dungeon = simulator.dungeonForName 'hoge'
+            dungeon = simulator.dungeonForId dungeonId
             should.exist dungeon
             
             dungeon.should.be.an.instanceof Dungeon
             dungeon.name.should.equal 'hoge'
     
-    describe '#braveForName()', ->
+    describe '#braveForId()', ->
+        braveA = new Brave 'hoge'
+        braveB = new Brave 'fuga'
+        braveC = new Brave 'piyo'
+        braveId = braveA.id
         
         beforeEach ->
             simulator.braveList = [
-                new Brave 'hoge'
-                new Brave 'fuga'
-                new Brave 'piyo'
+                braveA
+                braveB
+                braveC
             ]
         
         it 'should return null if brave not found', ->
-            brave = simulator.braveForName 'foo'
+            brave = simulator.braveForId 'unknownId'
             should.not.exist brave
             
         it 'should return brave if brave found', ->
-            brave = simulator.braveForName 'hoge'
+            brave = simulator.braveForId braveId
             should.exist brave
             
             brave.should.be.an.instanceof Brave
