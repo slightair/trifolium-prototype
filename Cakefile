@@ -195,4 +195,5 @@ task 'coverage', 'run coverage', ->
     compile_lib -> compile_server_test -> make_coverage -> run_coverage -> open_coverage -> 'All done.'
 
 task 'all', 'compile all scripts', ->
-    build_server -> build_client_browser -> build_express -> compile_server_test -> compile_client_test -> 'All done.'
+    # build_server -> build_express -> compile_server_test -> compile_client_test -> 'All done.'
+    build_server -> compile_server_test -> 'All done.'
