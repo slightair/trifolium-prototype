@@ -39,9 +39,7 @@ class Simulator extends EventEmitter
             job = @jobs.create('searchEvent',
                 treasureList: treasureList
                 braveId: brave.id
-                
             ).on('complete', ->
-                console.log @data
                 brave = simulator.braveForId @data.braveId
                 event = new SearchEvent @data.treasureList
                 result = event.process brave
