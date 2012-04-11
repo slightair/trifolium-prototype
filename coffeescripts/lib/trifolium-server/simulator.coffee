@@ -29,15 +29,13 @@ class Simulator extends EventEmitter
             @jobs.promote 100
             
             for brave in @braveList
-                treasureList = [
-                    {itemId: 1, probability: 400}
-                    {itemId: 2, probability: 100}
-                ]
+                dungeon = @dungeonList[0]
+                eventInfo = dungeon.pickEventInfo 0
                 time = 10000
                 
                 simulator = @
                 job = @jobs.create('searchEvent',
-                    treasureList: treasureList
+                    treasureList: eventInfo.treasureList
                     braveId: brave.id
                 ).on('complete', ->
                     brave = simulator.braveForId @data.braveId

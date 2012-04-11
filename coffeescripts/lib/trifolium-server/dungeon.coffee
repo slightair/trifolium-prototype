@@ -11,7 +11,7 @@ class Dungeon
                                        .digest('hex')
         @floorList = dungeonInfo.floorList ? []
     
-    pickEvent: (f) ->
+    pickEventInfo: (f) ->
         return null unless @floorList.length > f
         
         floor = @floorList[f].sort (a, b) -> 0.5 - Math.random()

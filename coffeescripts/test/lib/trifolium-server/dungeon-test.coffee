@@ -21,7 +21,7 @@ describe 'Dungeon', ->
     it 'should have floorList', ->
         dungeon.floorList.should.be.an.instanceof Array
     
-    describe '#pickEvent()', ->
+    describe '#pickEventInfo()', ->
         beforeEach ->
             dungeon = new Dungeon
                 name: 'testDungeon'
@@ -32,10 +32,10 @@ describe 'Dungeon', ->
                 ]
         
         it 'should return null if invalid floor', ->
-            event = dungeon.pickEvent 4
+            event = dungeon.pickEventInfo 4
             should.not.exist event
         
         it 'should return Event', ->
-            event = dungeon.pickEvent 1
+            event = dungeon.pickEventInfo 1
             should.exist event
             event.should.be.within(4, 6)
