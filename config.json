@@ -5,26 +5,6 @@
         "tokenSecret": ""
     },
     "simulator": {
-        "dungeonList": [
-            {
-                "name": "なめこの洞窟",
-                "floorList": [
-                    [
-                        {
-                            "type": "search",
-                            "treasureList": [
-                                {
-                                    "itemId": 2,
-                                    "probability": 100
-                                }
-                            ]
-                        }
-                        
-                    ]
-                ]
-            },
-            {"name": "かまぼこの迷宮"}
-        ],
         "numBraves": 8,
         "braveNameDict": {
             "terms": [

@@ -18,14 +18,14 @@ describe('Simulator', function() {
   var config, simulator;
   simulator = null;
   config = {
-    dungeonList: [
+    dungeons: [
       {
         name: "なめこの洞窟",
-        floorList: [
+        floors: [
           [
             {
               type: "search",
-              treasureList: [
+              treasures: [
                 {
                   "itemId": 2,
                   "probability": 100
@@ -57,13 +57,13 @@ describe('Simulator', function() {
   beforeEach(function() {
     return simulator = new Simulator;
   });
-  it('should have dungeonList', function() {
-    simulator.dungeonList.should.be.an["instanceof"](Array);
-    return simulator.dungeonList.should.empty;
+  it('should have dungeons', function() {
+    simulator.dungeons.should.be.an["instanceof"](Array);
+    return simulator.dungeons.should.empty;
   });
-  it('should have braveList', function() {
-    simulator.braveList.should.be.an["instanceof"](Array);
-    return simulator.braveList.should.empty;
+  it('should have braves', function() {
+    simulator.braves.should.be.an["instanceof"](Array);
+    return simulator.braves.should.empty;
   });
   it('should have jobs', function() {
     return should.exist(simulator.jobs);
@@ -92,18 +92,18 @@ describe('Simulator', function() {
       BraveCreator.braveNamePrefixes.should.not.empty;
       return BraveCreator.braveNameSuffixes.should.not.empty;
     });
-    it('should make dungeonList', function() {
-      simulator.dungeonList.should.empty;
+    it('should make dungeons', function() {
+      simulator.dungeons.should.empty;
       simulator.start(config);
-      simulator.dungeonList.should.not.empty;
-      simulator.dungeonList.length.should.equal(1);
-      return simulator.dungeonList[0].name.should.equal("なめこの洞窟");
+      simulator.dungeons.should.not.empty;
+      simulator.dungeons.length.should.equal(1);
+      return simulator.dungeons[0].name.should.equal("なめこの洞窟");
     });
-    return it('should make braveList', function() {
-      simulator.braveList.should.empty;
+    return it('should make braves', function() {
+      simulator.braves.should.empty;
       simulator.start(config);
-      simulator.braveList.should.not.empty;
-      return simulator.braveList.length.should.equal(10);
+      simulator.braves.should.not.empty;
+      return simulator.braves.length.should.equal(10);
     });
   });
   describe('#dungeonForId()', function() {
@@ -119,7 +119,7 @@ describe('Simulator', function() {
     });
     dungeonId = dungeonA.id;
     beforeEach(function() {
-      return simulator.dungeonList = [dungeonA, dungeonB, dungeonC];
+      return simulator.dungeons = [dungeonA, dungeonB, dungeonC];
     });
     it('should return null if dungeon not found', function() {
       var dungeon;
@@ -141,7 +141,7 @@ describe('Simulator', function() {
     braveC = new Brave('piyo');
     braveId = braveA.id;
     beforeEach(function() {
-      return simulator.braveList = [braveA, braveB, braveC];
+      return simulator.braves = [braveA, braveB, braveC];
     });
     it('should return null if brave not found', function() {
       var brave;

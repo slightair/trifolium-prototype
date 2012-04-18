@@ -14,8 +14,8 @@ describe 'SearchEvent', ->
     it 'should have type', ->
         event.type.should.equal 'search'
     
-    it 'should have treasureList', ->
-        event.treasureList.should.be.an.instanceof Array
+    it 'should have treasures', ->
+        event.treasures.should.be.an.instanceof Array
     
     describe '#process()', ->
         brave = null
@@ -24,29 +24,29 @@ describe 'SearchEvent', ->
             brave = new Brave 'testBrave'
         
         it 'should return false over probabilityMax', ->
-            treasureList = [
+            treasures = [
                 {itemId: '1', probability: 500}
                 {itemId: '2', probability: 500}
                 {itemId: '3', probability: 500}
             ]
             
-            event = new SearchEvent treasureList
+            event = new SearchEvent treasures
             result = event.process brave
             result.isSucceed.should.not.be.ok
         
         it 'should add item to brave', ->
-            treasureList = [
+            treasures = [
                 {itemId: '1', probability: 1000}
             ]
             
-            event = new SearchEvent treasureList
+            event = new SearchEvent treasures
             
             result = event.process brave
             result.isSucceed.should.be.ok
             brave.items.should.include result.treasure
         
         it 'should return false if brave failed to get item', ->
-            treasureList = [
+            treasures = [
                 {itemId: '1', probability: 400}
                 {itemId: '2', probability: 100}
             ]
@@ -54,7 +54,7 @@ describe 'SearchEvent', ->
             success = 0
             failure = 0
             
-            event = new SearchEvent treasureList
+            event = new SearchEvent treasures
             
             for i in [1..50]
                 brave.items = []
@@ -71,11 +71,11 @@ describe 'SearchEvent', ->
             failure.should.above 10
         
         it 'should return false if brave cannot take a getting item', ->
-            treasureList = [
+            treasures = [
                 {itemId: '1', probability: 1000}
             ]
             
-            event = new SearchEvent treasureList
+            event = new SearchEvent treasures
             
             brave.items = [1..10]
             result = event.process brave

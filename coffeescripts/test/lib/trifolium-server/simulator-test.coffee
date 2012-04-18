@@ -10,14 +10,14 @@ serverLibPath = "../../../#{library}/trifolium-server"
 describe 'Simulator', ->
     simulator = null
     config = {
-        dungeonList: [
+        dungeons: [
             {
                 name: "なめこの洞窟"
-                floorList: [
+                floors: [
                     [
                         {
                             type: "search"
-                            treasureList: [
+                            treasures: [
                                 {
                                     "itemId": 2,
                                     "probability": 100
@@ -44,13 +44,13 @@ describe 'Simulator', ->
     beforeEach ->
         simulator = new Simulator
     
-    it 'should have dungeonList', ->
-        simulator.dungeonList.should.be.an.instanceof Array
-        simulator.dungeonList.should.empty
+    it 'should have dungeons', ->
+        simulator.dungeons.should.be.an.instanceof Array
+        simulator.dungeons.should.empty
     
-    it 'should have braveList', ->
-        simulator.braveList.should.be.an.instanceof Array
-        simulator.braveList.should.empty
+    it 'should have braves', ->
+        simulator.braves.should.be.an.instanceof Array
+        simulator.braves.should.empty
     
     it 'should have jobs', ->
         should.exist simulator.jobs
@@ -85,18 +85,18 @@ describe 'Simulator', ->
             BraveCreator.braveNamePrefixes.should.not.empty
             BraveCreator.braveNameSuffixes.should.not.empty
         
-        it 'should make dungeonList', ->
-            simulator.dungeonList.should.empty
+        it 'should make dungeons', ->
+            simulator.dungeons.should.empty
             simulator.start config
-            simulator.dungeonList.should.not.empty
-            simulator.dungeonList.length.should.equal 1
-            simulator.dungeonList[0].name.should.equal "なめこの洞窟"
+            simulator.dungeons.should.not.empty
+            simulator.dungeons.length.should.equal 1
+            simulator.dungeons[0].name.should.equal "なめこの洞窟"
         
-        it 'should make braveList', ->
-            simulator.braveList.should.empty
+        it 'should make braves', ->
+            simulator.braves.should.empty
             simulator.start config
-            simulator.braveList.should.not.empty
-            simulator.braveList.length.should.equal 10
+            simulator.braves.should.not.empty
+            simulator.braves.length.should.equal 10
     
     describe '#dungeonForId()', ->
         dungeonA = new Dungeon {name: 'hoge'}
@@ -105,7 +105,7 @@ describe 'Simulator', ->
         dungeonId = dungeonA.id
         
         beforeEach ->
-            simulator.dungeonList = [
+            simulator.dungeons = [
                 dungeonA
                 dungeonB
                 dungeonC
@@ -129,7 +129,7 @@ describe 'Simulator', ->
         braveId = braveA.id
         
         beforeEach ->
-            simulator.braveList = [
+            simulator.braves = [
                 braveA
                 braveB
                 braveC

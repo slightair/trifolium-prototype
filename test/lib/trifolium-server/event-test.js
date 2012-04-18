@@ -19,8 +19,8 @@ describe('SearchEvent', function() {
   it('should have type', function() {
     return event.type.should.equal('search');
   });
-  it('should have treasureList', function() {
-    return event.treasureList.should.be.an["instanceof"](Array);
+  it('should have treasures', function() {
+    return event.treasures.should.be.an["instanceof"](Array);
   });
   return describe('#process()', function() {
     var brave;
@@ -29,8 +29,8 @@ describe('SearchEvent', function() {
       return brave = new Brave('testBrave');
     });
     it('should return false over probabilityMax', function() {
-      var result, treasureList;
-      treasureList = [
+      var result, treasures;
+      treasures = [
         {
           itemId: '1',
           probability: 500
@@ -42,26 +42,26 @@ describe('SearchEvent', function() {
           probability: 500
         }
       ];
-      event = new SearchEvent(treasureList);
+      event = new SearchEvent(treasures);
       result = event.process(brave);
       return result.isSucceed.should.not.be.ok;
     });
     it('should add item to brave', function() {
-      var result, treasureList;
-      treasureList = [
+      var result, treasures;
+      treasures = [
         {
           itemId: '1',
           probability: 1000
         }
       ];
-      event = new SearchEvent(treasureList);
+      event = new SearchEvent(treasures);
       result = event.process(brave);
       result.isSucceed.should.be.ok;
       return brave.items.should.include(result.treasure);
     });
     it('should return false if brave failed to get item', function() {
-      var failure, i, result, success, treasureList;
-      treasureList = [
+      var failure, i, result, success, treasures;
+      treasures = [
         {
           itemId: '1',
           probability: 400
@@ -72,7 +72,7 @@ describe('SearchEvent', function() {
       ];
       success = 0;
       failure = 0;
-      event = new SearchEvent(treasureList);
+      event = new SearchEvent(treasures);
       for (i = 1; i <= 50; i++) {
         brave.items = [];
         result = event.process(brave);
@@ -88,14 +88,14 @@ describe('SearchEvent', function() {
       return failure.should.above(10);
     });
     return it('should return false if brave cannot take a getting item', function() {
-      var result, treasureList;
-      treasureList = [
+      var result, treasures;
+      treasures = [
         {
           itemId: '1',
           probability: 1000
         }
       ];
-      event = new SearchEvent(treasureList);
+      event = new SearchEvent(treasures);
       brave.items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       result = event.process(brave);
       result.isSucceed.should.not.be.ok;

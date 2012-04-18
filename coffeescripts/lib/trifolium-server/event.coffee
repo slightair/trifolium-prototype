@@ -2,24 +2,24 @@
 
 class SearchEvent
     probabilityMax: 1000
-    constructor: (@treasureList = []) ->
+    constructor: (@treasures = []) ->
         @type = 'search'
     
     process: (brave) ->
         total = 0
-        total += info.probability for info in @treasureList
+        total += info.probability for info in @treasures
         
         if total > @probabilityMax
             result = {isSucceed: false, treasure: null}
             @save result
             return result
         
-        treasureList = @treasureList.sort (a, b) -> 0.5 - Math.random()
+        treasures = @treasures.sort (a, b) -> 0.5 - Math.random()
         probability = 0
-        probabilities = (probability += info.probability for info in treasureList)
+        probabilities = (probability += info.probability for info in treasures)
         
         needle = Math.random() * @probabilityMax
-        treasureInfo = info for info, i in treasureList when not treasureInfo? and needle < probabilities[i]
+        treasureInfo = info for info, i in treasures when not treasureInfo? and needle < probabilities[i]
         treasure = ItemCreator.create(treasureInfo.itemId, treasureInfo.name) if treasureInfo
         
         if treasure && brave.addItem treasure
