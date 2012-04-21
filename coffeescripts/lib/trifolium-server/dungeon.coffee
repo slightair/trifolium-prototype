@@ -1,21 +1,29 @@
-crypto = require 'crypto'
+{SearchEvent} = require './event'
+
+class Floor
+    constructor: (floorInfo) ->
+        @id = floorInfo._id
+        @number = floorInfo.number
+        @events = (@createEvent info for info in floorInfo.events)
+    
+    createEvent: (info) ->
+        event = null
+        
+        switch info.type
+            when 'search'
+                event = new SearchEvent info.treasures
+        event
+    
+    pickEventInfo: ->
+        events = @events.sort (a, b) -> 0.5 - Math.random()
+        index = parseInt(Math.random() * events.length)
+        events[index]
 
 class Dungeon
     constructor: (dungeonInfo) ->
-        date = new Date
-        @name = dungeonInfo.name ? "unknown"
-        @id = crypto.createHash('sha1').update("#{@name}")
-                                       .update('bf75e9d57c76d607')
-                                       .update("#{date.getTime()}")
-                                       .update("#{date.getMilliseconds()}")
-                                       .digest('hex')
-        @floorList = dungeonInfo.floorList ? []
-    
-    pickEventInfo: (f) ->
-        return null unless @floorList.length > f
-        
-        floor = @floorList[f].sort (a, b) -> 0.5 - Math.random()
-        index = parseInt(Math.random() * floor.length)
-        floor[index]
-    
+        @name = dungeonInfo.name ? 'unknown'
+        @id = dungeonInfo._id
+        @floors = (new Floor info for info in dungeonInfo.floors)
+
+exports.Floor = Floor
 exports.Dungeon = Dungeon
