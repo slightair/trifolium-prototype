@@ -44,7 +44,7 @@ describe('ItemCreator', function() {
       strangeKinoko.itemId.should.equal(1);
       strangeKinoko.name.should.equal('へんなきのこ');
       unknownItem = ItemCreator.create(-1);
-      return should.not.exist.unknownItem;
+      return should.not.exist(unknownItem);
     });
   });
 });

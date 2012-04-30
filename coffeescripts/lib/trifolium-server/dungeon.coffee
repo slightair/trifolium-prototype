@@ -8,13 +8,14 @@ class Floor
     
     createEvent: (info) ->
         event = null
-        
         switch info.type
             when 'search'
                 event = new SearchEvent info.treasures
         event
     
-    pickEventInfo: ->
+    pickEvent: ->
+        return null if @events.length == 0
+        
         events = @events.sort (a, b) -> 0.5 - Math.random()
         index = parseInt(Math.random() * events.length)
         events[index]

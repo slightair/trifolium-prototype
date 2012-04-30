@@ -2,40 +2,49 @@ should = require 'should'
 
 library = if process.env['TRIFOLIUM_COV'] then 'lib-cov' else 'lib'
 serverLibPath = "../../../#{library}/trifolium-server"
-{Dungeon} = require "#{serverLibPath}/dungeon"
+{Floor, Dungeon} = require "#{serverLibPath}/dungeon"
+
+describe 'Floor', ->
+    floor = null
+    
+    describe '#createEvent()', ->
+        
+    
+    describe '#pickEvent()', ->
+        beforeEach ->
+            floor = new Floor {_id: 'floorA', number: 1, events: [
+                            type: "search"
+                            treasures: [
+                                {
+                                    "itemId": 2,
+                                    "probability": 100
+                                }
+                            ]
+                        ]}
+        
+        it 'should return null if floor has no event', ->
+            floor.events = []
+            event = floor.pickEvent()
+            should.not.exist event
+        
+        it 'should return Event', ->
+            event = floor.pickEvent()
+            should.exist event
 
 describe 'Dungeon', ->
     dungeon = null
     
     beforeEach ->
         dungeon = new Dungeon
+            _id: 'dungeonId'
             name: 'testDungeon'
-            floorList: []
+            floors: []
     
     it 'should have name', ->
         dungeon.name.should.equal 'testDungeon'
     
     it 'should have id', ->
-        should.exist dungeon.id
+        dungeon.id.should.equal 'dungeonId'
     
-    it 'should have floorList', ->
-        dungeon.floorList.should.be.an.instanceof Array
-    
-    describe '#pickEventInfo()', ->
-        beforeEach ->
-            dungeon = new Dungeon
-                name: 'testDungeon'
-                floorList: [
-                    [1, 2, 3]
-                    [4, 5, 6]
-                    [7, 8, 9]
-                ]
-        
-        it 'should return null if invalid floor', ->
-            event = dungeon.pickEventInfo 4
-            should.not.exist event
-        
-        it 'should return Event', ->
-            event = dungeon.pickEventInfo 1
-            should.exist event
-            event.should.be.within(4, 6)
+    it 'should have floors', ->
+        dungeon.floors.should.be.an.instanceof Array

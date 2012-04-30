@@ -18,24 +18,6 @@ describe('Simulator', function() {
   var config, simulator;
   simulator = null;
   config = {
-    dungeons: [
-      {
-        name: "なめこの洞窟",
-        floors: [
-          [
-            {
-              type: "search",
-              treasures: [
-                {
-                  "itemId": 2,
-                  "probability": 100
-                }
-              ]
-            }
-          ]
-        ]
-      }
-    ],
     numBraves: 10,
     braveNameDict: {
       terms: ['1', '2', '3'],
@@ -68,54 +50,19 @@ describe('Simulator', function() {
   it('should have jobs', function() {
     return should.exist(simulator.jobs);
   });
-  describe('#start()', function() {
-    beforeEach(function() {
-      simulator = new Simulator;
-      simulator.jobs = null;
-      ItemCreator.setItemDict({});
-      return BraveCreator.setBraveNameDict({
-        terms: [],
-        prefixes: [],
-        suffixes: []
-      });
-    });
-    it('should set ItemDict to ItemCreator', function() {
-      ItemCreator.itemDict.should.not.have.keys('1', '2', '3');
-      simulator.start(config);
-      ItemCreator.itemDict.should.have.keys('1', '2', '3');
-      return ItemCreator.itemDict['3'].name.should.equal('いいちくわ');
-    });
-    it('should set braveNameDict to BraveCreator', function() {
-      BraveCreator.braveNamePrefixes.should.empty;
-      BraveCreator.braveNameSuffixes.should.empty;
-      simulator.start(config);
-      BraveCreator.braveNamePrefixes.should.not.empty;
-      return BraveCreator.braveNameSuffixes.should.not.empty;
-    });
-    it('should make dungeons', function() {
-      simulator.dungeons.should.empty;
-      simulator.start(config);
-      simulator.dungeons.should.not.empty;
-      simulator.dungeons.length.should.equal(1);
-      return simulator.dungeons[0].name.should.equal("なめこの洞窟");
-    });
-    return it('should make braves', function() {
-      simulator.braves.should.empty;
-      simulator.start(config);
-      simulator.braves.should.not.empty;
-      return simulator.braves.length.should.equal(10);
-    });
-  });
   describe('#dungeonForId()', function() {
     var dungeonA, dungeonB, dungeonC, dungeonId;
     dungeonA = new Dungeon({
-      name: 'hoge'
+      name: 'hoge',
+      floors: []
     });
     dungeonB = new Dungeon({
-      name: 'fuga'
+      name: 'fuga',
+      floors: []
     });
     dungeonC = new Dungeon({
-      name: 'piyo'
+      name: 'piyo',
+      floors: []
     });
     dungeonId = dungeonA.id;
     beforeEach(function() {

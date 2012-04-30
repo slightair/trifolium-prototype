@@ -36,7 +36,7 @@ describe 'ItemCreator', ->
             strangeKinoko.name.should.equal 'へんなきのこ'
             
             unknownItem = ItemCreator.create -1
-            should.not.exist.unknownItem
+            should.not.exist unknownItem
 
 describe 'Item', ->
     kinoko = new Item 1, 'きのこ'

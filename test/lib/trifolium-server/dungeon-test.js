@@ -1,4 +1,4 @@
-var Dungeon, library, serverLibPath, should;
+var Dungeon, Floor, library, serverLibPath, should, _ref;
 
 should = require('should');
 
@@ -6,43 +6,61 @@ library = process.env['TRIFOLIUM_COV'] ? 'lib-cov' : 'lib';
 
 serverLibPath = "../../../" + library + "/trifolium-server";
 
-Dungeon = require("" + serverLibPath + "/dungeon").Dungeon;
+_ref = require("" + serverLibPath + "/dungeon"), Floor = _ref.Floor, Dungeon = _ref.Dungeon;
+
+describe('Floor', function() {
+  var floor;
+  floor = null;
+  describe('#createEvent()', function() {});
+  return describe('#pickEvent()', function() {
+    beforeEach(function() {
+      return floor = new Floor({
+        _id: 'floorA',
+        number: 1,
+        events: [
+          {
+            type: "search",
+            treasures: [
+              {
+                "itemId": 2,
+                "probability": 100
+              }
+            ]
+          }
+        ]
+      });
+    });
+    it('should return null if floor has no event', function() {
+      var event;
+      floor.events = [];
+      event = floor.pickEvent();
+      return should.not.exist(event);
+    });
+    return it('should return Event', function() {
+      var event;
+      event = floor.pickEvent();
+      return should.exist(event);
+    });
+  });
+});
 
 describe('Dungeon', function() {
   var dungeon;
   dungeon = null;
   beforeEach(function() {
     return dungeon = new Dungeon({
+      _id: 'dungeonId',
       name: 'testDungeon',
-      floorList: []
+      floors: []
     });
   });
   it('should have name', function() {
     return dungeon.name.should.equal('testDungeon');
   });
   it('should have id', function() {
-    return should.exist(dungeon.id);
+    return dungeon.id.should.equal('dungeonId');
   });
-  it('should have floorList', function() {
-    return dungeon.floorList.should.be.an["instanceof"](Array);
-  });
-  return describe('#pickEvent()', function() {
-    beforeEach(function() {
-      return dungeon = new Dungeon({
-        name: 'testDungeon',
-        floorList: [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-      });
-    });
-    it('should return null if invalid floor', function() {
-      var event;
-      event = dungeon.pickEvent(4);
-      return should.not.exist(event);
-    });
-    return it('should return Event', function() {
-      var event;
-      event = dungeon.pickEvent(1);
-      should.exist(event);
-      return event.should.be.within(4, 6);
-    });
+  return it('should have floors', function() {
+    return dungeon.floors.should.be.an["instanceof"](Array);
   });
 });

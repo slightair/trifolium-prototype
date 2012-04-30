@@ -140,9 +140,11 @@ run_test = (callback) ->
     mocha.stderr.on 'data', data_handler
     mocha.on 'exit', (status) -> callback?() if status is 0
 
-make_coverage = (callback) ->
+remove_coverage = (callback) ->
     exec "rm -fr ./lib-cov"
-    
+    callback?()
+
+make_coverage = (callback) ->
     options = [
         './lib'
         './lib-cov'
@@ -192,7 +194,7 @@ task 'test', 'run test', ->
     compile_lib -> compile_server_test -> run_test -> 'All done.'
 
 task 'coverage', 'run coverage', ->
-    compile_lib -> compile_server_test -> make_coverage -> run_coverage -> open_coverage -> 'All done.'
+    compile_lib -> compile_server_test -> remove_coverage -> make_coverage -> run_coverage -> open_coverage -> 'All done.'
 
 task 'all', 'compile all scripts', ->
     # build_server -> build_express -> compile_server_test -> compile_client_test -> 'All done.'

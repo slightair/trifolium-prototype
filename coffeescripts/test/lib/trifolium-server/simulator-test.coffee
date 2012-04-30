@@ -10,24 +10,6 @@ serverLibPath = "../../../#{library}/trifolium-server"
 describe 'Simulator', ->
     simulator = null
     config = {
-        dungeons: [
-            {
-                name: "なめこの洞窟"
-                floors: [
-                    [
-                        {
-                            type: "search"
-                            treasures: [
-                                {
-                                    "itemId": 2,
-                                    "probability": 100
-                                }
-                            ]
-                        }
-                    ]
-                ]
-            }
-        ]
         numBraves: 10
         braveNameDict: {
             terms: ['1', '2', '3']
@@ -55,53 +37,10 @@ describe 'Simulator', ->
     it 'should have jobs', ->
         should.exist simulator.jobs
     
-    describe '#start()', ->
-        
-        beforeEach ->
-            simulator = new Simulator
-            simulator.jobs = null # for test
-            
-            ItemCreator.setItemDict {}
-            BraveCreator.setBraveNameDict {
-                terms: []
-                prefixes: []
-                suffixes: []
-            }
-        
-        it 'should set ItemDict to ItemCreator', ->
-            ItemCreator.itemDict.should.not.have.keys '1', '2', '3'
-            
-            simulator.start config
-            
-            ItemCreator.itemDict.should.have.keys '1', '2', '3'
-            ItemCreator.itemDict['3'].name.should.equal 'いいちくわ'
-        
-        it 'should set braveNameDict to BraveCreator', ->
-            BraveCreator.braveNamePrefixes.should.empty
-            BraveCreator.braveNameSuffixes.should.empty
-            
-            simulator.start config
-            
-            BraveCreator.braveNamePrefixes.should.not.empty
-            BraveCreator.braveNameSuffixes.should.not.empty
-        
-        it 'should make dungeons', ->
-            simulator.dungeons.should.empty
-            simulator.start config
-            simulator.dungeons.should.not.empty
-            simulator.dungeons.length.should.equal 1
-            simulator.dungeons[0].name.should.equal "なめこの洞窟"
-        
-        it 'should make braves', ->
-            simulator.braves.should.empty
-            simulator.start config
-            simulator.braves.should.not.empty
-            simulator.braves.length.should.equal 10
-    
     describe '#dungeonForId()', ->
-        dungeonA = new Dungeon {name: 'hoge'}
-        dungeonB = new Dungeon {name: 'fuga'}
-        dungeonC = new Dungeon {name: 'piyo'}
+        dungeonA = new Dungeon {name: 'hoge', floors:[]}
+        dungeonB = new Dungeon {name: 'fuga', floors:[]}
+        dungeonC = new Dungeon {name: 'piyo', floors:[]}
         dungeonId = dungeonA.id
         
         beforeEach ->

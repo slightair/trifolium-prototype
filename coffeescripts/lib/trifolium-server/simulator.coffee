@@ -23,31 +23,32 @@ class Simulator extends EventEmitter
         step [
             (done) => @makeDungeons done
             (done) => @makeBraves numBraves, done
-        ], =>
-            if @jobs
-                @jobs.process 'searchEvent', numBraves, (job, done) -> done()
-                @jobs.on 'job complete', (id) ->
-                    kue.Job.get id, (err, job) ->
-                        return if err
-                        job.remove (err) -> throw err if err
-                @jobs.promote 100
+        ], => @settingJobs() if @jobs
+    
+    settingJobs: ->
+        @jobs.process 'searchEvent', numBraves, (job, done) -> done()
+        @jobs.on 'job complete', (id) ->
+            kue.Job.get id, (err, job) ->
+                return if err
+                job.remove (err) -> throw err if err
+        @jobs.promote 100
+        
+        for brave in @braves
+            dungeon = @dungeons[0]
+            eventInfo = dungeon.floors[0].pickEventInfo()
+            time = 10000
+            
+            simulator = @
+            job = @jobs.create('searchEvent',
+                treasures: eventInfo.treasures
+                braveId: brave.id
+            ).on('complete', ->
+                brave = simulator.braveForId @data.braveId
+                event = new SearchEvent @data.treasures
+                result = event.process brave
                 
-                for brave in @braves
-                    dungeon = @dungeons[0]
-                    eventInfo = dungeon.floors[0].pickEventInfo()
-                    time = 10000
-                    
-                    simulator = @
-                    job = @jobs.create('searchEvent',
-                        treasures: eventInfo.treasures
-                        braveId: brave.id
-                    ).on('complete', ->
-                        brave = simulator.braveForId @data.braveId
-                        event = new SearchEvent @data.treasures
-                        result = event.process brave
-                        
-                        simulator.emit 'completeSearchEvent', brave, event, result
-                    ).delay(time).save()
+                simulator.emit 'completeSearchEvent', brave, event, result
+            ).delay(time).save()
     
     makeDungeons: (done) ->
         DungeonModel.find {}, (err, dungeons) =>
