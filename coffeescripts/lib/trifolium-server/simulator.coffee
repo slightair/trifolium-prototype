@@ -24,7 +24,16 @@ class Simulator extends EventEmitter
         ], => @settingJobs() if @jobs
     
     settingJobs: ->
-        @jobs.process 'searchEvent', @config.numBraves, (job, done) -> done()
+        @jobs.process 'event', @config.numBraves, (job, done) =>
+            brave = @braveForId job.data.braveId
+            dungeon = @dungeonForId job.data.dungeonId
+            eventInfo = dungeon.floors[job.data.floorIndex].pickEventInfo()
+            event = new SearchEvent eventInfo.treasures
+            result = event.process brave
+            
+            @emit 'completeEvent', brave, event, result
+            
+            done()
         @jobs.on 'job complete', (id) ->
             kue.Job.get id, (err, job) ->
                 return if err
@@ -32,21 +41,12 @@ class Simulator extends EventEmitter
         @jobs.promote 100
         
         for brave in @braves
-            dungeon = @dungeons[0]
-            eventInfo = dungeon.floors[0].pickEventInfo()
-            time = 10000
-            
-            simulator = @
-            job = @jobs.create('searchEvent',
-                title: "searchEvent - #{brave.name}"
-                treasures: eventInfo.treasures
+            time = 3000
+            @jobs.create('event',
+                title: "event - #{brave.name}"
                 braveId: brave.id
-            ).on('complete', ->
-                brave = simulator.braveForId @data.braveId
-                event = new SearchEvent @data.treasures
-                result = event.process brave
-                
-                simulator.emit 'completeSearchEvent', brave, event, result
+                dungeonId: @dungeons[0].id
+                floorIndex: 0
             ).delay(time).save()
     
     makeDungeons: (done) ->

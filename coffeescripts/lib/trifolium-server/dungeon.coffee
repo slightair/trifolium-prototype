@@ -16,7 +16,7 @@ class Floor
 class Dungeon
     constructor: (dungeonInfo) ->
         @name = dungeonInfo.name ? 'unknown'
-        @id = dungeonInfo._id
+        @id = dungeonInfo._id.toString()
         @floors = (new Floor info for info in dungeonInfo.floors)
 
 exports.Floor = Floor

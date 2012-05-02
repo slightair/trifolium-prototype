@@ -10,7 +10,7 @@ config = JSON.parse(fs.readFileSync(configFilePath))
 simulator = new Simulator
 
 # event callbacks
-simulator.on 'completeSearchEvent', (brave, event, result) ->
+simulator.on 'completeEvent', (brave, event, result) ->
     console.log brave, event, result
 
 simulator.start config.simulator
