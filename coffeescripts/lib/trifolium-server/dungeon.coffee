@@ -4,16 +4,9 @@ class Floor
     constructor: (floorInfo) ->
         @id = floorInfo._id
         @number = floorInfo.number
-        @events = (@createEvent info for info in floorInfo.events)
+        @events = floorInfo.events
     
-    createEvent: (info) ->
-        event = null
-        switch info.type
-            when 'search'
-                event = new SearchEvent info.treasures
-        event
-    
-    pickEvent: ->
+    pickEventInfo: ->
         return null if @events.length == 0
         
         events = @events.sort (a, b) -> 0.5 - Math.random()

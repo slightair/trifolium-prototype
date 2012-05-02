@@ -25,6 +25,15 @@ DungeonSchema = new Schema
     floors: [FloorSchema]
 DungeonModel = mongoose.model 'Dungeon', DungeonSchema
 
+EventLogSchema = new Schema
+    id: ObjectId
+    type: String
+    brave: String
+    isSucceed: Boolean
+    options: Schema.Types.Mixed
+EventLogModel = mongoose.model 'EventLog', EventLogSchema
+
 exports.EventModel = EventModel
 exports.FloorModel = FloorModel
 exports.DungeonModel = DungeonModel
+exports.EventLogModel = EventLogModel

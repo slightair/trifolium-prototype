@@ -1,4 +1,5 @@
 {ItemCreator} = require './item'
+{EventLogModel} = require '../database'
 
 class SearchEvent
     probabilityMax: 1000
@@ -11,7 +12,7 @@ class SearchEvent
         
         if total > @probabilityMax
             result = {isSucceed: false, treasure: null}
-            @save result
+            @save brave, result
             return result
         
         treasures = @treasures.sort (a, b) -> 0.5 - Math.random()
@@ -24,12 +25,21 @@ class SearchEvent
         
         if treasure && brave.addItem treasure
             result = {isSucceed: true, treasure:treasure}
-            @save result
         else
             result = {isSucceed: false, treasure:treasure}
-            @save result
+        @save brave, result
         result
-    save: (result) ->
-        #
+    
+    save: (brave, result) ->
+        eventLog = new EventLogModel
+        eventLog.type = @type
+        eventLog.brave = brave.name
+        eventLog.isSucceed = result.isSucceed
+        eventLog.options = {
+            treasure: result.treasure
+        }
+        
+        eventLog.save (err) ->
+            console.log err.message if err
 
 exports.SearchEvent = SearchEvent

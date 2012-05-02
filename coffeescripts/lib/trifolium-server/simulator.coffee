@@ -14,19 +14,17 @@ class Simulator extends EventEmitter
         @braves = []
         @jobs = kue.createQueue()
     
-    start: (config) ->
-        {braveNameDict, numBraves, itemDict} = config
-        
-        ItemCreator.setItemDict itemDict
-        BraveCreator.setBraveNameDict braveNameDict
+    start: (@config) ->
+        ItemCreator.setItemDict @config.itemDict
+        BraveCreator.setBraveNameDict @config.braveNameDict
         
         step [
             (done) => @makeDungeons done
-            (done) => @makeBraves numBraves, done
+            (done) => @makeBraves done
         ], => @settingJobs() if @jobs
     
     settingJobs: ->
-        @jobs.process 'searchEvent', numBraves, (job, done) -> done()
+        @jobs.process 'searchEvent', @config.numBraves, (job, done) -> done()
         @jobs.on 'job complete', (id) ->
             kue.Job.get id, (err, job) ->
                 return if err
@@ -40,6 +38,7 @@ class Simulator extends EventEmitter
             
             simulator = @
             job = @jobs.create('searchEvent',
+                title: "searchEvent - #{brave.name}"
                 treasures: eventInfo.treasures
                 braveId: brave.id
             ).on('complete', ->
@@ -55,8 +54,8 @@ class Simulator extends EventEmitter
             @dungeons = (new Dungeon dungeonInfo for dungeonInfo in dungeons)
             done()
     
-    makeBraves: (numBraves, done) ->
-        @braves = (BraveCreator.create {speed: Math.floor(Math.random() * 50) + 20} for i in [0...numBraves])
+    makeBraves: (done) ->
+        @braves = (BraveCreator.create {speed: Math.floor(Math.random() * 50) + 20} for i in [0...@config.numBraves])
         done()
     
     dungeonForId: (id) ->
