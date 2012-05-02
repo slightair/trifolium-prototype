@@ -7,7 +7,7 @@
 
   Simulator = require('./lib/trifolium-server/simulator').Simulator;
 
-  kue.app.listen(3000);
+  kue.app.listen(3100);
 
   configFilePath = './config.json';
 

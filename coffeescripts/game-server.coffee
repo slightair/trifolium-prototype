@@ -2,7 +2,7 @@ fs = require 'fs'
 kue = require 'kue'
 {Simulator} = require './lib/trifolium-server/simulator'
 
-kue.app.listen 3000
+kue.app.listen 3100
 
 configFilePath = './config.json'
 config = JSON.parse(fs.readFileSync(configFilePath))
