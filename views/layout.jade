@@ -4,10 +4,7 @@ html
         meta(http-equiv='Content-type', content="text/html; charset=utf-8")
         title trifolium - #{title}
         link(rel='stylesheet/less', href='/stylesheets/styles.less')
-        script(type='text/javascript', src='javascripts/lib/jquery-1.7.1.min.js')
-        script(type='text/javascript', src='javascripts/lib/less-1.2.1.min.js')
-        each file in scriptfiles
-            script(type='text/javascript', src=file)
-        script!= script
+        script(type='text/javascript', src='javascripts/vendor/jquery-1.7.1.min.js')
+        script(type='text/javascript', src='javascripts/vendor/less-1.3.0.min.js')
     body!= body
     
