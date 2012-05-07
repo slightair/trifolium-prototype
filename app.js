@@ -1,4 +1,4 @@
-var app, config, configFilePath, express, fs, port, routes, _ref;
+var app, express, fs, port, routes, _ref;
 
 fs = require('fs');
 
@@ -6,22 +6,15 @@ express = require('express');
 
 routes = require('./routes');
 
-configFilePath = './config.json';
-
-config = JSON.parse(fs.readFileSync(configFilePath));
-
 app = module.exports = express.createServer();
 
 app.configure(function() {
-  var _ref;
   app.set("views", __dirname + "/views");
   app.set("view engine", "jade");
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.static(__dirname + "/public"));
-  app.set('notifierConfig', config.notifier);
-  return app.set('gameServerHost', (_ref = process.env.GAME_SERVER_HOST) != null ? _ref : "http://localhost:6262");
+  return app.use(express.static(__dirname + "/public"));
 });
 
 app.configure("development", function() {
@@ -36,6 +29,8 @@ app.configure("production", function() {
 });
 
 app.get("/", routes.index);
+
+app.get("/eventlogs", routes.eventlogs);
 
 port = (_ref = process.env.PORT) != null ? _ref : 3000;
 

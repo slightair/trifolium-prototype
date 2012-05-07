@@ -17,7 +17,7 @@ simulator.on 'completeEvent', (brave, event, result) ->
                 console.log "勇者#{brave.name}は#{result.treasure.name}を手に入れた!"
             else
                 if result.treasure
-                    console.log "勇者#{brave.name}は#{result.treasure.name}を見つけたが、これ以上アイテムを持てないのであきらめた…"
+                    console.log "勇者#{brave.name}は#{result.treasure.name}を見つけたが、持ち物がいっぱいなのであきらめた…"
                 else
                     console.log "勇者#{brave.name}はアイテムを見つけられなかった…"
         else

@@ -35,7 +35,7 @@ class SearchEvent
         eventLog.type = @type
         eventLog.brave = brave.name
         eventLog.isSucceed = result.isSucceed
-        eventLog.options = {
+        eventLog.others = {
             treasure: result.treasure
         }
         

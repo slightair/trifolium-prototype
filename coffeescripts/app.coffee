@@ -2,8 +2,8 @@ fs = require 'fs'
 express = require 'express'
 routes = require './routes'
 
-configFilePath = './config.json'
-config = JSON.parse(fs.readFileSync(configFilePath))
+# configFilePath = './config.json'
+# config = JSON.parse(fs.readFileSync(configFilePath))
 
 app = module.exports = express.createServer()
 
@@ -14,8 +14,6 @@ app.configure ->
     app.use express.methodOverride()
     app.use app.router
     app.use express.static(__dirname + "/public")
-    app.set 'notifierConfig', config.notifier
-    app.set 'gameServerHost', (process.env.GAME_SERVER_HOST ? "http://localhost:6262")
 
 app.configure "development", ->
     app.use express.errorHandler(
@@ -27,6 +25,7 @@ app.configure "production", ->
     app.use express.errorHandler()
 
 app.get "/", routes.index
+app.get "/eventlogs", routes.eventlogs
 
 port = process.env.PORT ? 3000
 app.listen port

@@ -32,7 +32,7 @@ compile_route = (callback) ->
     coffee.on 'exit', (status) -> callback?() if status is 0
 
 build_express = (callback) ->
-    compile_app -> compile_route -> callback?()
+    compile_lib -> compile_app -> compile_route -> callback?()
 
 compile_lib = (callback) ->
     options = [

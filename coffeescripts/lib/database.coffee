@@ -30,7 +30,7 @@ EventLogSchema = new Schema
     type: String
     brave: String
     isSucceed: Boolean
-    options: Schema.Types.Mixed
+    others: Schema.Types.Mixed
 EventLogModel = mongoose.model 'EventLog', EventLogSchema
 
 exports.EventModel = EventModel
