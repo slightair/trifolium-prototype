@@ -16,7 +16,21 @@
   simulator = new Simulator;
 
   simulator.on('completeEvent', function(brave, event, result) {
-    return console.log(brave, event, result);
+    switch (event.type) {
+      case 'search':
+        if (result.isSucceed) {
+          return console.log("勇者" + brave.name + "は" + result.treasure.name + "を手に入れた!");
+        } else {
+          if (result.treasure) {
+            return console.log("勇者" + brave.name + "は" + result.treasure.name + "を見つけたが、これ以上アイテムを持てないのであきらめた…");
+          } else {
+            return console.log("勇者" + brave.name + "はアイテムを見つけられなかった…");
+          }
+        }
+        break;
+      default:
+        return console.log("unknown event complete.");
+    }
   });
 
   simulator.start(config.simulator);
