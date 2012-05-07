@@ -7,10 +7,7 @@ serverLibPath = "../../../#{library}/trifolium-server"
 describe 'Floor', ->
     floor = null
     
-    describe '#createEvent()', ->
-        
-    
-    describe '#pickEvent()', ->
+    describe '#pickEventInfo()', ->
         beforeEach ->
             floor = new Floor {_id: 'floorA', number: 1, events: [
                             type: "search"
@@ -24,12 +21,13 @@ describe 'Floor', ->
         
         it 'should return null if floor has no event', ->
             floor.events = []
-            event = floor.pickEvent()
-            should.not.exist event
+            eventInfo = floor.pickEventInfo()
+            should.not.exist eventInfo
         
-        it 'should return Event', ->
-            event = floor.pickEvent()
-            should.exist event
+        it 'should return eventInfo', ->
+            eventInfo = floor.pickEventInfo()
+            should.exist eventInfo
+            eventInfo.type.should.equal "search"
 
 describe 'Dungeon', ->
     dungeon = null

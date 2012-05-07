@@ -11,8 +11,7 @@ _ref = require("" + serverLibPath + "/dungeon"), Floor = _ref.Floor, Dungeon = _
 describe('Floor', function() {
   var floor;
   floor = null;
-  describe('#createEvent()', function() {});
-  return describe('#pickEvent()', function() {
+  return describe('#pickEventInfo()', function() {
     beforeEach(function() {
       return floor = new Floor({
         _id: 'floorA',
@@ -31,15 +30,16 @@ describe('Floor', function() {
       });
     });
     it('should return null if floor has no event', function() {
-      var event;
+      var eventInfo;
       floor.events = [];
-      event = floor.pickEvent();
-      return should.not.exist(event);
+      eventInfo = floor.pickEventInfo();
+      return should.not.exist(eventInfo);
     });
-    return it('should return Event', function() {
-      var event;
-      event = floor.pickEvent();
-      return should.exist(event);
+    return it('should return eventInfo', function() {
+      var eventInfo;
+      eventInfo = floor.pickEventInfo();
+      should.exist(eventInfo);
+      return eventInfo.type.should.equal("search");
     });
   });
 });

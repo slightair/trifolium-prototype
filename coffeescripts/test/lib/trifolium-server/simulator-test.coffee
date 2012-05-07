@@ -38,9 +38,9 @@ describe 'Simulator', ->
         should.exist simulator.jobs
     
     describe '#dungeonForId()', ->
-        dungeonA = new Dungeon {name: 'hoge', floors:[]}
-        dungeonB = new Dungeon {name: 'fuga', floors:[]}
-        dungeonC = new Dungeon {name: 'piyo', floors:[]}
+        dungeonA = new Dungeon {name: 'hoge', floors:[], _id:"hogeId"}
+        dungeonB = new Dungeon {name: 'fuga', floors:[], _id:"fugaId"}
+        dungeonC = new Dungeon {name: 'piyo', floors:[], _id:"piyoId"}
         dungeonId = dungeonA.id
         
         beforeEach ->

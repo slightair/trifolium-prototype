@@ -54,15 +54,18 @@ describe('Simulator', function() {
     var dungeonA, dungeonB, dungeonC, dungeonId;
     dungeonA = new Dungeon({
       name: 'hoge',
-      floors: []
+      floors: [],
+      _id: "hogeId"
     });
     dungeonB = new Dungeon({
       name: 'fuga',
-      floors: []
+      floors: [],
+      _id: "fugaId"
     });
     dungeonC = new Dungeon({
       name: 'piyo',
-      floors: []
+      floors: [],
+      _id: "piyoId"
     });
     dungeonId = dungeonA.id;
     beforeEach(function() {
