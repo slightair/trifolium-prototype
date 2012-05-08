@@ -4,8 +4,8 @@ div.navbar
             a.brand(href='#') trifolium
 div.container
     header
-        h1 イベント履歴
-    section#brave-log-list
+        h1= title
+    section#history
         div
             each log in logs
                 if log.isSucceed

@@ -25,7 +25,7 @@ app.configure "production", ->
     app.use express.errorHandler()
 
 app.get "/", routes.index
-app.get "/eventlogs", routes.eventlogs
+app.get "/history", routes.history
 
 port = process.env.PORT ? 3000
 app.listen port

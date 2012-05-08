@@ -22,10 +22,10 @@ exports.index = function(req, res) {
   });
 };
 
-exports.eventlogs = function(req, res) {
+exports.history = function(req, res) {
   return EventLogModel.find({}, function(err, logs) {
-    return res.render("eventlogs", {
-      title: "Event logs",
+    return res.render("history", {
+      title: "イベント履歴",
       logs: logs
     });
   });

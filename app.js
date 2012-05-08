@@ -30,7 +30,7 @@ app.configure("production", function() {
 
 app.get("/", routes.index);
 
-app.get("/eventlogs", routes.eventlogs);
+app.get("/history", routes.history);
 
 port = (_ref = process.env.PORT) != null ? _ref : 3000;
 
