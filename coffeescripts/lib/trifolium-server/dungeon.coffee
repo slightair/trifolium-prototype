@@ -1,23 +1,16 @@
-{SearchEvent} = require './event'
+mongoose = require 'mongoose'
 
-class Floor
-    constructor: (floorInfo) ->
-        @id = floorInfo._id
-        @number = floorInfo.number
-        @events = floorInfo.events
-    
-    pickEventInfo: ->
-        return null if @events.length == 0
-        
-        events = @events.sort (a, b) -> 0.5 - Math.random()
-        index = parseInt(Math.random() * events.length)
-        events[index]
+Schema = mongoose.Schema
+ObjectId = Schema.ObjectId
 
-class Dungeon
-    constructor: (dungeonInfo) ->
-        @name = dungeonInfo.name ? 'unknown'
-        @id = dungeonInfo._id.toString()
-        @floors = (new Floor info for info in dungeonInfo.floors)
+{FloorSchema} = require './floor'
 
-exports.Floor = Floor
+DungeonSchema = new Schema
+    id: ObjectId
+    name: String
+    floors: [FloorSchema]
+
+exports.DungeonSchema = DungeonSchema
+
+Dungeon = mongoose.model 'Dungeon', DungeonSchema
 exports.Dungeon = Dungeon

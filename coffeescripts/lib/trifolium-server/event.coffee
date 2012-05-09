@@ -1,5 +1,38 @@
+mongoose = require 'mongoose'
+
+# schemas
+
+Schema = mongoose.Schema
+ObjectId = Schema.ObjectId
+
+EventInfoSchema = new Schema
+    id: ObjectId
+    type: String
+    treasures: [{
+        itemId: Number
+        probability: Number
+    }]
+
+exports.EventInfoSchema = EventInfoSchema
+
+EventInfo = mongoose.model 'Event', EventInfoSchema
+exports.EventInfo = EventInfo
+
+EventLogSchema = new Schema
+    id: ObjectId
+    type: String
+    brave: String
+    isSucceed: Boolean
+    others: Schema.Types.Mixed
+
+exports.EventLogSchema = EventLogSchema
+
+EventLog = mongoose.model 'EventLog', EventLogSchema
+exports.EventLog = EventLog
+
+# events
+
 {ItemCreator} = require './item'
-{EventLogModel} = require '../database'
 
 class SearchEvent
     probabilityMax: 1000
@@ -31,7 +64,7 @@ class SearchEvent
         result
     
     save: (brave, result) ->
-        eventLog = new EventLogModel
+        eventLog = new EventLog
         eventLog.type = @type
         eventLog.brave = brave.name
         eventLog.isSucceed = result.isSucceed
