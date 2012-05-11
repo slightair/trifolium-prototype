@@ -1,48 +1,50 @@
 crypto = require 'crypto'
-{EventEmitter} = require 'events'
+mongoose = require 'mongoose'
 
-class Brave extends EventEmitter
-    constructor: (@name, options = {}) ->
-        date = new Date
-        @id    = crypto.createHash('sha1').update("#{@name}")
-                                          .update('b9889216daa1ccab')
-                                          .update("#{date.getTime()}")
-                                          .update("#{date.getMilliseconds()}")
-                                          .digest('hex')
-        @lv    = options.lv    ? 1
-        @atk   = options.atk   ? 1
-        @matk  = options.matk  ? 1
-        @hp    = options.hp    ? 10
-        @mp    = options.mp    ? 10
-        @brave = options.brave ? 50
-        @faith = options.faith ? 50
-        @speed = options.speed ? 3
-        @gold  = options.gold  ? 300
-        @items = options.items ? []
-    
-    addItem: (item) ->
-        if @items.length < 10
-            @items.push item 
-            true
-        else
-            false
-    
-    removeItem: (item) ->
-        @items = (i for i in @items when i != item)
-    
-    details: ->
-        id: @id
-        name: @name
-        lv: @lv
-        atk: @atk
-        matk: @matk
-        hp: @hp
-        mp: @mp
-        brave: @brave
-        faith: @faith
-        speed: @speed
-        gold: @gold
-        items: (item.details() for item in @items)
+Schema = mongoose.Schema
+ObjectId = Schema.ObjectId
+
+{step} = require '../util'
+
+BraveSchema = new Schema
+    name: String
+    level: Number
+    attack: Number
+    magic: Number
+    maxhp: Number
+    hp: Number
+    maxmp: Number
+    mp: Number
+    brave: Number
+    faith: Number
+    speed: Number
+    gold: Number
+    items: [{
+        name: String
+        itemId: Number
+        hash: String
+    }]
+    hash: String
+
+BraveSchema.methods.addItem = (item) ->
+    if @items.length < 10
+        @items.push item
+        @save (err) ->
+            console.log err.message if err
+        true
+    else
+        false
+
+BraveSchema.methods.removeItem = (item) ->
+    @items = (i for i in @items when i != item)
+    @save (err) ->
+        console.log err.message if err
+    @items
+
+exports.BraveSchema = BraveSchema
+
+Brave = mongoose.model 'Brave', BraveSchema
+exports.Brave = Brave
 
 class BraveCreator
     constructor: ->
@@ -56,13 +58,44 @@ class BraveCreator
         
         @braveNamePrefixes = braveNamePrefixes
         @braveNameSuffixes = braveNameSuffixes
-    create: (options = {}) ->
-        new Brave @makeBraveName(), options
+    
+    create: (info, next) ->
+        @createBraves [info] next
+    
+    createBraves: (infoList, next) ->
+        saveBraveFunctions = []
+        braves = []
+        
+        for info in infoList
+            saveBraveFunctions.push (done) =>
+                brave = new Brave
+                
+                brave.name   = @makeBraveName()
+                brave.level  = info.level ? 1
+                brave.attack = info.attack ? 1
+                brave.magic  = info.magic ? 1
+                brave.maxhp  = info.maxhp ? 10
+                brave.hp     = info.maxhp ? 10
+                brave.maxmp  = info.maxmp ? 10
+                brave.mp     = info.maxmp ? 10
+                brave.brave  = info.brave ? 50
+                brave.faith  = info.faith ? 50
+                brave.speed  = info.speed ? 3
+                brave.gold   = info.gold ? 300
+                brave.items  = info.items ? []
+                brave.hash = crypto.createHash('sha1').update(brave.id).update('cf3e3815').digest('hex').substr(0, 12)
+                
+                brave.save (err) ->
+                    console.log err.message if err
+                    braves.push brave
+                    done()
+        
+        step saveBraveFunctions, -> next(braves)
+    
     makeBraveName: ->
         prefixIndex = parseInt(Math.random() * @braveNamePrefixes.length)
         suffixIndex = parseInt(Math.random() * @braveNameSuffixes.length)
         
         "#{@braveNamePrefixes[prefixIndex]}#{@braveNameSuffixes[suffixIndex]}"
 
-exports.Brave = Brave
 exports.BraveCreator = new BraveCreator

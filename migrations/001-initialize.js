@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+  , crypto = require('crypto')
   , EventInfo = require('../lib/trifolium-server/event').EventInfo
   , Floor = require('../lib/trifolium-server/floor').Floor
   , Dungeon = require('../lib/trifolium-server/dungeon').Dungeon
@@ -44,6 +45,7 @@ exports.up = function(next){
     ]
     
     dungeonA = new Dungeon();
+    dungeonA.hash = crypto.createHash('sha1').update(dungeonA.id).update('cf3e3815').digest('hex').substr(0, 12);
     dungeonA.name = 'dungeon A';
     dungeonA.floors = [
           dungeonA1F
@@ -66,6 +68,7 @@ exports.up = function(next){
     ]
     
     dungeonB = new Dungeon();
+    dungeonB.hash = crypto.createHash('sha1').update(dungeonB.id).update('cf3e3815').digest('hex').substr(0, 12);
     dungeonB.name = 'dungeon B';
     dungeonB.floors = [
         dungeonB1F

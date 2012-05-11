@@ -3,16 +3,17 @@ crypto = require 'crypto'
 class Item
     constructor: (@itemId, @name) ->
         date = new Date
-        @id = crypto.createHash('sha1').update("#{@itemId}")
+        @hash = crypto.createHash('sha1').update("#{@itemId}")
                                        .update("#{@name}")
                                        .update('2c77a50b0c670bb6')
                                        .update("#{date.getTime()}")
                                        .update("#{date.getMilliseconds()}")
                                        .digest('hex')
+                                       .substr(0, 12)
     details: ->
-       id: @id
        name: @name
        itemId: @itemId
+       hash: @hash
 
 class ItemCreator
     constructor: ->
