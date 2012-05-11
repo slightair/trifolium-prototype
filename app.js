@@ -1,10 +1,14 @@
-var app, express, fs, port, routes, _ref;
+var app, express, fs, mongoose, port, routes, _ref;
 
 fs = require('fs');
 
 express = require('express');
 
+mongoose = require('mongoose');
+
 routes = require('./routes');
+
+mongoose.connect('mongodb://localhost/trifolium');
 
 app = module.exports = express.createServer();
 

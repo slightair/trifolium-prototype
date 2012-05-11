@@ -1,6 +1,6 @@
-var EventLogModel;
+var EventLog;
 
-EventLogModel = require('../lib/database').EventLogModel;
+EventLog = require('../lib/trifolium-server/event').EventLog;
 
 exports.index = function(req, res) {
   return res.render("index", {
@@ -23,7 +23,8 @@ exports.index = function(req, res) {
 };
 
 exports.history = function(req, res) {
-  return EventLogModel.find({}, function(err, logs) {
+  return EventLog.find({}, function(err, logs) {
+    if (err) console.log(err.message);
     return res.render("history", {
       title: "イベント履歴",
       logs: logs

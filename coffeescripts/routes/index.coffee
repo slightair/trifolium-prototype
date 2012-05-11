@@ -1,4 +1,4 @@
-{EventLogModel} = require '../lib/database'
+{EventLog} = require '../lib/trifolium-server/event'
 
 exports.index = (req, res) ->
     res.render "index",
@@ -18,7 +18,9 @@ exports.index = (req, res) ->
         script: "var gameConfig={width:580,height:450,trifolium:{websocket:#{websocketConfig}},gameServerHost:'#{settings.gameServerHost}'};"
 
 exports.history = (req, res) ->
-    EventLogModel.find {}, (err, logs) ->
+    EventLog.find {}, (err, logs) ->
+        console.log err.message if err
+        
         res.render "history",
             title: "イベント履歴"
             logs: logs

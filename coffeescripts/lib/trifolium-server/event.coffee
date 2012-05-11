@@ -3,10 +3,8 @@ mongoose = require 'mongoose'
 # schemas
 
 Schema = mongoose.Schema
-ObjectId = Schema.ObjectId
 
 EventInfoSchema = new Schema
-    id: ObjectId
     type: String
     treasures: [{
         itemId: Number
@@ -19,7 +17,6 @@ EventInfo = mongoose.model 'Event', EventInfoSchema
 exports.EventInfo = EventInfo
 
 EventLogSchema = new Schema
-    id: ObjectId
     type: String
     brave: String
     isSucceed: Boolean

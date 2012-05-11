@@ -1,9 +1,12 @@
 fs = require 'fs'
 express = require 'express'
+mongoose = require 'mongoose'
 routes = require './routes'
 
 # configFilePath = './config.json'
 # config = JSON.parse(fs.readFileSync(configFilePath))
+
+mongoose.connect 'mongodb://localhost/trifolium'
 
 app = module.exports = express.createServer()
 

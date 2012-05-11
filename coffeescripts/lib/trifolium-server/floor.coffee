@@ -1,12 +1,10 @@
 mongoose = require 'mongoose'
 
 Schema = mongoose.Schema
-ObjectId = Schema.ObjectId
 
 {EventInfoSchema} = require './event'
 
 FloorSchema = new Schema
-    id: ObjectId
     number: Number
     eventInfos: [EventInfoSchema]
 
