@@ -23,7 +23,7 @@ exports.index = function(req, res) {
 };
 
 exports.history = function(req, res) {
-  return EventLog.find({}, function(err, logs) {
+  return EventLog.find({}).desc('date').exec(function(err, logs) {
     if (err) console.log(err.message);
     return res.render("history", {
       title: "イベント履歴",

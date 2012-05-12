@@ -10,14 +10,23 @@ div.container
             each log in logs
                 if log.isSucceed
                     div.alert.alert-success
+                        h4
+                            i.icon-time
+                            #{log.gamedate}
                         i.icon-user
                         span 勇者#{log.brave}は#{log.others.treasure.name}を手に入れた!
                 else
                     if log.others
                         div.alert
+                            h4
+                                i.icon-time
+                                #{log.gamedate}
                             i.icon-user
                             span 勇者#{log.brave}は#{log.others.treasure.name}を見つけたが、持ち物がいっぱいなのであきらめた…
                     else
                         div.alert
+                            h4
+                                i.icon-time
+                                #{log.gamedate}
                             i.icon-user
                             span 勇者#{log.brave}はアイテムを見つけられなかった…

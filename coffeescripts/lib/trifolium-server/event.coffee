@@ -1,4 +1,5 @@
 mongoose = require 'mongoose'
+{gamedate} = require '../util'
 
 # schemas
 
@@ -20,7 +21,10 @@ EventLogSchema = new Schema
     type: String
     brave: String
     isSucceed: Boolean
+    date: Date
     others: Schema.Types.Mixed
+
+EventLogSchema.virtual('gamedate').get -> gamedate @date
 
 exports.EventLogSchema = EventLogSchema
 
@@ -65,6 +69,7 @@ class SearchEvent
         eventLog.type = @type
         eventLog.brave = brave.name
         eventLog.isSucceed = result.isSucceed
+        eventLog.date = new Date
         eventLog.others = {
             treasure: result.treasure
         }

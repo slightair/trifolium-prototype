@@ -18,7 +18,7 @@ exports.index = (req, res) ->
         script: "var gameConfig={width:580,height:450,trifolium:{websocket:#{websocketConfig}},gameServerHost:'#{settings.gameServerHost}'};"
 
 exports.history = (req, res) ->
-    EventLog.find {}, (err, logs) ->
+    EventLog.find({}).desc('date').exec (err, logs) ->
         console.log err.message if err
         
         res.render "history",
