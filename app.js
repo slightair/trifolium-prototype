@@ -40,7 +40,7 @@ app.get("/history", routes.history);
 
 app.get("/braves", braves.index);
 
-app.get("/braves/:id", braves.show);
+app.get("/braves/:hash", braves.show);
 
 port = (_ref = process.env.PORT) != null ? _ref : 3000;
 

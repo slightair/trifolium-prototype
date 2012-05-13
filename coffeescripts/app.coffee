@@ -31,7 +31,7 @@ app.configure "production", ->
 app.get "/", routes.index
 app.get "/history", routes.history
 app.get "/braves", braves.index
-app.get "/braves/:id", braves.show
+app.get "/braves/:hash", braves.show
 
 port = process.env.PORT ? 3000
 app.listen port

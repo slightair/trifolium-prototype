@@ -1,0 +1,49 @@
+div.navbar
+    div.navbar-inner
+        div.container
+            a.brand(href='#') trifolium
+div.container
+    header
+        h1= title
+    section#brave
+        div.well
+            div.row-fluid
+                div.span3
+                    i.icon-user
+                div.span9
+                    ul.unstyled
+                        li
+                            strong 勇者
+                            #{brave.name}
+                        li
+                            strong Lv
+                            #{brave.level}
+                        li
+                            strong Attack
+                            #{brave.attack}
+                        li
+                            strong Magic
+                            #{brave.magic}
+                        li
+                            strong HP
+                            #{brave.hp}/#{brave.maxhp}
+                        li
+                            strong MP
+                            #{brave.mp}/#{brave.maxmp}
+                        li
+                            strong Brave
+                            #{brave.brave}
+                        li
+                            strong Faith
+                            #{brave.faith}
+                        li
+                            strong Speed
+                            #{brave.speed}
+                        li
+                            strong 所持金
+                            #{brave.gold}G
+                        li
+                            strong item
+                            ul.unstyled
+                                each item in brave.items
+                                    li= item.name

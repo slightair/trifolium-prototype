@@ -7,3 +7,17 @@ exports.index = (req, res) ->
         res.render "braves",
             title: "勇者の一覧"
             braves: braves
+
+exports.show = (req, res) ->
+    Brave.findOne({hash: req.params.hash}).exec (err, brave) ->
+        console.log err.message if err
+        
+        if brave
+            res.render "brave",
+                title: "勇者のステータス - #{brave.name}"
+                brave: brave
+        else
+            res.render "error",
+                title: "勇者のステータス"
+                message: "指定された勇者は見つかりませんでした"
+
