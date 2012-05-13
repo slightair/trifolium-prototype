@@ -1,4 +1,4 @@
-var app, express, fs, mongoose, port, routes, _ref;
+var app, braves, express, fs, mongoose, port, routes, _ref;
 
 fs = require('fs');
 
@@ -7,6 +7,8 @@ express = require('express');
 mongoose = require('mongoose');
 
 routes = require('./routes');
+
+braves = require('./routes/braves');
 
 mongoose.connect('mongodb://localhost/trifolium');
 
@@ -35,6 +37,10 @@ app.configure("production", function() {
 app.get("/", routes.index);
 
 app.get("/history", routes.history);
+
+app.get("/braves", braves.index);
+
+app.get("/braves/:id", braves.show);
 
 port = (_ref = process.env.PORT) != null ? _ref : 3000;
 

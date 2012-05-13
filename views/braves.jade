@@ -1,0 +1,31 @@
+div.navbar
+    div.navbar-inner
+        div.container
+            a.brand(href='#') trifolium
+div.container
+    header
+        h1= title
+    section#braves
+        each brave, i in braves
+            if i % 3 == 0
+                | <div class='row'>
+            div.span4
+                div.well
+                    div.row-fluid
+                        div.span3
+                            i.icon-user
+                        div.span9
+                            ul.unstyled
+                                li
+                                    strong 勇者
+                                    span= brave.name
+                                li
+                                    strong HP
+                                    span #{brave.hp}/#{brave.maxhp}
+                                li
+                                    strong MP
+                                    span #{brave.mp}/#{brave.maxmp}
+            if i % 3 == 2
+                | </div>
+        unless braves.length % 3 == 0
+            | </div>

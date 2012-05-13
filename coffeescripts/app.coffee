@@ -2,6 +2,7 @@ fs = require 'fs'
 express = require 'express'
 mongoose = require 'mongoose'
 routes = require './routes'
+braves = require './routes/braves'
 
 # configFilePath = './config.json'
 # config = JSON.parse(fs.readFileSync(configFilePath))
@@ -29,6 +30,8 @@ app.configure "production", ->
 
 app.get "/", routes.index
 app.get "/history", routes.history
+app.get "/braves", braves.index
+app.get "/braves/:id", braves.show
 
 port = process.env.PORT ? 3000
 app.listen port

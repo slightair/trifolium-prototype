@@ -24,7 +24,7 @@ compile_route = (callback) ->
         '-c'
         '-o'
         'routes'
-        'coffeescripts/routes/index.coffee'
+        'coffeescripts/routes/'
     ]
     coffee = spawn "#{bin_path}/coffee", options
     coffee.stdout.on 'data', stream_data_handler
