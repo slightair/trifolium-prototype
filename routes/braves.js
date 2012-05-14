@@ -5,9 +5,10 @@ Brave = require('../lib/trifolium-server/brave').Brave;
 exports.index = function(req, res) {
   return Brave.find({}).desc('id').exec(function(err, braves) {
     if (err) console.log(err.message);
-    return res.render("braves", {
-      title: "勇者の一覧",
-      braves: braves
+    return res.render('braves', {
+      title: '勇者の一覧',
+      braves: braves,
+      navbarActiveItem: 'braves'
     });
   });
 };
@@ -18,14 +19,16 @@ exports.show = function(req, res) {
   }).exec(function(err, brave) {
     if (err) console.log(err.message);
     if (brave) {
-      return res.render("brave", {
+      return res.render('brave', {
         title: "勇者のステータス - " + brave.name,
-        brave: brave
+        brave: brave,
+        navbarActiveItem: 'braves'
       });
     } else {
-      return res.render("error", {
-        title: "勇者のステータス",
-        message: "指定された勇者は見つかりませんでした"
+      return res.render('error', {
+        title: '勇者のステータス',
+        message: '指定された勇者は見つかりませんでした',
+        navbarActiveItem: 'braves'
       });
     }
   });

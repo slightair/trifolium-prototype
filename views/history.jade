@@ -1,7 +1,4 @@
-div.navbar
-    div.navbar-inner
-        div.container
-            a.brand(href='#') trifolium
+include _navbar
 div.container
     header
         h1= title
@@ -14,7 +11,8 @@ div.container
                             i.icon-time
                             #{log.gamedate}
                         i.icon-user
-                        勇者#{log.brave}は#{log.others.treasure.name}を手に入れた!
+                        a(href="/braves/#{log.brave.hash}") 勇者#{log.brave}
+                        は#{log.others.treasure.name}を手に入れた!
                 else
                     if log.others
                         div.alert
@@ -22,11 +20,13 @@ div.container
                                 i.icon-time
                                 #{log.gamedate}
                             i.icon-user
-                            勇者#{log.brave}は#{log.others.treasure.name}を見つけたが、持ち物がいっぱいなのであきらめた…
+                            a(href="/braves/#{log.brave.hash}") 勇者#{log.brave}
+                            は#{log.others.treasure.name}を見つけたが、持ち物がいっぱいなのであきらめた…
                     else
                         div.alert
                             h4
                                 i.icon-time
                                 #{log.gamedate}
                             i.icon-user
-                            勇者#{log.brave}はアイテムを見つけられなかった…
+                            a(href="/braves/#{log.brave.hash}") 勇者#{log.brave}
+                            はアイテムを見つけられなかった…

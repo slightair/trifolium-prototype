@@ -1,0 +1,8 @@
+- if (typeof(navbarActiveItem) == 'undefined')var navbarActiveItem = null
+div.navbar
+    div.navbar-inner
+        div.container
+            a.brand(href='#') trifolium
+            ul.nav
+                |<li!{navbarActiveItem == 'braves' ? ' class="active"' : ''}><a href="/braves">勇者の一覧</a></li>
+                |<li!{navbarActiveItem == 'history' ? ' class="active"' : ''}><a href="/history">イベント履歴</a></li>
