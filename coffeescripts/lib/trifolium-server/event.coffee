@@ -19,7 +19,9 @@ exports.EventInfo = EventInfo
 
 EventLogSchema = new Schema
     type: String
-    brave: String
+    brave:
+        type: Schema.ObjectId
+        ref: 'Brave'
     isSucceed: Boolean
     date: Date
     others: Schema.Types.Mixed
@@ -67,7 +69,7 @@ class SearchEvent
     save: (brave, result) ->
         eventLog = new EventLog
         eventLog.type = @type
-        eventLog.brave = brave.name
+        eventLog.brave = brave
         eventLog.isSucceed = result.isSucceed
         eventLog.date = new Date
         eventLog.others = {

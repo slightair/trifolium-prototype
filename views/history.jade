@@ -11,7 +11,7 @@ div.container
                             i.icon-time
                             #{log.gamedate}
                         i.icon-user
-                        a(href="/braves/#{log.brave.hash}") 勇者#{log.brave}
+                        a(href="/braves/#{log.brave.hash}") 勇者#{log.brave.name}
                         は#{log.others.treasure.name}を手に入れた!
                 else
                     if log.others
@@ -20,7 +20,7 @@ div.container
                                 i.icon-time
                                 #{log.gamedate}
                             i.icon-user
-                            a(href="/braves/#{log.brave.hash}") 勇者#{log.brave}
+                            a(href="/braves/#{log.brave.hash}") 勇者#{log.brave.name}
                             は#{log.others.treasure.name}を見つけたが、持ち物がいっぱいなのであきらめた…
                     else
                         div.alert
@@ -28,5 +28,5 @@ div.container
                                 i.icon-time
                                 #{log.gamedate}
                             i.icon-user
-                            a(href="/braves/#{log.brave.hash}") 勇者#{log.brave}
+                            a(href="/braves/#{log.brave.hash}") 勇者#{log.brave.name}
                             はアイテムを見つけられなかった…

@@ -5,7 +5,7 @@ exports.index = (req, res) ->
         title: "World"
 
 exports.history = (req, res) ->
-    EventLog.find({}).desc('date').exec (err, logs) ->
+    EventLog.find({}).desc('date').populate('brave').exec (err, logs) ->
         console.log err.message if err
         
         res.render 'history',
