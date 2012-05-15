@@ -65,30 +65,31 @@ class BraveCreator
         saveBraveFunctions = []
         braves = []
         
-        for info in infoList
-            saveBraveFunctions.push (done) =>
-                brave = new Brave
+        saveBrave = (info) =>
+            brave = new Brave
                 
-                brave.name   = @makeBraveName()
-                brave.level  = info.level ? 1
-                brave.attack = info.attack ? 1
-                brave.magic  = info.magic ? 1
-                brave.maxhp  = info.maxhp ? 10
-                brave.hp     = info.maxhp ? 10
-                brave.maxmp  = info.maxmp ? 10
-                brave.mp     = info.maxmp ? 10
-                brave.brave  = info.brave ? 50
-                brave.faith  = info.faith ? 50
-                brave.speed  = info.speed ? 3
-                brave.gold   = info.gold ? 300
-                brave.items  = info.items ? []
-                brave.hash = crypto.createHash('sha1').update(brave.id).update('cf3e3815').digest('hex').substr(0, 12)
-                
+            brave.name   = @makeBraveName()
+            brave.level  = info.level ? 1
+            brave.attack = info.attack ? 1
+            brave.magic  = info.magic ? 1
+            brave.maxhp  = info.maxhp ? 10
+            brave.hp     = info.maxhp ? 10
+            brave.maxmp  = info.maxmp ? 10
+            brave.mp     = info.maxmp ? 10
+            brave.brave  = info.brave ? 50
+            brave.faith  = info.faith ? 50
+            brave.speed  = info.speed ? 3
+            brave.gold   = info.gold ? 300
+            brave.items  = info.items ? []
+            brave.hash = crypto.createHash('sha1').update(brave.id).update('cf3e3815').digest('hex').substr(0, 12)
+            
+            saveBraveFunctions.push (done) ->
                 brave.save (err) ->
                     console.log err.message if err
                     braves.push brave
                     done()
         
+        saveBrave info for info in infoList
         step saveBraveFunctions, -> next(braves)
     
     makeBraveName: ->
